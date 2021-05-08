@@ -5,21 +5,35 @@
 
 namespace utad
 {
+	static bool g_Running = false;
+
 	static const float TARGET_DELAY = 1.0f / 60.0f;
 
 	int Engine::launch()
 	{
-		static Engine engine;
-		if (engine.m_Active) return UTAD_NOT_EXECUTED;
+		Application app = {};
+		return launch(app);
+	}
+
+	int Engine::launch(Application& application)
+	{
+		if (g_Running) return UTAD_NOT_EXECUTED;
+
+		g_Running = true;
+
+		Engine engine(application);
+
+		int exitCode;
 
 		try
 		{
 			engine.start();
 			engine.run();
+			exitCode = UTAD_EXIT_SUCCESS;
 		}
 		catch (...)
 		{
-			try 
+			try
 			{
 				engine.shutdown();
 				std::rethrow_exception(std::current_exception());
@@ -27,14 +41,19 @@ namespace utad
 			catch (const std::exception& exception)
 			{
 				std::cerr << "Fatal exception: " << exception.what() << std::endl;
-				return UTAD_EXIT_FAILURE;
+				exitCode = UTAD_EXIT_FAILURE;
 			}
 		}
 
-		return UTAD_EXIT_SUCCESS;
+		g_Running = false;
+		return exitCode;
 	}
 
-	Engine::Engine()
+	Engine::Engine(Application& application) : m_App(application)
+	{
+	}
+
+	Engine::~Engine()
 	{
 		shutdown();
 	}
@@ -43,7 +62,11 @@ namespace utad
 	{
 		m_Window = Window::init();
 
+		m_Scene = Scene::init();
+
 		m_Window->show();
+
+		m_App.onStart();
 	}
 
 	void Engine::run()
@@ -77,6 +100,8 @@ namespace utad
 		while (m_UpdateDelay >= TARGET_DELAY)
 		{
 			m_Window->pollEvents();
+			m_Scene->update();
+			m_App.onUpdate();
 
 			// UPDATE
 			m_UpdateDelay -= TARGET_DELAY;
@@ -86,12 +111,25 @@ namespace utad
 
 	void Engine::render()
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		m_Scene->render();
+		m_App.onRender();
 		m_Window->swapBuffers();
 	}
 
 	void Engine::shutdown()
 	{
+		if (!m_AppExited)
+		{
+			m_App.onExit();
+			m_AppExited = true;
+		}
+
+		if (m_Scene != nullptr)
+		{
+			Scene::destroy();
+			m_Scene = nullptr;
+		}
+
 		if (m_Window != nullptr)
 		{
 			Window::destroy();

@@ -78,6 +78,17 @@ namespace utad
 		return *this;
 	}
 
+	bool Transform::ignoreParent() const
+	{
+		return m_IgnoreParent;
+	}
+
+	Transform& Transform::ignoreParent(bool ignore)
+	{
+		m_IgnoreParent = ignore;
+		return *this;
+	}
+
 	const Matrix4& Transform::modelMatrix() const
 	{
 		return m_ModelMatrix;
@@ -96,7 +107,7 @@ namespace utad
 
 		m_ModelMatrix = translate * scale * rotate;
 
-		if (m_Entity->hasParent())
+		if (!m_IgnoreParent && m_Entity->hasParent())
 		{
 			m_ModelMatrix = m_Entity->parent()->transform().modelMatrix();
 		}

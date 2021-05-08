@@ -140,4 +140,9 @@ namespace utad
 			child->update();
 		}
 	}
+
+	void Entity::render()
+	{
+		// TODO
+	}
 }

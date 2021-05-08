@@ -11,8 +11,10 @@ namespace utad
 
 	class Entity
 	{
+		friend class Scene;
 	private:
 		EntityID m_ID{ENTITY_INVALID_ID};
+		uint m_SceneIndex{UINT32_MAX};
 		uint m_ChildIndex{UINT32_MAX};
 		String m_Name;
 		Entity* m_Parent{nullptr};
@@ -39,5 +41,6 @@ namespace utad
 		void removeScript(Script* script);
 	private:
 		void update();
+		void render();
 	};
 }

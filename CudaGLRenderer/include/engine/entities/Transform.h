@@ -12,7 +12,8 @@ namespace utad
 		Vector3 m_Scale;
 		Quaternion m_Rotation;
 		Matrix4 m_ModelMatrix;
-		Entity* m_Entity;
+		Entity* m_Entity{nullptr};
+		bool m_IgnoreParent{false};
 	private:
 		Transform();
 	public:
@@ -30,6 +31,8 @@ namespace utad
 		Transform& eulerAngles(Vector3&& eulerAngles);
 		Transform& rotate(float radians, const Vector3& axis);
 		Transform& rotate(float radians, Vector3&& axis);
+		bool ignoreParent() const;
+		Transform& ignoreParent(bool ignore);
 		const Matrix4& modelMatrix() const;
 		Matrix4& modelMatrix();
 	private:

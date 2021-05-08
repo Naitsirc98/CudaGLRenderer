@@ -4,6 +4,7 @@
 #include <vector>
 #include <exception>
 #include <stdexcept>
+#include <unordered_map>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
@@ -24,6 +25,9 @@ namespace utad
 	
 	template<typename T>
 	using ArrayList = std::vector<T>;
+
+	template<typename K, typename V>
+	using Map = std::unordered_map<K, V>;
 
 	using uint = unsigned int;
 

@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Common.h"
+#include "Application.h"
 #include "graphics/Window.h"
+#include "scene/Scene.h"
 
 #define UTAD_EXIT_SUCCESS 0
 #define UTAD_EXIT_FAILURE 1
@@ -13,15 +15,20 @@ namespace utad
 	{
 	public:
 		static int launch();
+		static int launch(Application& application);
 	private:
+		Application& m_App;
 		Window* m_Window{nullptr};
+		Scene* m_Scene{nullptr};
 		float m_UpdateDelay{0};
 		uint m_UPS{0};
 		uint m_FPS{0};
 		volatile bool m_Active{ false };
+		bool m_AppExited{ false };
 		float m_DebugTimer;
 	private:
-		Engine();
+		Engine(Application& application);
+		~Engine();
 		void start();
 		void run();
 		void update(float deltaTime);
