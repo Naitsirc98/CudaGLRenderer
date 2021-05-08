@@ -32,7 +32,7 @@ namespace utad
 		int width() const { return m_Width; }
 		int height() const { return m_Height; }
 		void resize(int width, int height);
-		void setTitle(String& title);
+		void setTitle(String&& title);
 		bool shouldClose() const;
 		void setVsync(bool vsync);
 		void show();

@@ -43,7 +43,7 @@ namespace utad
 		glfwSetWindowSize(m_Handle, width, height);
 	}
 
-	void Window::setTitle(String& title)
+	void Window::setTitle(String&& title)
 	{
 		glfwSetWindowTitle(m_Handle, title.c_str());
 	}
