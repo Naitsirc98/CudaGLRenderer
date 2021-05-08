@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClCompile Include="dependencies\glad\src\glad.c" />
     <ClCompile Include="src\engine\Engine.cpp" />
+    <ClCompile Include="src\engine\entities\Entity.cpp" />
+    <ClCompile Include="src\engine\entities\Transform.cpp" />
     <ClCompile Include="src\engine\graphics\Window.cpp" />
     <ClCompile Include="src\engine\Time.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -20,6 +22,7 @@
   <ItemGroup>
     <ClInclude Include="include\engine\Common.h" />
     <ClInclude Include="include\engine\Engine.h" />
+    <ClInclude Include="include\engine\entities\Script.h" />
     <ClInclude Include="include\engine\entities\Entity.h" />
     <ClInclude Include="include\engine\entities\Transform.h" />
     <ClInclude Include="include\engine\graphics\Window.h" />

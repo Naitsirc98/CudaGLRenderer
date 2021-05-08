@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <exception>
+#include <stdexcept>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
@@ -13,6 +15,8 @@
 
 #define UTAD_DELETE(ptr) delete ptr; ptr = nullptr
 #define UTAD_DELETE_ARRAY(ptr) delete[] ptr; ptr = nullptr
+
+#define UTAD_EXCEPTION(msg) std::runtime_error(String((msg)).append(" at\n\t").append(__FILE__).append("(").append(std::to_string(__LINE__)).append(")"))
 
 namespace utad 
 {

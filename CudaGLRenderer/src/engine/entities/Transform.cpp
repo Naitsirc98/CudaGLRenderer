@@ -1,4 +1,5 @@
 #include "engine/entities/Transform.h"
+#include "engine/entities/Entity.h"
 
 namespace utad
 {
@@ -10,6 +11,12 @@ namespace utad
 
 	Transform::~Transform()
 	{
+		m_Entity = nullptr;
+	}
+
+	Entity& Transform::entity() const
+	{
+		return *m_Entity;
 	}
 
 	const Vector3& Transform::position() const
@@ -83,11 +90,15 @@ namespace utad
 
 	void Transform::computeModelMatrix()
 	{
-		Matrix4 translate = math::translate(m_Position);
-		Matrix4 scale = math::scale(m_Scale);
-		Matrix4 rotate = math::toMat4(m_Rotation);
+		const Matrix4 translate = math::translate(m_Position);
+		const Matrix4 scale = math::scale(m_Scale);
+		const Matrix4 rotate = math::toMat4(m_Rotation);
 
 		m_ModelMatrix = translate * scale * rotate;
-	}
 
+		if (m_Entity->hasParent())
+		{
+			m_ModelMatrix = m_Entity->parent()->transform().modelMatrix();
+		}
+	}
 }

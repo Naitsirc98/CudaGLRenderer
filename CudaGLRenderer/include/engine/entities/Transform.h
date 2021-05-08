@@ -12,11 +12,13 @@ namespace utad
 		Vector3 m_Scale;
 		Quaternion m_Rotation;
 		Matrix4 m_ModelMatrix;
+		Entity* m_Entity;
 	private:
 		Transform();
 	public:
 		~Transform();
 		Transform(const Transform& other) = delete;
+		Entity& entity() const;
 		const Vector3& position() const;
 		Vector3& position();
 		const Vector3& scale() const;

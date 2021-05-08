@@ -1,5 +1,4 @@
 #include "engine/graphics/Window.h"
-#include <exception>
 
 namespace utad
 {
@@ -18,18 +17,18 @@ namespace utad
 	Window::Window(const String& title, int width, int height) 
 		: m_Handle(nullptr), m_Width(width), m_Height(height)
 	{
-		if (!glfwInit()) throw std::exception("Failed to init GLFW");
+		if (!glfwInit()) throw UTAD_EXCEPTION("Failed to init GLFW");
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 	
 		m_Handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
-		if (m_Handle == nullptr) throw std::exception("Failed to create window");
+		if (m_Handle == nullptr) throw UTAD_EXCEPTION("Failed to create window");
 
 		glfwMakeContextCurrent(m_Handle);
 
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) throw std::exception("Failed to initialize GLAD");
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) throw UTAD_EXCEPTION("Failed to initialize GLAD");
 	}
 
 	Window::~Window()

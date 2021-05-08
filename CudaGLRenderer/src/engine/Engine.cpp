@@ -1,19 +1,37 @@
 #include "engine/Engine.h"
 #include "engine/Time.h"
 #include <iostream>
+#include <exception>
 
 namespace utad
 {
 	static const float TARGET_DELAY = 1.0f / 60.0f;
 
-	void Engine::launch()
+	int Engine::launch()
 	{
 		static Engine engine;
-		if (engine.m_Active) return;
+		if (engine.m_Active) return UTAD_NOT_EXECUTED;
 
-		engine.start();
-		engine.run();
-		engine.shutdown();
+		try
+		{
+			engine.start();
+			engine.run();
+		}
+		catch (...)
+		{
+			try 
+			{
+				engine.shutdown();
+				std::rethrow_exception(std::current_exception());
+			}
+			catch (const std::exception& exception)
+			{
+				std::cerr << "Fatal exception: " << exception.what() << std::endl;
+				return UTAD_EXIT_FAILURE;
+			}
+		}
+
+		return UTAD_EXIT_SUCCESS;
 	}
 
 	Engine::Engine()
@@ -32,8 +50,7 @@ namespace utad
 	{
 		const Window* window = m_Window;
 		float lastFrame = 0;
-		int fps = 0;
-		float debugTimer = Time::time();
+		m_DebugTimer = Time::time();
 
 		while (!window->shouldClose())
 		{
@@ -45,15 +62,11 @@ namespace utad
 			update(deltaTime);
 
 			render();
-			++fps;
+			++m_FPS;
 
-			if (Time::time() - debugTimer >= 1)
-			{
-				String title = String("PracticaCUDA || UPS = ").append(std::to_string(m_UPS)).append(", ").append("FPS: ").append(std::to_string(fps));
-				m_Window->setTitle(std::move(title));
-				m_UPS = fps = 0;
-				debugTimer = Time::time();
-			}
+			++Time::s_Frame;
+		
+			showDebugInfo();
 		}
 	}
 
@@ -83,6 +96,17 @@ namespace utad
 		{
 			Window::destroy();
 			m_Window = nullptr;
+		}
+	}
+
+	inline void Engine::showDebugInfo()
+	{
+		if (Time::time() - m_DebugTimer >= 1)
+		{
+			String title = String("PracticaCUDA || UPS = ").append(std::to_string(m_UPS)).append(", ").append("FPS: ").append(std::to_string(m_FPS));
+			m_Window->setTitle(std::move(title));
+			m_UPS = m_FPS = 0;
+			m_DebugTimer = Time::time();
 		}
 	}
 
