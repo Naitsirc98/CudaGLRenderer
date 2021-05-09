@@ -1,5 +1,5 @@
 #pragma once
-#include <functional>
+#include "engine/Common.h"
 
 namespace utad
 {
@@ -16,9 +16,6 @@ namespace utad
 		virtual void onUpdate() = 0;
 		virtual void onDestroy() {}
 	};
-
-	template<typename R, typename ...Args>
-	using Function = std::function<R(Args...)>;
 
 	class LambdaScript : public Script
 	{

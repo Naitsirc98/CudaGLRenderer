@@ -4,6 +4,8 @@
 #include "Application.h"
 #include "graphics/Window.h"
 #include "scene/Scene.h"
+#include "events/EventSystem.h"
+#include "events/Input.h"
 
 #define UTAD_EXIT_SUCCESS 0
 #define UTAD_EXIT_FAILURE 1
@@ -19,6 +21,8 @@ namespace utad
 	private:
 		Application& m_App;
 		Window* m_Window{nullptr};
+		EventSystem* m_EventSystem{nullptr};
+		Input* m_Input{nullptr};
 		Scene* m_Scene{nullptr};
 		float m_UpdateDelay{0};
 		uint m_UPS{0};

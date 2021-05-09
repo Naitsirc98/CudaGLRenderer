@@ -16,6 +16,8 @@
     <ClCompile Include="src\engine\entities\Entity.cpp" />
     <ClCompile Include="src\engine\entities\EntityPool.cpp" />
     <ClCompile Include="src\engine\entities\Transform.cpp" />
+    <ClCompile Include="src\engine\events\EventSystem.cpp" />
+    <ClCompile Include="src\engine\events\Input.cpp" />
     <ClCompile Include="src\engine\graphics\Buffer.cpp" />
     <ClCompile Include="src\engine\graphics\Framebuffer.cpp" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
@@ -33,6 +35,10 @@
     <ClInclude Include="include\engine\entities\Script.h" />
     <ClInclude Include="include\engine\entities\Entity.h" />
     <ClInclude Include="include\engine\entities\Transform.h" />
+    <ClInclude Include="include\engine\events\Event.h" />
+    <ClInclude Include="include\engine\events\KeyboardEvents.h" />
+    <ClInclude Include="include\engine\events\MouseEvents.h" />
+    <ClInclude Include="include\engine\events\WindowEvents.h" />
     <ClInclude Include="include\engine\graphics\Buffer.h" />
     <ClInclude Include="include\engine\graphics\Framebuffer.h" />
     <ClInclude Include="include\engine\graphics\Graphics.h" />
@@ -42,6 +48,10 @@
     <ClInclude Include="include\engine\graphics\Window.h" />
     <ClInclude Include="include\engine\scene\Scene.h" />
     <ClInclude Include="include\engine\Time.h" />
+    <ClInclude Include="include\engine\events\EventSystem.h" />
+    <ClInclude Include="include\engine\events\Input.h" />
+    <ClInclude Include="include\engine\events\Keyboard.h" />
+    <ClInclude Include="include\engine\events\Mouse.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FD85E8D7-CBFB-464D-B5BF-A7916FAC64E8}</ProjectGuid>
@@ -78,12 +88,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -97,14 +106,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

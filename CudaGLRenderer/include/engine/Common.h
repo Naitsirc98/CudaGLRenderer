@@ -1,11 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <exception>
 #include <stdexcept>
 #include <unordered_map>
 #include <deque>
+#include <functional>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
@@ -39,11 +41,17 @@ namespace utad
 	using byte = char;
 	using uint = unsigned int;
 
+	template<typename R, typename ...Args>
+	using Function = std::function<R(Args...)>;
+
+	using KeyModifiersBitMask = int;
+
 	namespace math
 	{
 		using namespace glm;
 	}
 
+	using Vector2i = glm::ivec2;
 	using Vector2 = glm::vec2;
 	using Vector3 = glm::vec3;
 	using Vector4 = glm::vec4;

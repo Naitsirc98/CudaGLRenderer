@@ -16,7 +16,7 @@ namespace utad
 
 	void Texture2D::allocate(const Texture2DAllocInfo& allocInfo)
 	{
-		int levels = levels == 0 ? mipLevelsOf(allocInfo.width, allocInfo.height) : levels;
+		int levels = allocInfo.levels == 0 ? mipLevelsOf(allocInfo.width, allocInfo.height) : allocInfo.levels;
 		glTextureStorage2D(m_Handle, levels, allocInfo.format, allocInfo.width, allocInfo.height);
 		m_Width = allocInfo.width;
 		m_Height = allocInfo.height;

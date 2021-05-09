@@ -40,7 +40,7 @@ namespace utad
 			}
 			catch (const std::exception& exception)
 			{
-				std::cerr << "Fatal exception: " << exception.what() << std::endl;
+				std::cout << "Fatal exception: " << exception.what() << std::endl;
 				exitCode = UTAD_EXIT_FAILURE;
 			}
 		}
@@ -60,7 +60,11 @@ namespace utad
 
 	void Engine::start()
 	{
+		m_EventSystem = EventSystem::init();
+
 		m_Window = Window::init();
+
+		m_Input = Input::init();
 
 		m_Scene = Scene::init();
 
@@ -99,8 +103,11 @@ namespace utad
 
 		while (m_UpdateDelay >= TARGET_DELAY)
 		{
-			m_Window->pollEvents();
+			m_EventSystem->update();
+			m_Input->update();
+
 			m_Scene->update();
+
 			m_App.onUpdate();
 
 			// UPDATE
@@ -124,17 +131,17 @@ namespace utad
 			m_AppExited = true;
 		}
 
-		if (m_Scene != nullptr)
-		{
-			Scene::destroy();
-			m_Scene = nullptr;
-		}
+		Scene::destroy();
+		m_Scene = nullptr;
 
-		if (m_Window != nullptr)
-		{
-			Window::destroy();
-			m_Window = nullptr;
-		}
+		Input::destroy();
+		m_Input = nullptr;
+
+		Window::destroy();
+		m_Window = nullptr;
+
+		EventSystem::destroy();
+		m_EventSystem = nullptr;
 	}
 
 	inline void Engine::showDebugInfo()

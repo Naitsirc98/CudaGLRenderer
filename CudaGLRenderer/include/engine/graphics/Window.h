@@ -5,6 +5,22 @@
 
 namespace utad
 {
+	enum class CursorMode
+	{
+		NORMAL,
+		HIDDEN,
+		CAPTURED
+	};
+
+	enum class WindowState
+	{
+		MINIMIZED,
+		WINDOWED,
+		MAXIMIZED,
+		FULLSCREEN
+	};
+
+
 	class Window
 	{
 		friend class Engine;
@@ -21,6 +37,7 @@ namespace utad
 		GLFWwindow* m_Handle;
 		int m_Width;
 		int m_Height;
+		WindowState m_State{WindowState::WINDOWED};
 	private:
 		Window(const String& title, int width = 1280, int height = 720);
 	public:
@@ -35,8 +52,9 @@ namespace utad
 		bool shouldClose() const;
 		void setVsync(bool vsync);
 		void show();
-		void pollEvents();
 		void swapBuffers();
+	private:
+		void setEventCallbacks();
 	};
 
 }
