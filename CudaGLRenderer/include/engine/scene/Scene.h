@@ -1,6 +1,5 @@
 #pragma once
-#include "engine/Common.h"
-#include "engine/entities/Entity.h"
+#include "engine/entities/EntityPool.h"
 
 namespace utad
 {
@@ -15,17 +14,14 @@ namespace utad
 	public:
 		static Scene& get();
 	private:
-		ArrayList<Entity*> m_Entities;
-		Map<String, Entity*> m_EntitiesByName;
+		EntityPool* m_EntityPool;
 	private:
 		Scene();
 		~Scene();
 	public:
-		const ArrayList<Entity*>& entities() const;
-		void addEntity(Entity* entity);
-		void removeEntity(Entity* entity);
-		void removeAllEntities();
-		bool contains(Entity* entity) const;
+		Entity* createEntity(const String& name = "");
+		void destroyEntity(Entity* entity);
+		void destroyAllEntities();
 		Entity* find(const String& name) const;
 	private:
 		void update();

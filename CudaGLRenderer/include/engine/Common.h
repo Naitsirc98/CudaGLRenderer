@@ -5,6 +5,7 @@
 #include <exception>
 #include <stdexcept>
 #include <unordered_map>
+#include <deque>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
@@ -29,6 +30,13 @@ namespace utad
 	template<typename K, typename V>
 	using Map = std::unordered_map<K, V>;
 
+	template<typename T>
+	using Stack = std::deque<T>;
+
+	template<typename T>
+	using Queue = std::deque<T>;
+
+	using byte = char;
 	using uint = unsigned int;
 
 	namespace math

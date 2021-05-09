@@ -1,45 +1,20 @@
 #include "engine/entities/Entity.h"
-#include <mutex>
+#include "engine/scene/Scene.h"
 
 namespace utad
 {
-	static std::mutex g_Mutex;
-
-	static EntityID nextEntityID()
+	Entity* Entity::create(const String& name)
 	{
-		static volatile EntityID nextID = 1;
-
-		std::unique_lock lock(g_Mutex);
-		EntityID id = nextID++;
-		return id;
+		return Scene::get().createEntity(name);
 	}
 
-	Entity::Entity(const String& name) : m_ID(nextEntityID()), m_Name(name)
+	Entity::Entity()
 	{
 		m_Transform.m_Entity = this;
 	}
 
 	Entity::~Entity()
 	{
-		for (Entity* child : m_Children)
-		{
-			UTAD_DELETE(child);
-		}
-		m_Children.clear();
-
-		for (Script* script : m_Scripts)
-		{
-			UTAD_DELETE(script);
-		}
-		m_Scripts.clear();
-
-		if (m_Parent != nullptr)
-		{
-			m_Parent->removeChild(this);
-			m_Parent = nullptr;
-		}
-
-		m_ID = ENTITY_INVALID_ID;
 	}
 
 	EntityID Entity::id() const
@@ -126,6 +101,18 @@ namespace utad
 		script->m_Index = UINT32_MAX;
 	}
 
+	void Entity::destroy()
+	{
+		Scene::get().destroyEntity(this);
+	}
+
+	void Entity::init(EntityID id, const String& name, uint sceneIndex)
+	{
+		m_ID = id;
+		m_Name = name;
+		m_SceneIndex = sceneIndex;
+	}
+
 	void Entity::update()
 	{
 		m_Transform.computeModelMatrix();
@@ -141,8 +128,30 @@ namespace utad
 		}
 	}
 
-	void Entity::render()
+	void Entity::onDestroy()
 	{
-		// TODO
+		while (!m_Children.empty())
+		{
+			Entity* child = m_Children.back();
+			removeChild(child);
+			child->destroy();
+			m_Children.pop_back();
+		}
+
+		for (Script* script : m_Scripts)
+		{
+			UTAD_DELETE(script);
+		}
+		m_Scripts.clear();
+
+		if (m_Parent != nullptr)
+		{
+			m_Parent->removeChild(this);
+			m_Parent = nullptr;
+		}
+
+		m_ID = NULL;
+		m_Name = "";
+		m_SceneIndex = UINT32_MAX;
 	}
 }

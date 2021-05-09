@@ -1,6 +1,20 @@
 #include "engine/Engine.h"
 
+using namespace utad;
+
+class MyApp : public Application
+{
+public:
+	void onStart()
+	{
+		Scene& scene = Scene::get();
+
+		Entity* entity = Entity::create();
+	}
+};
+
 int main()
 {
-	return utad::Engine::launch();
+	MyApp app;
+	return utad::Engine::launch(app);
 }

@@ -14,7 +14,11 @@
     <ClCompile Include="dependencies\glad\src\glad.c" />
     <ClCompile Include="src\engine\Engine.cpp" />
     <ClCompile Include="src\engine\entities\Entity.cpp" />
+    <ClCompile Include="src\engine\entities\EntityPool.cpp" />
     <ClCompile Include="src\engine\entities\Transform.cpp" />
+    <ClCompile Include="src\engine\graphics\Buffer.cpp" />
+    <ClCompile Include="src\engine\graphics\Framebuffer.cpp" />
+    <ClCompile Include="src\engine\graphics\Texture2D.cpp" />
     <ClCompile Include="src\engine\graphics\Window.cpp" />
     <ClCompile Include="src\engine\scene\Scene.cpp" />
     <ClCompile Include="src\engine\Time.cpp" />
@@ -24,9 +28,15 @@
     <ClInclude Include="include\engine\Application.h" />
     <ClInclude Include="include\engine\Common.h" />
     <ClInclude Include="include\engine\Engine.h" />
+    <ClInclude Include="include\engine\entities\EntityPool.h" />
     <ClInclude Include="include\engine\entities\Script.h" />
     <ClInclude Include="include\engine\entities\Entity.h" />
     <ClInclude Include="include\engine\entities\Transform.h" />
+    <ClInclude Include="include\engine\graphics\Buffer.h" />
+    <ClInclude Include="include\engine\graphics\Framebuffer.h" />
+    <ClInclude Include="include\engine\graphics\Graphics.h" />
+    <ClInclude Include="include\engine\graphics\GraphicsAPI.h" />
+    <ClInclude Include="include\engine\graphics\Texture.h" />
     <ClInclude Include="include\engine\graphics\Window.h" />
     <ClInclude Include="include\engine\scene\Scene.h" />
     <ClInclude Include="include\engine\Time.h" />
@@ -71,6 +81,7 @@
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -91,6 +102,7 @@
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

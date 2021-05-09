@@ -11,7 +11,10 @@ namespace utad
 
 	class Entity
 	{
+		friend class EntityPool;
 		friend class Scene;
+	public:
+		static Entity* create(const String& name = "");
 	private:
 		EntityID m_ID{ENTITY_INVALID_ID};
 		uint m_SceneIndex{UINT32_MAX};
@@ -21,11 +24,12 @@ namespace utad
 		ArrayList<Entity*> m_Children;
 		Transform m_Transform;
 		ArrayList<Script*> m_Scripts;
-	public:
-		Entity(const String& name = "");
+	private:
+		Entity();
 		Entity(const Entity& other) = delete;
 		Entity& operator=(const Entity& other) = delete;
 		~Entity();
+	public:
 		EntityID id() const;
 		const String& name() const;
 		bool hasParent() const;
@@ -39,8 +43,10 @@ namespace utad
 		const ArrayList<Script*> scripts() const;
 		void addScript(Script* script);
 		void removeScript(Script* script);
+		void destroy();
 	private:
+		void init(EntityID id, const String& name, uint sceneIndex);
 		void update();
-		void render();
+		void onDestroy();
 	};
 }
