@@ -61,15 +61,11 @@ namespace utad
 	void Engine::start()
 	{
 		m_EventSystem = EventSystem::init();
-
 		m_Window = Window::init();
-
 		m_Input = Input::init();
-
+		AssetsManager::init();
 		m_Scene = Scene::init();
-
 		m_Window->show();
-
 		m_App.onStart();
 	}
 
@@ -133,6 +129,8 @@ namespace utad
 
 		Scene::destroy();
 		m_Scene = nullptr;
+
+		AssetsManager::destroy();
 
 		Input::destroy();
 		m_Input = nullptr;

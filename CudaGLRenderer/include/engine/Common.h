@@ -58,4 +58,15 @@ namespace utad
 	using Matrix3 = glm::mat3;
 	using Matrix4 = glm::mat4;
 	using Quaternion = glm::quat;
+
+	using Color = Vector4;
+
+	namespace colors
+	{
+		const Color WHITE = {1, 1, 1, 1};
+		const Color BLACK = {0, 0, 0, 1};
+		const Color RED = {1, 0, 0, 1};
+		const Color GREEN = {0, 1, 0, 1};
+		const Color BLUE = {0, 0, 1, 1};
+	}
 }
