@@ -3,7 +3,7 @@
 
 namespace utad
 {
-	Texture2D::Texture2D()
+	Texture2D::Texture2D() : m_Width(0), m_Height(0)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_Handle);
 	}

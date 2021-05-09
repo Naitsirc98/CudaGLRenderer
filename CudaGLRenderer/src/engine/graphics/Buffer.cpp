@@ -13,6 +13,11 @@ namespace utad
 		m_Handle = NULL;
 	}
 
+	Handle Buffer::handle() const
+	{
+		return m_Handle;
+	}
+
 	void Buffer::bind()
 	{
 		glBindBuffer(type(), m_Handle);

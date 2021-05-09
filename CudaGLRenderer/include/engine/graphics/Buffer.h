@@ -26,6 +26,7 @@ namespace utad
 	public:
 		Buffer();
 		virtual ~Buffer();
+		Handle handle() const;
 		void bind();
 		void unbind();
 		void allocate(const BufferAllocInfo& allocInfo);
