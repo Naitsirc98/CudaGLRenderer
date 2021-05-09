@@ -3,6 +3,9 @@
 
 namespace utad
 {
+	static const uint32_t DEFAULT_WIDTH = 1280;
+	static const uint32_t DEFAULT_HEIGHT = 720;
+
 	Window* Window::s_Instance = nullptr;
 
 	Window* Window::init()
@@ -65,9 +68,66 @@ namespace utad
 		glfwShowWindow(m_Handle);
 	}
 
+	void Window::focus()
+	{
+		glfwFocusWindow(m_Handle);
+	}
+
 	void Window::swapBuffers()
 	{
 		glfwSwapBuffers(m_Handle);
+	}
+
+	Vector2i Window::framebufferSize() const
+	{
+		int width;
+		int height;
+		glfwGetFramebufferSize(m_Handle, &width, &height);
+		return { width, height };
+	}
+
+	float Window::aspectRatio() const
+	{
+		if (m_Height == 0) return 0.0f;
+		return static_cast<float>(m_Width) / static_cast<float>(m_Height);
+	}
+
+	WindowState Window::state() const
+	{
+		return m_State;
+	}
+
+	inline Vector2i center(const Vector2i& windowSize, const GLFWvidmode* vidmode)
+	{
+		const uint32_t x = (vidmode->width - windowSize.x) / 2;
+		const uint32_t y = (vidmode->height - windowSize.y) / 2;
+		return { x, y };
+	}
+
+	Window& Window::state(WindowState newState)
+	{
+		if (m_State == newState) return *this;
+		
+		m_State = newState;
+		
+		glfwRestoreWindow(m_Handle);
+
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		
+		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
+		const Vector2i size = newState == WindowState::WINDOWED 
+			? Vector2i(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+			: Vector2i(vidmode->width, vidmode->height);
+		const Vector2i position = newState == WindowState::FULLSCREEN ? Vector2i(0, 0) : center(size, vidmode);
+		
+		glfwSetWindowMonitor(
+			m_Handle,
+			newState == WindowState::FULLSCREEN ? monitor : nullptr,
+			position.x, position.y,
+			size.x, size.y,
+			vidmode->refreshRate);
+		
+		return *this;
 	}
 
 	static void keyCallback(GLFWwindow* window, int glfwKey, int scancode, int action, int glfwMod)

@@ -16,8 +16,7 @@ public:
 	{
 		if (Input::isKeyActive(Key::Key_Space))
 		{
-			int x = 0;
-			std::cout << "Hey" << std::endl;
+			std::cout << "Space key active" << std::endl;
 		}
 	}
 };

@@ -52,7 +52,14 @@ namespace utad
 		bool shouldClose() const;
 		void setVsync(bool vsync);
 		void show();
+		void focus();
 		void swapBuffers();
+		Vector2i framebufferSize() const;
+		float aspectRatio() const;
+		WindowState state() const;
+		Window& state(WindowState newState);
+		CursorMode cursorMode() const;
+		Window& cursorMode(CursorMode cursorMode);
 	private:
 		void setEventCallbacks();
 	};

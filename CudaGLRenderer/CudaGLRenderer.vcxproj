@@ -22,6 +22,7 @@
     <ClCompile Include="src\engine\graphics\Framebuffer.cpp" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\Texture2D.cpp" />
+    <ClCompile Include="src\engine\graphics\VertexArray.cpp" />
     <ClCompile Include="src\engine\graphics\Window.cpp" />
     <ClCompile Include="src\engine\scene\Scene.cpp" />
     <ClCompile Include="src\engine\Time.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="include\engine\graphics\GraphicsAPI.h" />
     <ClInclude Include="include\engine\graphics\Shader.h" />
     <ClInclude Include="include\engine\graphics\Texture.h" />
+    <ClInclude Include="include\engine\graphics\VertexArray.h" />
     <ClInclude Include="include\engine\graphics\Window.h" />
     <ClInclude Include="include\engine\scene\Scene.h" />
     <ClInclude Include="include\engine\Time.h" />
