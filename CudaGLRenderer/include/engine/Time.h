@@ -11,6 +11,6 @@ namespace utad
 	public:
 		static float time() noexcept;
 		static float deltaTime() noexcept;
-		static float frame() noexcept;
+		static unsigned int frame() noexcept;
 	};
 }

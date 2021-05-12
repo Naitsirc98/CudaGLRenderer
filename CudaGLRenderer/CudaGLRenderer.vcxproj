@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClCompile Include="dependencies\glad\src\glad.c" />
     <ClCompile Include="src\engine\assets\AssetsManager.cpp" />
+    <ClCompile Include="src\engine\assets\Image.cpp" />
+    <ClCompile Include="src\engine\assets\Material.cpp" />
     <ClCompile Include="src\engine\assets\Mesh.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
@@ -27,14 +29,17 @@
     <ClCompile Include="src\engine\graphics\Texture2D.cpp" />
     <ClCompile Include="src\engine\graphics\VertexArray.cpp" />
     <ClCompile Include="src\engine\graphics\Window.cpp" />
+    <ClCompile Include="src\engine\io\Files.cpp" />
     <ClCompile Include="src\engine\scene\Scene.cpp" />
     <ClCompile Include="src\engine\Time.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\stb\stb\stb_image.h" />
     <ClInclude Include="dependencies\stb\stb\stb_image_write.h" />
     <ClInclude Include="include\engine\Application.h" />
     <ClInclude Include="include\engine\assets\AssetsManager.h" />
+    <ClInclude Include="include\engine\assets\Image.h" />
     <ClInclude Include="include\engine\assets\Material.h" />
     <ClInclude Include="include\engine\assets\Mesh.h" />
     <ClInclude Include="include\engine\assets\ModelLoader.h" />
@@ -56,6 +61,7 @@
     <ClInclude Include="include\engine\graphics\Texture.h" />
     <ClInclude Include="include\engine\graphics\VertexArray.h" />
     <ClInclude Include="include\engine\graphics\Window.h" />
+    <ClInclude Include="include\engine\io\Files.h" />
     <ClInclude Include="include\engine\scene\Scene.h" />
     <ClInclude Include="include\engine\Time.h" />
     <ClInclude Include="include\engine\events\EventSystem.h" />
@@ -98,11 +104,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Visual Studio Cpp\CudaGLRenderer\CudaGLRenderer\dependencies\json\json;$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,13 +122,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Visual Studio Cpp\CudaGLRenderer\CudaGLRenderer\dependencies\json\json;$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -42,7 +42,7 @@ namespace utad
 		model = getModel(name);
 		if (model != nullptr) return model;
 		
-		Model* model = ModelLoader().load(name, path);
+		model = ModelLoader().load(name, path);
 		s_Instance->m_Models[path] = model;
 		s_Instance->m_ModelsByName[name] = model;
 		

@@ -17,7 +17,7 @@ namespace utad
 		return s_DeltaTime;
 	}
 
-	float Time::frame() noexcept
+	unsigned int Time::frame() noexcept
 	{
 		return s_Frame;
 	}
