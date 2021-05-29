@@ -8,8 +8,10 @@ public:
 	void onStart()
 	{
 		Scene& scene = Scene::get();
-
 		Entity* entity = Entity::create();
+
+		ModelLoader loader;
+		loader.load("TheModel", "G:/glTF-Sample-Models-master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf");
 	}
 
 	void onUpdate()

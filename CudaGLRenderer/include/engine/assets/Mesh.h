@@ -20,28 +20,4 @@ namespace utad
 		MeshID id() const { return m_ID; }
 		VertexArray* vertexArray() const { return m_VertexArray; }
 	};
-
-	class Model
-	{
-	public:
-		struct Node
-		{
-			friend class Model;
-		public:
-			String name;
-			uint meshIndex;
-			uint materialIndex;
-			ArrayList<Node*> children;
-		private:
-			~Node();
-		};
-	private:
-		Node* m_Root;
-		ArrayList<Mesh*> m_Meshes;
-	public:
-		Model();
-		~Model();
-		Node* root() const;
-		const ArrayList<Mesh*>& meshes() const;
-	};
 }

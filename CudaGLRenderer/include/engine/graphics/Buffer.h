@@ -19,6 +19,8 @@ namespace utad
 
 	class Buffer
 	{
+	public:
+		static Buffer* create(GLenum target);
 	private:
 		Handle m_Handle{NULL};
 		size_t m_Size{0};

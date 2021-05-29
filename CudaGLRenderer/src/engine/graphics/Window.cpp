@@ -23,8 +23,22 @@ namespace utad
 	{
 		if (!glfwInit()) throw UTAD_EXCEPTION("Failed to init GLFW");
 
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		//glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
+		glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+		glfwWindowHint(GLFW_SAMPLES, 4);
+
+#ifdef __MACOSX
+		glfwWindowHint(GLFW_OPENGL_COMPAT_PROFILE, GLFW_TRUE);
+#endif
+
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 	
 		m_Handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
@@ -32,7 +46,8 @@ namespace utad
 
 		glfwMakeContextCurrent(m_Handle);
 
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) throw UTAD_EXCEPTION("Failed to initialize GLAD");
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+			throw UTAD_EXCEPTION("Failed to initialize GLAD");
 
 		setEventCallbacks();
 	}

@@ -55,4 +55,23 @@ namespace utad
 		if (models.find(name) == models.end()) return nullptr;
 		return models[name];
 	}
+
+	static MaterialID g_MaterialID = 1;
+
+	Material* AssetsManager::createMaterial(const String& name)
+	{
+		Material* material = getMaterial(name);
+		if (material != nullptr) throw UTAD_EXCEPTION(String("Material ").append(name).append(" already exists!"));
+		auto& materials = s_Instance->m_Materials;
+		material = new Material(g_MaterialID++);
+		materials[name] = material;
+		return material;
+	}
+
+	Material* AssetsManager::getMaterial(const String& name)
+	{
+		auto& materials = s_Instance->m_Materials;
+		if (materials.find(name) == materials.end()) return nullptr;
+		return materials.at(name);
+	}
 }

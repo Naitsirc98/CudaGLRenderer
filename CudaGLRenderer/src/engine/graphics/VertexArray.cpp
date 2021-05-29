@@ -39,17 +39,19 @@ namespace utad
 
 	VertexArray::VertexArray()
 	{
-		glCreateVertexArrays(1, &m_Handle);
+		glGenVertexArrays(1, &m_Handle);
 	}
 
 	VertexArray::~VertexArray()
 	{
-		for (auto[binding, buffer] : m_VertexBuffers)
+		if (m_DestroyBuffersOnDelete)
 		{
-			UTAD_DELETE(buffer);
+			for (auto [binding, buffer] : m_VertexBuffers)
+			{
+				UTAD_DELETE(buffer);
+			}
+			UTAD_DELETE(m_IndexBuffer);
 		}
-
-		UTAD_DELETE(m_IndexBuffer);
 
 		glDeleteVertexArrays(1, &m_Handle);
 	}
@@ -59,13 +61,29 @@ namespace utad
 		return m_Handle;
 	}
 
-	void VertexArray::addVertexBuffer(uint binding, VertexBuffer* buffer, const VertexAttribList& attributes)
+	VertexBuffer* VertexArray::vertexBuffer(uint binding) const
 	{
-		if (buffer == nullptr) return;
+		if (m_VertexBuffers.find(binding) == m_VertexBuffers.end()) return nullptr;
+		return m_VertexBuffers.at(binding);
+	}
 
+	bool VertexArray::addVertexBuffer(uint binding, VertexBuffer* buffer, uint stride)
+	{
+		if (buffer == nullptr || vertexBuffer(binding) == buffer) return false;
 		m_VertexBuffers[binding] = buffer;
-		glVertexArrayVertexBuffer(m_Handle, binding, buffer->handle(), 0, attributes.stride());
+		glVertexArrayVertexBuffer(m_Handle, binding, buffer->handle(), 0, stride);
+		return true;
+	}
 
+	bool VertexArray::addVertexBuffer(uint binding, VertexBuffer* buffer, const VertexAttribList& attributes)
+	{
+		if(!addVertexBuffer(binding, buffer, attributes.stride())) return false;
+		setVertexAttribs(binding, attributes);
+		return true;
+	}
+
+	void VertexArray::setVertexAttribs(uint binding, const VertexAttribList& attributes)
+	{
 		uint location = 0;
 		uint offset = 0;
 		for (const VertexAttrib& attrib : attributes.attributes)
@@ -74,6 +92,22 @@ namespace utad
 			++location;
 			offset += attrib.size();
 		}
+	}
+
+	void VertexArray::setVertexAttrib(uint binding, const VertexAttrib& attrib, uint location, uint offset)
+	{
+		glEnableVertexArrayAttrib(m_Handle, location);
+		glVertexArrayAttribBinding(m_Handle, location, binding);
+
+		if (attrib.type == GL_FLOAT || attrib.type == GL_DOUBLE)
+			glVertexArrayAttribFormat(handle(), location, attrib.count, attrib.type, false, offset);
+		else
+			glVertexArrayAttribIFormat(handle(), location, attrib.count, attrib.type, offset);
+	}
+
+	IndexBuffer* VertexArray::indexBuffer() const
+	{
+		return m_IndexBuffer;
 	}
 
 	void VertexArray::setIndexBuffer(IndexBuffer* buffer)
@@ -93,14 +127,22 @@ namespace utad
 		glBindVertexArray(0);
 	}
 
-	void VertexArray::setVertexAttrib(uint binding, const VertexAttrib& attrib, uint location, uint offset)
+	void VertexArray::destroyVertexBuffers()
 	{
-		glEnableVertexArrayAttrib(m_Handle, location);
-		glVertexArrayAttribBinding(m_Handle, location, binding);
+		for (auto& pair : m_VertexBuffers)
+		{
+			UTAD_DELETE(pair.second);
+		}
+		m_VertexBuffers.clear();
+	}
 
-		if(attrib.type == GL_FLOAT || attrib.type == GL_DOUBLE) 
-			glVertexArrayAttribFormat(handle(), location, attrib.count, attrib.type, false, offset);
-		else
-			glVertexArrayAttribIFormat(handle(), location, attrib.count, attrib.type, offset);
+	void VertexArray::destroyIndexBuffer()
+	{
+		UTAD_DELETE(m_IndexBuffer);
+	}
+
+	void VertexArray::setDestroyBuffersOnDelete(bool destroyBuffers)
+	{
+		m_DestroyBuffersOnDelete = destroyBuffers;
 	}
 }

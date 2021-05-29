@@ -59,7 +59,7 @@ namespace utad
 
 	void Scene::render()
 	{
-
+		
 	}
 
 }

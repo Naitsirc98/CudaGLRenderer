@@ -23,15 +23,22 @@ namespace utad
 		Handle m_Handle;
 		Map<uint, VertexBuffer*> m_VertexBuffers;
 		IndexBuffer* m_IndexBuffer;
+		bool m_DestroyBuffersOnDelete{true};
 	public:
 		VertexArray();
 		~VertexArray();
 		Handle handle() const;
-		void addVertexBuffer(uint binding, VertexBuffer* buffer, const VertexAttribList& attributes);
+		VertexBuffer* vertexBuffer(uint binding) const;
+		bool addVertexBuffer(uint binding, VertexBuffer* buffer, uint stride);
+		bool addVertexBuffer(uint binding, VertexBuffer* buffer, const VertexAttribList& attributes);
+		void setVertexAttribs(uint binding, const VertexAttribList& attributes);
+		void setVertexAttrib(uint binding, const VertexAttrib& attrib, uint location, uint offset);
+		IndexBuffer* indexBuffer() const;
 		void setIndexBuffer(IndexBuffer* buffer);
 		void bind();
 		void unbind();
-	private:
-		void setVertexAttrib(uint binding, const VertexAttrib& attrib, uint location, uint offset);
+		void destroyVertexBuffers();
+		void destroyIndexBuffer();
+		void setDestroyBuffersOnDelete(bool destroyBuffers = true);
 	};
 }

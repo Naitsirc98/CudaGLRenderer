@@ -15,7 +15,7 @@
     <ClCompile Include="src\engine\assets\AssetsManager.cpp" />
     <ClCompile Include="src\engine\assets\Image.cpp" />
     <ClCompile Include="src\engine\assets\Material.cpp" />
-    <ClCompile Include="src\engine\assets\Mesh.cpp" />
+    <ClCompile Include="src\engine\assets\Model.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
     <ClCompile Include="src\engine\entities\Entity.cpp" />
@@ -25,6 +25,7 @@
     <ClCompile Include="src\engine\events\Input.cpp" />
     <ClCompile Include="src\engine\graphics\Buffer.cpp" />
     <ClCompile Include="src\engine\graphics\Framebuffer.cpp" />
+    <ClCompile Include="src\engine\graphics\glad.c" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\Texture2D.cpp" />
     <ClCompile Include="src\engine\graphics\VertexArray.cpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="include\engine\assets\Image.h" />
     <ClInclude Include="include\engine\assets\Material.h" />
     <ClInclude Include="include\engine\assets\Mesh.h" />
+    <ClInclude Include="include\engine\assets\Model.h" />
     <ClInclude Include="include\engine\assets\ModelLoader.h" />
     <ClInclude Include="include\engine\Common.h" />
     <ClInclude Include="include\engine\Engine.h" />

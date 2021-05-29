@@ -4,7 +4,6 @@ namespace utad
 {
 	Material::Material(MaterialID id) : m_ID(id)
 	{
-		m_AlbedoMap = nullptr;
 	}
 
 	Material::~Material()
@@ -49,25 +48,14 @@ namespace utad
 		return *this;
 	}
 
-	Texture2D* Material::metallicMap() const
+	Texture2D* Material::metallicRoughnessMap() const
 	{
-		return m_MetallicMap;
+		return m_MetallicRoughnessMap;
 	}
 
-	Material& Material::metallicMap(Texture2D* map)
+	Material& Material::metallicRoughnessMap(Texture2D* map)
 	{
-		m_MetallicMap = map;
-		return *this;
-	}
-
-	Texture2D* Material::roughnessMap() const
-	{
-		return m_RoughnessMap;
-	}
-
-	Material& Material::roughnessMap(Texture2D* map)
-	{
-		m_RoughnessMap = map;
+		m_MetallicRoughnessMap = map;
 		return *this;
 	}
 

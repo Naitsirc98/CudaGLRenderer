@@ -8,18 +8,18 @@ namespace utad
 
 	class Material
 	{
+		friend class AssetsManager;
 	private:
 		MaterialID m_ID{NULL};
 		// Colors
 		Color m_Albedo{colors::WHITE};
 		Color m_EmissiveColor{colors::BLACK};
 		// Textures
-		Texture2D* m_AlbedoMap;
-		Texture2D* m_MetallicMap;
-		Texture2D* m_RoughnessMap;
-		Texture2D* m_OcclussionMap;
-		Texture2D* m_EmissiveMap;
-		Texture2D* m_NormalMap;
+		Texture2D* m_AlbedoMap{nullptr};
+		Texture2D* m_MetallicRoughnessMap{nullptr};
+		Texture2D* m_OcclussionMap{nullptr};
+		Texture2D* m_EmissiveMap{nullptr};
+		Texture2D* m_NormalMap{nullptr};
 		// Values
 		float m_Alpha{1.0f};
 		float m_Metallic{0.0f};
@@ -37,10 +37,8 @@ namespace utad
 		Material& emissiveColor(const Color& color);
 		Texture2D* albedoMap() const;
 		Material& albedoMap(Texture2D* map);
-		Texture2D* metallicMap() const;
-		Material& metallicMap(Texture2D* map);
-		Texture2D* roughnessMap() const;
-		Material& roughnessMap(Texture2D* map);
+		Texture2D* metallicRoughnessMap() const;
+		Material& metallicRoughnessMap(Texture2D* map);
 		Texture2D* occlussionMap() const;
 		Material& occlussionMap(Texture2D* map);
 		Texture2D* emissiveMap() const;

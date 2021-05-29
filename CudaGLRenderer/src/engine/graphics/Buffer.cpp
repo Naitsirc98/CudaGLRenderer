@@ -2,9 +2,23 @@
 
 namespace utad
 {
+	Buffer* Buffer::create(GLenum target)
+	{
+		switch (target)
+		{
+		case GL_ARRAY_BUFFER: return new VertexBuffer();
+		case GL_ELEMENT_ARRAY_BUFFER: return new IndexBuffer();
+		case GL_UNIFORM_BUFFER: return new UniformBuffer();
+		case GL_SHADER_STORAGE_BUFFER: return new StorageBuffer();
+		}
+		
+		throw UTAD_EXCEPTION(String("Unknown buffer target ").append(std::to_string(target)));
+	}
+
+
 	Buffer::Buffer()
 	{
-		glCreateBuffers(1, &m_Handle);
+		glGenBuffers(1, &m_Handle);
 	}
 
 	Buffer::~Buffer()
