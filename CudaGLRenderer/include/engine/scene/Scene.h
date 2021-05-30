@@ -1,5 +1,8 @@
 #pragma once
 #include "engine/entities/EntityPool.h"
+#include "Camera.h"
+#include "engine/graphics/MeshRenderer.h"
+#include "engine/graphics/SkyboxRenderer.h"
 
 namespace utad
 {
@@ -15,6 +18,9 @@ namespace utad
 		static Scene& get();
 	private:
 		EntityPool* m_EntityPool;
+		MeshRenderer* m_MeshRenderer;
+		SkyboxRenderer* m_SkyboxRenderer;
+		Camera m_Camera;
 	private:
 		Scene();
 		~Scene();
@@ -23,8 +29,10 @@ namespace utad
 		void destroyEntity(Entity* entity);
 		void destroyAllEntities();
 		Entity* find(const String& name) const;
+		Camera& camera();
 	private:
 		void update();
+		void lastUpdate();
 		void render();
 	};
 }

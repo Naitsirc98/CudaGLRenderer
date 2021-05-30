@@ -11,6 +11,7 @@ namespace utad
 	Entity::Entity()
 	{
 		m_Transform.m_Entity = this;
+		m_MeshView.m_Transform = &m_Transform;
 	}
 
 	Entity::~Entity()
@@ -114,18 +115,23 @@ namespace utad
 	}
 
 	void Entity::update()
-	{
-		m_Transform.computeModelMatrix();
-		
+	{	
 		for (Script* script : m_Scripts)
 		{
 			script->onUpdate();
 		}
 
+		m_Transform.computeModelMatrix();
+
 		for (Entity* child : m_Children)
 		{
 			child->update();
 		}
+	}
+
+	MeshView& Entity::meshView()
+	{
+		return m_MeshView;
 	}
 
 	void Entity::onDestroy()

@@ -25,8 +25,7 @@ namespace utad
 
 	class Camera
 	{
-		friend class Entity_T;
-		friend class CameraManager;
+		friend class Scene;
 	private:
 		Vector3 m_Position;
 		// Axis
@@ -97,7 +96,6 @@ namespace utad
 		Camera* exposure(float mExposure);
 		const Color& clearColor() const;
 		Camera* clearColor(const Color& clearColor);
-	private:
 		void updateCameraOrientation();
 		void update();
 	};

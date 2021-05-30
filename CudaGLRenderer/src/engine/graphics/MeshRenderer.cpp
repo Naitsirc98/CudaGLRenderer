@@ -4,6 +4,7 @@ namespace utad
 {
 	MeshRenderer::MeshRenderer()
 	{
+		m_Shader = new Shader("PBR Shader");
 	}
 
 	MeshRenderer::~MeshRenderer()
@@ -29,10 +30,21 @@ namespace utad
 		return *m_RenderQueues[name];
 	}
 
-	void MeshRenderer::render()
+	void MeshRenderer::render(Camera& camera)
 	{
+		glClearColor(camera.clearColor().r, camera.clearColor().g, camera.clearColor().b, camera.clearColor().a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		if (m_RenderQueues.empty()) return;
+
 		m_Shader->bind();
 		{
+			m_Shader->setUniform<Matrix4>("u_ViewMatrix", camera.viewMatrix());
+			m_Shader->setUniform<Matrix4>("u_ProjectionMatrix", camera.projectionMatrix());
+
+			Mesh* lastMesh = nullptr;
+			Material* lastMaterial = nullptr;
+
 			for (auto [name, queue] : m_RenderQueues)
 			{
 				if (!queue->enabled) continue;
@@ -40,10 +52,31 @@ namespace utad
 
 				for (RenderCommand& command : queue->commands)
 				{
-					m_Shader->setUniform<Matrix>("", );
+					m_Shader->setUniform<Matrix4>("u_ModelMatrix", *command.transformation);
+
+					if (lastMaterial != command.material)
+					{
+						setMaterialUniforms(command.material);
+						lastMaterial = command.material;
+					}
+
+					Mesh* mesh = command.mesh;
+
+					if (lastMesh != mesh)
+					{
+						mesh->vertexArray()->bind();
+						lastMesh = mesh;
+					}
+
+					uint indices = mesh->indexBufferOffset();
+					glDrawElements(mesh->drawMode(), mesh->indexCount(), mesh->indexType(), &indices);
 				}
 			}
 		}
 		m_Shader->unbind();
+	}
+
+	void MeshRenderer::setMaterialUniforms(Material* material)
+	{
 	}
 }

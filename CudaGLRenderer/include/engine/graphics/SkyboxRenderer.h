@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/graphics/Graphics.h"
+#include "engine/scene/Camera.h"
 
 namespace utad
 {
@@ -11,6 +12,6 @@ namespace utad
 		SkyboxRenderer();
 		~SkyboxRenderer();
 	public:
-		void render();
+		void render(Camera& camera);
 	};
 }

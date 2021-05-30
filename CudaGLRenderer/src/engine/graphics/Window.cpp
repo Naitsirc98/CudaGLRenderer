@@ -18,6 +18,11 @@ namespace utad
 		UTAD_DELETE(s_Instance);
 	}
 
+	Window& Window::get()
+	{
+		return *s_Instance;
+	}
+
 	Window::Window(const String& title, int width, int height) 
 		: m_Handle(nullptr), m_Width(width), m_Height(height)
 	{

@@ -3,9 +3,12 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/assets/Mesh.h"
 #include "engine/assets/Material.h"
+#include "engine/scene/Camera.h"
 
 namespace utad
 {
+	const String NO_RENDER_QUEUE = "";
+
 	struct RenderCommand
 	{
 		String queue;
@@ -34,5 +37,6 @@ namespace utad
 		RenderQueue& getRenderQueue(const String& name);
 	private:
 		void render(Camera& camera);
+		void setMaterialUniforms(Material* material);
 	};
 }

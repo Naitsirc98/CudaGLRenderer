@@ -23,10 +23,15 @@ namespace utad
 	Scene::Scene()
 	{
 		m_EntityPool = new EntityPool();
+		m_MeshRenderer = new MeshRenderer();
+		m_SkyboxRenderer = new SkyboxRenderer();
 	}
 
 	Scene::~Scene()
 	{
+		UTAD_DELETE(m_EntityPool);
+		UTAD_DELETE(m_MeshRenderer);
+		UTAD_DELETE(m_SkyboxRenderer);
 	}
 
 	Entity* Scene::createEntity(const String& name)
@@ -49,17 +54,35 @@ namespace utad
 		return m_EntityPool->find(name);
 	}
 
+	Camera& Scene::camera()
+	{
+		return m_Camera;
+	}
+
 	void Scene::update()
 	{
 		for (Entity* entity : m_EntityPool->entities())
 		{
-			if(entity->id() != NULL) entity->update();
+			if (entity->id() == NULL) continue;
+			entity->update();
+		}
+	}
+
+	void Scene::lastUpdate()
+	{
+		m_Camera.update();
+
+		for (Entity* entity : m_EntityPool->entities())
+		{
+			if (entity->id() == NULL) continue;
+			entity->meshView().update(*m_MeshRenderer);
 		}
 	}
 
 	void Scene::render()
 	{
-		
+		m_MeshRenderer->render(m_Camera);
+		m_SkyboxRenderer->render(m_Camera);
 	}
 
 }

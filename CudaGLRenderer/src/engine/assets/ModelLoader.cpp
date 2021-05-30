@@ -152,7 +152,14 @@ namespace utad
 		}
 
 		const uint meshIndex = result.m_Model.m_Meshes.size();
-		result.m_Model.m_Meshes.push_back(new Mesh(vertexArray));
+
+		Mesh* outMesh = new Mesh(vertexArray);
+		outMesh->m_DrawMode = primitive.mode;
+		outMesh->m_IndexCount = indexAccessor.count;
+		outMesh->m_IndexType = indexAccessor.componentType;
+		outMesh->m_IndexBufferOffset = indexAccessor.byteOffset;
+
+		result.m_Model.m_Meshes.push_back(outMesh);
 		result.m_Mesh = meshIndex;
 
 		vertexArray->destroyVertexBuffers();
