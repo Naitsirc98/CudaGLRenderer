@@ -117,4 +117,14 @@ namespace utad
 		m_VertexStage = m_GeometryStage = m_FragmentStage = nullptr;
 	}
 
+	void Shader::bind()
+	{
+		glUseProgram(m_Handle);
+	}
+
+	void Shader::unbind()
+	{
+		glUseProgram(0);
+	}
+
 }

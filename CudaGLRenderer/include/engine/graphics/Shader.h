@@ -26,5 +26,7 @@ namespace utad
 		const String& name() const;
 		Shader& attach(ShaderStage* stage);
 		void compile();
+		void bind();
+		void unbind();
 	};
 }

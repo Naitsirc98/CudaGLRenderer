@@ -6,6 +6,7 @@
 #include <exception>
 #include <stdexcept>
 #include <unordered_map>
+#include <map>
 #include <deque>
 #include <functional>
 
@@ -31,6 +32,9 @@ namespace utad
 
 	template<typename K, typename V>
 	using Map = std::unordered_map<K, V>;
+
+	template<typename K, typename V>
+	using SortedMap = std::map<K, V>;
 
 	template<typename T>
 	using Stack = std::deque<T>;
@@ -69,4 +73,11 @@ namespace utad
 		const Color GREEN = {0, 1, 0, 1};
 		const Color BLUE = {0, 0, 1, 1};
 	}
+
+	template<typename T>
+	struct Range
+	{
+		T min;
+		T max;
+	};
 }
