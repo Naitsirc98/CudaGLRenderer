@@ -48,6 +48,28 @@ namespace utad
 		return *this;
 	}
 
+	float Material::metallic() const
+	{
+		return m_Metallic;
+	}
+
+	Material& Material::metallic(float metallic)
+	{
+		m_Metallic = metallic;
+		return *this;
+	}
+
+	float Material::roughness() const
+	{
+		return m_Roughness;
+	}
+
+	Material& Material::roughness(float roughness)
+	{
+		m_Roughness = roughness;
+		return *this;
+	}
+
 	Texture2D* Material::metallicRoughnessMap() const
 	{
 		return m_MetallicRoughnessMap;
@@ -56,6 +78,17 @@ namespace utad
 	Material& Material::metallicRoughnessMap(Texture2D* map)
 	{
 		m_MetallicRoughnessMap = map;
+		return *this;
+	}
+
+	float Material::occlussion() const
+	{
+		return m_Occlusion;
+	}
+
+	Material& Material::occlussion(float occlussion)
+	{
+		m_Occlusion = occlussion;
 		return *this;
 	}
 
@@ -89,6 +122,28 @@ namespace utad
 	Material& Material::normalMap(Texture2D* map)
 	{
 		m_NormalMap = map;
+		return *this;
+	}
+
+	float Material::fresnel0() const
+	{
+		return m_Fresnel0;
+	}
+
+	Material& Material::fresnel0(float fresnel0)
+	{
+		m_Fresnel0 = fresnel0;
+		return *this;
+	}
+
+	float Material::alpha() const
+	{
+		return m_Alpha;
+	}
+
+	Material& Material::alpha(float alpha)
+	{
+		m_Alpha = alpha;
 		return *this;
 	}
 }

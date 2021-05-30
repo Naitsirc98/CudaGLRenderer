@@ -120,16 +120,29 @@ namespace utad
 		}
 	}
 
+	template<typename T>
+	static Color toColor(const ArrayList<T>& values)
+	{
+		Color color;
+		color.r = values.size() > 0 ? static_cast<float>(values[0]) : 0.0f;
+		color.g = values.size() > 1 ? static_cast<float>(values[1]) : 0.0f;
+		color.b = values.size() > 2 ? static_cast<float>(values[2]) : 0.0f;
+		color.a = values.size() > 3 ? static_cast<float>(values[3]) : 1.0f;
+		return color;
+	}
+
 	void ModelLoader::loadMaterial(ModelInfo& info, gltf::Node& node, ModelNode& result)
 	{
 		gltf::Model& model = *info.model;
 		gltf::Mesh& mesh = model.meshes[node.mesh];
 		gltf::Material& mat = model.materials[mesh.primitives[0].material];
+		gltf::PbrMetallicRoughness& pbr = mat.pbrMetallicRoughness;
 
 		Material* material = Assets::getMaterial(mesh.name);
 		if (material == nullptr) material = Assets::createMaterial(mesh.name);
 
-		material->emissiveColor(Color((float)mat.emissiveFactor[0], (float)mat.emissiveFactor[1], (float)mat.emissiveFactor[2], 1));
+		material->emissiveColor(toColor(mat.emissiveFactor));
+		material->albedo(toColor(pbr.baseColorFactor));
 	}
 
 	Buffer* ModelLoader::createGLBuffer(uint binding, const ModelInfo& info, const gltf::BufferView& bufferView, const gltf::Buffer& buffer)

@@ -19,6 +19,8 @@ namespace utad
 		Map<String, Model*> m_Models;
 		Map<String, Model*> m_ModelsByName;
 		Map<String, Material*> m_Materials;
+		Texture2D* m_WhiteTexture;
+		Texture2D* m_BlackTexture;
 	private:
 		AssetsManager();
 		~AssetsManager();
@@ -27,6 +29,8 @@ namespace utad
 		static Model* getModel(const String& name);
 		static Material* createMaterial(const String& name);
 		static Material* getMaterial(const String& name);
+	private:
+		static void initMaterialTextures(Material* material);
 	};
 
 	using Assets = AssetsManager;

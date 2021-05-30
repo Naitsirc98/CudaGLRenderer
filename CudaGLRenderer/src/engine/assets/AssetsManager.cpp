@@ -1,13 +1,32 @@
 #include "engine/assets/AssetsManager.h"
 #include "engine/assets/ModelLoader.h"
+#include "engine/assets/Image.h"
 
 namespace utad
 {
 	AssetsManager* AssetsManager::s_Instance;
 
+	static Texture2D* createTextureFromImage(Image* image)
+	{
+		Texture2D* texture = new Texture2D();
+		
+		Texture2DAllocInfo allocInfo = {};
+		allocInfo.format = image->format();
+		allocInfo.width = image->width();
+		allocInfo.height = image->height();
+		allocInfo.levels = 1;
+		allocInfo.pixels = image->pixels();
+
+		texture->allocate(allocInfo);
+
+		UTAD_DELETE(image);
+	}
+
 	AssetsManager* AssetsManager::init()
 	{
 		s_Instance = new AssetsManager();
+		s_Instance->m_WhiteTexture = createTextureFromImage(ImageFactory::createWhiteImage(GL_RGBA));
+		s_Instance->m_BlackTexture = createTextureFromImage(ImageFactory::createBlackImage(GL_RGBA));
 		return s_Instance;
 	}
 
@@ -28,11 +47,21 @@ namespace utad
 
 	AssetsManager::~AssetsManager()
 	{
-		for (auto [name, model] : m_Models)
+		for (auto[name, model] : m_Models)
 		{
 			UTAD_DELETE(model);
 		}
 		m_Models.clear();
+		m_ModelsByName.clear();
+
+		for (auto [name, material] : m_Materials)
+		{
+			UTAD_DELETE(material);
+		}
+		m_Materials.clear();
+
+		UTAD_DELETE(m_WhiteTexture);
+		UTAD_DELETE(m_BlackTexture);
 	}
 
 	Model* AssetsManager::createModel(const String& name, const String& path)
@@ -73,5 +102,14 @@ namespace utad
 		auto& materials = s_Instance->m_Materials;
 		if (materials.find(name) == materials.end()) return nullptr;
 		return materials.at(name);
+	}
+
+	void AssetsManager::initMaterialTextures(Material* material)
+	{
+		material->albedoMap(s_Instance->m_WhiteTexture);
+		material->metallicRoughnessMap(s_Instance->m_WhiteTexture);
+		material->occlussionMap(s_Instance->m_WhiteTexture);
+		material->normalMap(s_Instance->m_WhiteTexture);
+		material->emissiveMap(s_Instance->m_BlackTexture);
 	}
 }
