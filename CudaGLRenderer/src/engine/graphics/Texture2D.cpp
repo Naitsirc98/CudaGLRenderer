@@ -40,6 +40,11 @@ namespace utad
 		glTextureParameteri(m_Handle, GL_TEXTURE_WRAP_T, mode);
 	}
 
+	void Texture2D::wrap(GLenum coord, GLenum clamp)
+	{
+		glTextureParameteri(m_Handle, coord, clamp);
+	}
+
 	void Texture2D::generateMipmaps()
 	{
 		glGenerateTextureMipmap(m_Handle);

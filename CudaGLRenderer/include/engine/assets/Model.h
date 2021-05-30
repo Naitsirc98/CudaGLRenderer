@@ -14,8 +14,9 @@ namespace utad
 		const uint m_Index;
 		ModelNode* m_Parent;
 		String m_Name;
-		ArrayList<uint> m_Meshes;
-		ArrayList<uint> m_Materials;
+		Matrix4 m_Transformation{Matrix4(1.0f)};
+		uint m_Mesh;
+		uint m_Material;
 		ArrayList<ModelNode*> m_Children;
 	private:
 		ModelNode(Model& model, uint index);
@@ -23,8 +24,9 @@ namespace utad
 	public:
 		uint index() const;
 		const String& name() const;
-		const ArrayList<uint>& meshes() const;
-		const ArrayList<uint>& materials() const;
+		uint mesh() const;
+		uint material() const;
+		const Matrix4& transformation() const;
 		const ArrayList<ModelNode*>& children() const;
 		const Model& model() const;
 		const ModelNode* parent() const;

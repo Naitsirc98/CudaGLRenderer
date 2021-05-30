@@ -10,7 +10,6 @@ namespace utad
 		int height;
 		int levels;
 		GLenum format;
-		void* pixels;
 	};
 
 	struct Texture2DUpdateInfo
@@ -37,6 +36,7 @@ namespace utad
 		void update(const Texture2DUpdateInfo& updateInfo);
 		void filter(GLenum minFilter, GLenum maxFilter);
 		void wrap(GLenum clamp);
+		void wrap(GLenum coord, GLenum clamp);
 		void generateMipmaps();
 		int width() const;
 		int height() const;

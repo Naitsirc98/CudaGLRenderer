@@ -25,7 +25,8 @@ namespace utad
 		float m_Metallic{1.0f};
 		float m_Roughness{1.0f};
 		float m_Occlusion{1.0f};
-		float m_Fresnel0{0.0f};
+		float m_Fresnel0{0.02f};
+		float m_NormalScale{1.0f};
 	private:
 		Material(MaterialID id);
 		~Material();
@@ -49,6 +50,8 @@ namespace utad
 		Material& emissiveColor(const Color& color);
 		Texture2D* emissiveMap() const;
 		Material& emissiveMap(Texture2D* map);
+		float normalScale() const;
+		Material& normalScale(float normalScale);
 		Texture2D* normalMap() const;
 		Material& normalMap(Texture2D* map);
 		float fresnel0() const;

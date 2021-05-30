@@ -9,15 +9,13 @@ namespace utad
 	class Mesh
 	{
 		friend class AssetsManager;
+		friend class ModelLoader;
 	private:
-		MeshID m_ID{NULL};
 		VertexArray* m_VertexArray{nullptr};
 	private:
-		Mesh(MeshID id) : m_ID(id), m_VertexArray(nullptr) {}
-		~Mesh() { UTAD_DELETE(m_VertexArray); m_ID = NULL; }
-		void setVertexArray(VertexArray* vao) { m_VertexArray = vao; }
+		Mesh(VertexArray* vao) : m_VertexArray(vao) {}
 	public:
-		MeshID id() const { return m_ID; }
+		~Mesh() { UTAD_DELETE(m_VertexArray);}
 		VertexArray* vertexArray() const { return m_VertexArray; }
 	};
 }

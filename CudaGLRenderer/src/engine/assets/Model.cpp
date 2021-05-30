@@ -63,14 +63,19 @@ namespace utad
 		return m_Name;
 	}
 
-	const ArrayList<uint>& ModelNode::meshes() const
+	uint ModelNode::mesh() const
 	{
-		return m_Meshes;
+		return m_Mesh;
 	}
 
-	const ArrayList<uint>& ModelNode::materials() const
+	uint ModelNode::material() const
 	{
-		return m_Materials;
+		return m_Material;
+	}
+
+	const Matrix4& ModelNode::transformation() const
+	{
+		return m_Transformation;
 	}
 
 	const ArrayList<ModelNode*>& ModelNode::children() const

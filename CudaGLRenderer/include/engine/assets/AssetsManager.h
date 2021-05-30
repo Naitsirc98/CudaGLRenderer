@@ -29,6 +29,8 @@ namespace utad
 		static Model* getModel(const String& name);
 		static Material* createMaterial(const String& name);
 		static Material* getMaterial(const String& name);
+		static Texture2D* getWhiteTexture();
+		static Texture2D* getBlackTexture();
 	private:
 		static void initMaterialTextures(Material* material);
 	};

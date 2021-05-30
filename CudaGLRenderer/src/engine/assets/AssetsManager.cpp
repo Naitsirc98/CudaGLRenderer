@@ -11,15 +11,24 @@ namespace utad
 		Texture2D* texture = new Texture2D();
 		
 		Texture2DAllocInfo allocInfo = {};
-		allocInfo.format = image->format();
+		allocInfo.format = GL_RGBA;
 		allocInfo.width = image->width();
 		allocInfo.height = image->height();
 		allocInfo.levels = 1;
-		allocInfo.pixels = image->pixels();
 
 		texture->allocate(allocInfo);
 
+		Texture2DUpdateInfo updateInfo = {};
+		updateInfo.format = GL_RGBA;
+		updateInfo.type = GL_UNSIGNED_BYTE;
+		updateInfo.level = 0;
+		updateInfo.pixels = image->pixels();
+
+		texture->update(updateInfo);
+
 		UTAD_DELETE(image);
+
+		return texture;
 	}
 
 	AssetsManager* AssetsManager::init()
@@ -102,6 +111,16 @@ namespace utad
 		auto& materials = s_Instance->m_Materials;
 		if (materials.find(name) == materials.end()) return nullptr;
 		return materials.at(name);
+	}
+
+	Texture2D* AssetsManager::getWhiteTexture()
+	{
+		return s_Instance->m_WhiteTexture;
+	}
+
+	Texture2D* AssetsManager::getBlackTexture()
+	{
+		return s_Instance->m_BlackTexture;
 	}
 
 	void AssetsManager::initMaterialTextures(Material* material)

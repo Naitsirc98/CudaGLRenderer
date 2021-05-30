@@ -114,6 +114,17 @@ namespace utad
 		return *this;
 	}
 
+	float Material::normalScale() const
+	{
+		return m_NormalScale;
+	}
+
+	Material& Material::normalScale(float normalScale)
+	{
+		m_NormalScale = normalScale;
+		return *this;
+	}
+
 	Texture2D* Material::normalMap() const
 	{
 		return m_NormalMap;
