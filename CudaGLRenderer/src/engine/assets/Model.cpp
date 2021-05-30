@@ -33,6 +33,7 @@ namespace utad
 	ModelNode* Model::createNode(ModelNode* parent)
 	{
 		ModelNode* node = new ModelNode(*this, m_Nodes.size());
+		m_Nodes.push_back(node);
 		if (parent != nullptr)
 		{
 			node->m_Parent = parent;

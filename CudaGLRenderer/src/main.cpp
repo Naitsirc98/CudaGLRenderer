@@ -12,7 +12,8 @@ public:
 
 		ModelLoader loader;
 		loader.debugMode(true);
-		loader.load("TheModel", "G:/glTF-Sample-Models-master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf");
+		Model* model = loader.load("TheModel", "G:/glTF-Sample-Models-master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf");
+
 	}
 
 	void onUpdate()

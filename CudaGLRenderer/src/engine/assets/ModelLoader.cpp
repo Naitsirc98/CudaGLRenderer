@@ -201,6 +201,10 @@ namespace utad
 		material->occlussion(static_cast<float>(mat.occlusionTexture.strength));
 		material->occlussionMap(toTexture2D(info, mat.occlusionTexture.index, material->occlussionMap()));
 		material->alpha(mat.alphaMode == "OPAQUE" ? 1 : static_cast<float>(mat.alphaCutoff));
+	
+		const uint materialIndex = result.m_Model.m_Materials.size();
+		result.m_Model.m_Materials.push_back(material);
+		result.m_Mesh = materialIndex;
 	}
 
 	void ModelLoader::loadBuffers(ModelInfo& info)
