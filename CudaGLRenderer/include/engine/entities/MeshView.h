@@ -12,9 +12,9 @@ namespace utad
 	{
 		friend class Entity;
 	private:
-		Transform* m_Transform;
-		Mesh* m_Mesh;
-		Material* m_Material;
+		Transform* m_Transform{nullptr};
+		Mesh* m_Mesh{nullptr};
+		Material* m_Material{nullptr};
 		String m_RenderQueueName;
 	private:
 		MeshView();

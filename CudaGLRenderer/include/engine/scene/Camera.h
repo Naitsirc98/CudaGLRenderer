@@ -26,6 +26,7 @@ namespace utad
 	class Camera
 	{
 		friend class Scene;
+		friend class RenderInfo;
 	private:
 		Vector3 m_Position;
 		// Axis

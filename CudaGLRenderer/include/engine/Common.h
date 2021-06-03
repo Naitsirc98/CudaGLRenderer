@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <map>
 #include <deque>
+#include <unordered_set>
 #include <functional>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -35,6 +36,9 @@ namespace utad
 
 	template<typename K, typename V>
 	using SortedMap = std::map<K, V>;
+
+	template<typename T>
+	using Set = std::unordered_set<T>;
 
 	template<typename T>
 	using Stack = std::deque<T>;

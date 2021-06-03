@@ -6,14 +6,42 @@ namespace utad
 {
 	struct VertexAttrib
 	{
+		GLuint location;
 		GLenum type;
 		GLsizei count;
 		uint size() const;
+
+		bool operator<(const VertexAttrib& other) const
+		{
+			return location < other.location;
+		}
+
+		bool operator>(const VertexAttrib& other) const
+		{
+			return location > other.location;
+		}
+
+		bool operator<=(const VertexAttrib& other) const
+		{
+			return location <= other.location;
+		}
+
+		bool operator>=(const VertexAttrib& other) const
+		{
+			return location >= other.location;
+		}
 	};
 
-	struct VertexAttribList
+	class VertexAttribList
 	{
-		ArrayList<VertexAttrib> attributes;
+	private:
+		ArrayList<VertexAttrib> m_Attributes;
+	public:
+		VertexAttribList(size_t initialCapacity = 3);
+		void add(const VertexAttrib& attrib);
+		void add(VertexAttrib&& attrib);
+		ArrayList<VertexAttrib>::const_iterator begin() const;
+		ArrayList<VertexAttrib>::const_iterator end() const;
 		uint stride() const;
 	};
 
@@ -22,7 +50,7 @@ namespace utad
 	private:
 		Handle m_Handle;
 		Map<uint, VertexBuffer*> m_VertexBuffers;
-		IndexBuffer* m_IndexBuffer;
+		IndexBuffer* m_IndexBuffer{nullptr};
 		bool m_DestroyBuffersOnDelete{true};
 	public:
 		VertexArray();

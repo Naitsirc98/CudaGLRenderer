@@ -35,6 +35,7 @@ namespace utad
 		Transform& ignoreParent(bool ignore);
 		const Matrix4& modelMatrix() const;
 		Matrix4& modelMatrix();
+		Transform& modelMatrix(const Matrix4& modelMatrix);
 	private:
 		void computeModelMatrix();
 	};

@@ -1,5 +1,6 @@
 #include "engine/graphics/Window.h"
 #include "engine/events/EventSystem.h"
+#include "engine/graphics/DebugCallback.h"
 
 namespace utad
 {
@@ -53,6 +54,10 @@ namespace utad
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			throw UTAD_EXCEPTION("Failed to initialize GLAD");
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(debugCallback, nullptr);
 
 		setEventCallbacks();
 	}
@@ -149,6 +154,40 @@ namespace utad
 		
 		return *this;
 	}
+
+	CursorMode Window::cursorMode() const
+	{
+		switch (glfwGetInputMode(m_Handle, GLFW_CURSOR))
+		{
+		case GLFW_CURSOR_NORMAL:
+			return CursorMode::NORMAL;
+		case GLFW_CURSOR_HIDDEN:
+			return CursorMode::HIDDEN;
+		case GLFW_CURSOR_DISABLED:
+			return CursorMode::CAPTURED;
+		}
+		return CursorMode::NORMAL;
+	}
+
+	Window& Window::cursorMode(CursorMode cursorMode)
+	{
+		int glfwMode = GLFW_CURSOR_NORMAL;
+		switch (cursorMode)
+		{
+		case CursorMode::NORMAL:
+			glfwMode = GLFW_CURSOR_NORMAL;
+			break;
+		case CursorMode::HIDDEN:
+			glfwMode = GLFW_CURSOR_HIDDEN;
+			break;
+		case CursorMode::CAPTURED:
+			glfwMode = GLFW_CURSOR_DISABLED;
+			break;
+		}
+		glfwSetInputMode(m_Handle, GLFW_CURSOR, glfwMode);
+		return *this;
+	}
+
 
 	static void keyCallback(GLFWwindow* window, int glfwKey, int scancode, int action, int glfwMod)
 	{

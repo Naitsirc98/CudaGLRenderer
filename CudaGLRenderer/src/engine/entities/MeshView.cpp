@@ -3,7 +3,7 @@
 
 namespace utad
 {
-	MeshView::MeshView() : m_RenderQueueName(NO_RENDER_QUEUE)
+	MeshView::MeshView() : m_RenderQueueName(DEFAULT_RENDER_QUEUE)
 	{
 	}
 

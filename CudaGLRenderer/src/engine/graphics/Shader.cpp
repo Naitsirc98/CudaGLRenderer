@@ -1,4 +1,5 @@
 #include "engine/graphics/Shader.h"
+#include "engine/graphics/Texture.h"
 #include <iostream>
 
 namespace utad
@@ -61,7 +62,7 @@ namespace utad
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		if (!success)
 		{
-			char message[512];
+			char message[4096];
 			GLsizei length;
 			glGetShaderInfoLog(shader, sizeof(message), &length, message);
 			throw UTAD_EXCEPTION(String("Shader Stage ").append(stage->name).append(" failed to compile: ").append(message).append("\n"));
@@ -85,7 +86,7 @@ namespace utad
 		glGetProgramiv(program, GL_LINK_STATUS, &success);
 		if (!success)
 		{
-			char message[512];
+			char message[4096];
 			GLsizei length;
 			glGetProgramInfoLog(program, sizeof(message), &length, message);
 			throw UTAD_EXCEPTION(String("Shader Program ").append(shader->name()).append(" failed to compile: ").append(message).append("\n"));
@@ -94,6 +95,7 @@ namespace utad
 
 	inline void deleteShaderStage(GLuint program, GLuint stage)
 	{
+		if (stage == NULL) return;
 		glDetachShader(program, stage);
 		glDeleteShader(stage);
 	}
@@ -114,7 +116,9 @@ namespace utad
 		deleteShaderStage(m_Handle, geometryShader);
 		deleteShaderStage(m_Handle, fragmentShader);
 
-		m_VertexStage = m_GeometryStage = m_FragmentStage = nullptr;
+		UTAD_DELETE(m_VertexStage);
+		UTAD_DELETE(m_GeometryStage);
+		UTAD_DELETE(m_FragmentStage);
 	}
 
 	void Shader::bind()
@@ -125,6 +129,32 @@ namespace utad
 	void Shader::unbind()
 	{
 		glUseProgram(0);
+
+		for (size_t unit = 0; unit < m_BoundTextures.size(); ++unit)
+		{
+			m_BoundTextures[unit]->unbind(unit);
+		}
+
+		m_BoundTextures.clear();
+		m_TextureUnits.clear();
+	}
+
+	void Shader::setTexture(const String& samplerName, Texture2D* texture)
+	{
+		if (texture == nullptr) return;
+
+		size_t unit;
+
+		if (m_TextureUnits.find(samplerName) != m_TextureUnits.end())
+			unit = m_TextureUnits[samplerName];
+		else
+			unit = m_TextureUnits.size();
+
+		setUniform(samplerName, unit);
+		texture->bind(unit);
+
+		m_BoundTextures.push_back(texture);
+		m_TextureUnits[samplerName] = unit;
 	}
 
 }

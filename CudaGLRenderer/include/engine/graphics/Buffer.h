@@ -4,23 +4,27 @@
 
 namespace utad
 {
+	const GLenum GPU_STORAGE_LOCAL_FLAGS = 0;
+	const GLenum CPU_STORAGE_WRITE_FLAGS = GL_DYNAMIC_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_WRITE_BIT;
+	const GLenum CPU_STORAGE_READ_WRITE_FLAGS = GL_DYNAMIC_STORAGE_BIT | GL_CLIENT_STORAGE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_WRITE_BIT | GL_MAP_READ_BIT;
+
+
 	struct BufferAllocInfo
 	{
-		size_t size;
-		void* data;
+		size_t size{0};
+		void* data{nullptr};
+		GLenum storageFlags{GPU_STORAGE_LOCAL_FLAGS};
 	};
 
 	struct BufferUpdateInfo
 	{
-		size_t offset;
-		size_t size;
-		void* data;
+		size_t offset{0};
+		size_t size{0};
+		void* data{nullptr};
 	};
 
 	class Buffer
 	{
-	public:
-		static Buffer* create(GLenum target);
 	private:
 		Handle m_Handle{NULL};
 		size_t m_Size{0};
@@ -29,47 +33,25 @@ namespace utad
 		Buffer();
 		virtual ~Buffer();
 		Handle handle() const;
-		void bind();
-		void unbind();
+		void bind(GLenum target);
+		void unbind(GLenum target);
 		void allocate(const BufferAllocInfo& allocInfo);
 		void update(const BufferUpdateInfo& updateInfo);
-		byte* mapMemory();
+		byte* mapMemory(GLenum mapFlags);
 		byte* mappedMemory() const;
 		void unmapMemory();
-		virtual GLenum type() const = 0;
-		virtual GLint storageFlags() const = 0;
-		virtual GLint mapMemoryFlags() const = 0;
 	};
 
-	class VertexBuffer : public Buffer
-	{
-	public:
-		GLenum type() const override;
-		GLint storageFlags() const override;
-		GLint mapMemoryFlags() const override;
-	};
+	using VertexBuffer = Buffer;
+	using IndexBuffer = Buffer;
+	using UniformBuffer = Buffer;
+	using StorageBuffer = Buffer;
 
-	class IndexBuffer : public Buffer
+	struct BufferView
 	{
-	public:
-		GLenum type() const override;
-		GLint storageFlags() const override;
-		GLint mapMemoryFlags() const override;
-	};
-
-	class UniformBuffer : public Buffer
-	{
-	public:
-		GLenum type() const override;
-		GLint storageFlags() const override;
-		GLint mapMemoryFlags() const override;
-	};
-
-	class StorageBuffer : public Buffer
-	{
-	public:
-		GLenum type() const override;
-		GLint storageFlags() const override;
-		GLint mapMemoryFlags() const override;
+		Buffer* buffer{nullptr};
+		GLenum target{0};
+		size_t offset{0};
+		size_t size{0};
 	};
 }

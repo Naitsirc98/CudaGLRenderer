@@ -4,6 +4,8 @@
 
 namespace utad
 {
+	class Texture2D;
+
 	struct ShaderStage
 	{
 		GLenum type;
@@ -19,6 +21,8 @@ namespace utad
 		ShaderStage* m_VertexStage{nullptr};
 		ShaderStage* m_GeometryStage{nullptr};
 		ShaderStage* m_FragmentStage{nullptr};
+		Map<String, size_t> m_TextureUnits;
+		ArrayList<Texture2D*> m_BoundTextures;
 	public:
 		Shader(const String& name);
 		~Shader();
@@ -28,9 +32,16 @@ namespace utad
 		void compile();
 		void bind();
 		void unbind();
+		void setTexture(const String& samplerName, Texture2D* texture);
 
 		template<typename T>
 		void setUniform(const String& name, const T& value) {}
+
+		template<>
+		void setUniform<bool>(const String& name, const bool& value)
+		{
+			glUniform1i(glGetUniformLocation(m_Handle, name.c_str()), value);
+		}
 
 		template<>
 		void setUniform<float>(const String& name, const float& value)
@@ -47,13 +58,13 @@ namespace utad
 		template<>
 		void setUniform<Vector3>(const String& name, const Vector3& value)
 		{
-			glUniform3f(glGetUniformLocation(m_Handle, name.c_str()), value.x, value.y, value.z);
+			glUniform3fv(glGetUniformLocation(m_Handle, name.c_str()), 1, math::value_ptr(value));
 		}
 
 		template<>
 		void setUniform<Vector4>(const String& name, const Vector4& value)
 		{
-			glUniform4f(glGetUniformLocation(m_Handle, name.c_str()), value.x, value.y, value.z, value.w);
+			glUniform4fv(glGetUniformLocation(m_Handle, name.c_str()), 1, math::value_ptr(value));
 		}
 
 		template<>

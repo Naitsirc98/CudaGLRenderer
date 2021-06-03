@@ -12,6 +12,6 @@ namespace utad
 		SkyboxRenderer();
 		~SkyboxRenderer();
 	public:
-		void render(Camera& camera);
+		void render(RenderInfo& camera);
 	};
 }

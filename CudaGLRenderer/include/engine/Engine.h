@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "engine/Time.h"
 #include "Application.h"
 #include "graphics/Window.h"
 #include "events/EventSystem.h"

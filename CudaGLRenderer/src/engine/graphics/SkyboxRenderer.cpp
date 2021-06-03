@@ -1,4 +1,5 @@
 #include "engine/graphics/SkyboxRenderer.h"
+#include "engine/scene/Scene.h"
 
 namespace utad
 {
@@ -10,7 +11,7 @@ namespace utad
 	{
 	}
 
-	void SkyboxRenderer::render(Camera& camera)
+	void SkyboxRenderer::render(RenderInfo& camera)
 	{
 	}
 }

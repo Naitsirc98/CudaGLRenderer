@@ -34,13 +34,14 @@ namespace utad
 		Handle handle() const { return m_Handle; }
 		void allocate(const Texture2DAllocInfo& allocInfo);
 		void update(const Texture2DUpdateInfo& updateInfo);
-		void filter(GLenum minFilter, GLenum maxFilter);
+		void filter(GLenum filterType, GLenum filter);
 		void wrap(GLenum clamp);
 		void wrap(GLenum coord, GLenum clamp);
 		void generateMipmaps();
 		int width() const;
 		int height() const;
 		void bind(int unit = 0);
+		void unbind(int unit = 0);
 	public:
 		static int mipLevelsOf(int width, int height);
 	};

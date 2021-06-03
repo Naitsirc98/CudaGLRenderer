@@ -27,10 +27,9 @@ namespace utad
 		glTextureSubImage2D(m_Handle, 0, 0, 0, m_Width, m_Height, updateInfo.format, updateInfo.type, updateInfo.pixels);
 	}
 
-	void Texture2D::filter(GLenum minFilter, GLenum magFilter)
+	void Texture2D::filter(GLenum filterType, GLenum filter)
 	{
-		glTextureParameteri(m_Handle, GL_TEXTURE_MIN_FILTER, minFilter);
-		glTextureParameteri(m_Handle, GL_TEXTURE_MAG_FILTER, magFilter);
+		glTextureParameteri(m_Handle, filterType, filter);
 	}
 
 	void Texture2D::wrap(GLenum mode)
@@ -62,7 +61,12 @@ namespace utad
 
 	void Texture2D::bind(int unit)
 	{
-		glBindTextureUnit(m_Handle, GL_TEXTURE0 + unit);
+		glBindTextureUnit(unit, m_Handle);
+	}
+
+	void Texture2D::unbind(int unit)
+	{
+		glBindTextureUnit(unit, 0);
 	}
 
 	inline int Texture2D::mipLevelsOf(int width, int height)

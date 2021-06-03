@@ -13,6 +13,7 @@ namespace utad
 		virtual ~Script() { onDestroy(); }
 		Entity* entity() const { return m_Entity; }
 	protected:
+		virtual void onStart() {}
 		virtual void onUpdate() = 0;
 		virtual void onDestroy() {}
 	};

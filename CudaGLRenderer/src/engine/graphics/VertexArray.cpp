@@ -1,4 +1,5 @@
 #include "engine/graphics/VertexArray.h"
+#include <algorithm>
 
 namespace utad
 {
@@ -27,10 +28,37 @@ namespace utad
 		return count * dataSize;
 	}
 
+	VertexAttribList::VertexAttribList(size_t initialCapacity)
+	{
+		m_Attributes.reserve(initialCapacity);
+	}
+
+	void VertexAttribList::add(const VertexAttrib& attrib)
+	{
+		m_Attributes.push_back(attrib);
+		std::sort(m_Attributes.begin(), m_Attributes.end());
+	}
+
+	void VertexAttribList::add(VertexAttrib&& attrib)
+	{
+		m_Attributes.push_back(std::move(attrib));
+		std::sort(m_Attributes.begin(), m_Attributes.end());
+	}
+
+	ArrayList<VertexAttrib>::const_iterator VertexAttribList::begin() const
+	{
+		return m_Attributes.cbegin();
+	}
+
+	ArrayList<VertexAttrib>::const_iterator VertexAttribList::end() const
+	{
+		return m_Attributes.cend();
+	}
+
 	uint VertexAttribList::stride() const
 	{
 		uint stride = 0;
-		for (const VertexAttrib& attrib : attributes)
+		for (const VertexAttrib& attrib : m_Attributes)
 		{
 			stride += attrib.size();
 		}
@@ -39,7 +67,7 @@ namespace utad
 
 	VertexArray::VertexArray()
 	{
-		glGenVertexArrays(1, &m_Handle);
+		glCreateVertexArrays(1, &m_Handle);
 	}
 
 	VertexArray::~VertexArray()
@@ -84,12 +112,10 @@ namespace utad
 
 	void VertexArray::setVertexAttribs(uint binding, const VertexAttribList& attributes)
 	{
-		uint location = 0;
 		uint offset = 0;
-		for (const VertexAttrib& attrib : attributes.attributes)
+		for (const VertexAttrib& attrib : attributes)
 		{
-			setVertexAttrib(binding, attrib, location, offset);
-			++location;
+			setVertexAttrib(binding, attrib, attrib.location, offset);
 			offset += attrib.size();
 		}
 	}
@@ -112,9 +138,8 @@ namespace utad
 
 	void VertexArray::setIndexBuffer(IndexBuffer* buffer)
 	{
-		if(buffer == nullptr) return;
+		glVertexArrayElementBuffer(handle(), buffer == nullptr ? NULL : buffer->handle());
 		m_IndexBuffer = buffer;
-		glVertexArrayElementBuffer(m_Handle, buffer->handle());
 	}
 
 	void VertexArray::bind()

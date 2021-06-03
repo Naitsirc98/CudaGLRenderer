@@ -56,7 +56,7 @@ namespace utad
 
 	Camera& Scene::camera()
 	{
-		return m_Camera;
+		return m_RenderInfo.camera;
 	}
 
 	void Scene::update()
@@ -70,7 +70,9 @@ namespace utad
 
 	void Scene::lastUpdate()
 	{
-		m_Camera.update();
+		m_RenderInfo.camera.update();
+
+		m_MeshRenderer->clearRenderQueues();
 
 		for (Entity* entity : m_EntityPool->entities())
 		{
@@ -81,8 +83,8 @@ namespace utad
 
 	void Scene::render()
 	{
-		m_MeshRenderer->render(m_Camera);
-		m_SkyboxRenderer->render(m_Camera);
+		m_MeshRenderer->render(m_RenderInfo);
+		m_SkyboxRenderer->render(m_RenderInfo);
 	}
 
 }

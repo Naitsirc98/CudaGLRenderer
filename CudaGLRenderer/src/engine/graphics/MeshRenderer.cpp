@@ -1,10 +1,32 @@
 #include "engine/graphics/MeshRenderer.h"
+#include "engine/io/Files.h"
+#include "engine/scene/Scene.h"
 
 namespace utad
 {
+	static const char* VERTEX_SHADER_FILE = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/shaders/pbr.vert";
+	static const char* FRAGMENT_SHADER_FILE = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/shaders/pbr.frag";
+
+	static ShaderStage* createShaderStage(GLenum type, const char* name, const char* filename)
+	{
+		ShaderStage* stage = new ShaderStage();
+		stage->type = type;
+		stage->name = name;
+		stage->sourceCode = std::move(Files::readAllText(filename));
+		return stage;
+	}
+
 	MeshRenderer::MeshRenderer()
 	{
 		m_Shader = new Shader("PBR Shader");
+		m_Shader->attach(createShaderStage(GL_VERTEX_SHADER, "PBR VERTEX", VERTEX_SHADER_FILE));
+		m_Shader->attach(createShaderStage(GL_FRAGMENT_SHADER, "PBR FRAGMENT", FRAGMENT_SHADER_FILE));
+		m_Shader->compile();
+
+		RenderQueue* defaultRenderQueue = new RenderQueue();
+		defaultRenderQueue->name = DEFAULT_RENDER_QUEUE;
+		defaultRenderQueue->enabled = true;
+		m_RenderQueues[DEFAULT_RENDER_QUEUE] = defaultRenderQueue;
 	}
 
 	MeshRenderer::~MeshRenderer()
@@ -30,17 +52,24 @@ namespace utad
 		return *m_RenderQueues[name];
 	}
 
-	void MeshRenderer::render(Camera& camera)
+	void MeshRenderer::render(const RenderInfo& renderInfo)
 	{
-		glClearColor(camera.clearColor().r, camera.clearColor().g, camera.clearColor().b, camera.clearColor().a);
+		const Camera& camera = renderInfo.camera;
+		const Color& clearColor = camera.clearColor();
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_BLEND);
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (m_RenderQueues.empty()) return;
 
 		m_Shader->bind();
 		{
-			m_Shader->setUniform<Matrix4>("u_ViewMatrix", camera.viewMatrix());
-			m_Shader->setUniform<Matrix4>("u_ProjectionMatrix", camera.projectionMatrix());
+			setCameraUniforms(camera);
+			setLightUniforms(renderInfo.dirLight, renderInfo.pointLights);
+			setSkyboxUniforms(renderInfo.skybox);
 
 			Mesh* lastMesh = nullptr;
 			Material* lastMaterial = nullptr;
@@ -48,15 +77,14 @@ namespace utad
 			for (auto [name, queue] : m_RenderQueues)
 			{
 				if (!queue->enabled) continue;
-				if (queue->commands.empty()) continue;
 
 				for (RenderCommand& command : queue->commands)
 				{
-					m_Shader->setUniform<Matrix4>("u_ModelMatrix", *command.transformation);
+					m_Shader->setUniform("u_ModelMatrix", *command.transformation);
 
 					if (lastMaterial != command.material)
 					{
-						setMaterialUniforms(command.material);
+						setMaterialUniforms(*command.material);
 						lastMaterial = command.material;
 					}
 
@@ -68,15 +96,78 @@ namespace utad
 						lastMesh = mesh;
 					}
 
-					uint indices = mesh->indexBufferOffset();
-					glDrawElements(mesh->drawMode(), mesh->indexCount(), mesh->indexType(), &indices);
+					if (mesh->vertexArray()->indexBuffer() != nullptr)
+						glDrawElements(mesh->drawMode(), mesh->indexCount(), mesh->indexType(), (void*)mesh->indexBufferOffset());
+					else
+						glDrawArrays(mesh->drawMode(), 0, mesh->indexCount());
 				}
 			}
 		}
 		m_Shader->unbind();
 	}
 
-	void MeshRenderer::setMaterialUniforms(Material* material)
+	void MeshRenderer::setCameraUniforms(const Camera& camera)
 	{
+		m_Shader->setUniform("u_ViewMatrix", camera.viewMatrix());
+		m_Shader->setUniform("u_ProjMatrix", camera.projectionMatrix());
+		m_Shader->setUniform("u_Camera.position", camera.position());
+	}
+
+	static void setLight(Shader* shader, const String& name, const Light& light)
+	{
+		shader->setUniform(name + ".color", light.color);
+		shader->setUniform(name + ".position", light.position);
+		shader->setUniform(name + ".direction", light.direction);
+		shader->setUniform(name + ".constant", light.constant);
+		shader->setUniform(name + ".linear", light.linear);
+		shader->setUniform(name + ".quadratic", light.quadratic);
+		shader->setUniform(name + ".ambientFactor", light.ambientFactor);
+	}
+
+	void MeshRenderer::setLightUniforms(const Light* dirLight, const ArrayList<Light>& pointLights)
+	{
+		m_Shader->setUniform("u_AmbientColor", Vector3(0.2f, 0.2f, 0.2f));
+
+		m_Shader->setUniform("u_DirLightPresent", dirLight != nullptr);
+		if (dirLight != nullptr) setLight(m_Shader, "u_DirLight", *dirLight);
+
+		m_Shader->setUniform("u_PointLightsCount", pointLights.size());
+
+		const size_t count = std::min(pointLights.size(), (size_t)20);
+		for (size_t i = 0;i < count;++i)
+			setLight(m_Shader, String("u_PointLights[").append(std::to_string(i)).append("]"), pointLights[i]);
+	}
+
+	void MeshRenderer::setSkyboxUniforms(const Skybox* skybox)
+	{
+		m_Shader->setUniform("u_SkyboxPresent", skybox != nullptr);
+
+		if (skybox == nullptr) return;
+
+	}
+
+	void MeshRenderer::setMaterialUniforms(const Material& material)
+	{
+		m_Shader->setUniform("u_Material.albedo", material.albedo());
+		m_Shader->setUniform("u_Material.emissiveColor", material.emissiveColor());
+		m_Shader->setUniform("u_Material.alpha", material.alpha());
+		m_Shader->setUniform("u_Material.metallic", material.metallic());
+		m_Shader->setUniform("u_Material.roughness", material.roughness());
+		m_Shader->setUniform("u_Material.fresnel0", material.fresnel0());
+		m_Shader->setUniform("u_Material.normalScale", material.normalScale());
+
+		m_Shader->setTexture("u_AlbedoMap", material.albedoMap());
+		m_Shader->setTexture("u_MetallicRoughnessMap", material.metallicRoughnessMap());
+		m_Shader->setTexture("u_OcclussionMap", material.occlussionMap());
+		m_Shader->setTexture("u_EmissiveMap", material.emissiveMap());
+		m_Shader->setTexture("u_NormalMap", material.normalMap());
+	}
+
+	void MeshRenderer::clearRenderQueues()
+	{
+		for (auto [name, queue] : m_RenderQueues)
+		{
+			queue->commands.clear();
+		}
 	}
 }

@@ -1,5 +1,6 @@
 #include "engine/entities/Transform.h"
 #include "engine/entities/Entity.h"
+#include <glm/gtx/matrix_decompose.hpp>
 
 namespace utad
 {
@@ -97,6 +98,15 @@ namespace utad
 	Matrix4& Transform::modelMatrix()
 	{
 		return m_ModelMatrix;
+	}
+
+	Transform& Transform::modelMatrix(const Matrix4& modelMatrix)
+	{
+		m_ModelMatrix = modelMatrix;
+		Vector3 skew;
+		Vector4 perspective;
+		math::decompose(modelMatrix, m_Scale, m_Rotation, m_Position, skew, perspective);
+		return *this;
 	}
 
 	void Transform::computeModelMatrix()

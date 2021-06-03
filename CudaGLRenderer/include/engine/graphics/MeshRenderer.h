@@ -7,7 +7,12 @@
 
 namespace utad
 {
+	struct RenderInfo;
+	struct Light;
+	class Skybox;
+
 	const String NO_RENDER_QUEUE = "";
+	const String DEFAULT_RENDER_QUEUE = "DEFAULT";
 
 	struct RenderCommand
 	{
@@ -22,6 +27,11 @@ namespace utad
 		String name;
 		ArrayList<RenderCommand> commands;
 		bool enabled{ true };
+
+		RenderQueue()
+		{
+			commands.reserve(1024);
+		}
 	};
 
 	class MeshRenderer
@@ -36,7 +46,11 @@ namespace utad
 		~MeshRenderer();
 		RenderQueue& getRenderQueue(const String& name);
 	private:
-		void render(Camera& camera);
-		void setMaterialUniforms(Material* material);
+		void render(const RenderInfo& camera);
+		void setCameraUniforms(const Camera& camera);
+		void setLightUniforms(const Light* dirLight, const ArrayList<Light>& pointLights);
+		void setSkyboxUniforms(const Skybox* skybox);
+		void setMaterialUniforms(const Material& material);
+		void clearRenderQueues();
 	};
 }

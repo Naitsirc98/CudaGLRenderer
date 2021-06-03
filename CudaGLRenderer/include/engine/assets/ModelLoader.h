@@ -13,7 +13,7 @@ namespace utad
 	struct ModelInfo
 	{
 		gltf::Model* model;
-		Map<int, Buffer*>* buffers;
+		Map<int, BufferView>* buffers;
 		Map<String, Texture2D*>* textures;
 	};
 
@@ -33,7 +33,7 @@ namespace utad
 		void loadTransformation(const ArrayList<double>& matrix, ModelNode& result);
 		void loadMesh(ModelInfo& info, gltf::Node& node, ModelNode& result);
 		void loadMaterial(ModelInfo& info, gltf::Node& node, ModelNode& result);
-		Buffer* createGLBuffer(uint binding, const ModelInfo& info, const gltf::BufferView& bufferView, const gltf::Buffer& buffer);
+		Buffer* createGLBuffer(const gltf::BufferView& bufferView, const gltf::Buffer& buffer);
 		void loadTextures(ModelInfo& info);
 	};
 

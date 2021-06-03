@@ -91,6 +91,7 @@ namespace utad
 		if (script->m_Entity != nullptr) script->m_Entity->removeScript(script);
 		script->m_Entity = this;
 		script->m_Index = m_Scripts.size();
+		script->onStart();
 		m_Scripts.push_back(script);
 	}
 
@@ -159,5 +160,6 @@ namespace utad
 		m_ID = NULL;
 		m_Name = "";
 		m_SceneIndex = UINT32_MAX;
+		m_ChildIndex = UINT32_MAX;
 	}
 }

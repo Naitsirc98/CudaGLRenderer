@@ -51,6 +51,7 @@ namespace utad
 		if (entity->m_ID == NULL) return;
 		if (!entity->name().empty()) m_EntitiesByName[entity->name()] = nullptr;
 		entity->onDestroy();
+		m_FreeIndices.push_back(entity->m_SceneIndex);
 	}
 
 	void EntityPool::destroyAll()

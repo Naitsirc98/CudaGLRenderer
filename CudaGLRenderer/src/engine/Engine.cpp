@@ -97,6 +97,8 @@ namespace utad
 	{
 		m_UpdateDelay += deltaTime;
 
+		bool wasUpdated = false;
+
 		while (m_UpdateDelay >= TARGET_DELAY)
 		{
 			m_EventSystem->update();
@@ -109,7 +111,10 @@ namespace utad
 			// UPDATE
 			m_UpdateDelay -= TARGET_DELAY;
 			++m_UPS;
+			wasUpdated = true;
 		}
+
+		if (wasUpdated) m_Scene->lastUpdate();
 	}
 
 	void Engine::render()

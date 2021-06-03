@@ -228,12 +228,12 @@ namespace utad
 		return this;
 	}
 
-	const Vector4& Camera::clearColor() const
+	const Color& Camera::clearColor() const
 	{
 		return m_ClearColor;
 	}
 
-	Camera* Camera::clearColor(const Vector4& clearColor)
+	Camera* Camera::clearColor(const Color& clearColor)
 	{
 		m_ClearColor = clearColor;
 		return this;

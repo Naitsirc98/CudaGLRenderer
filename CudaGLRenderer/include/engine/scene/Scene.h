@@ -1,11 +1,26 @@
 #pragma once
 #include "engine/entities/EntityPool.h"
-#include "Camera.h"
 #include "engine/graphics/MeshRenderer.h"
 #include "engine/graphics/SkyboxRenderer.h"
+#include "Camera.h"
+#include "Light.h"
+#include "Skybox.h"
 
 namespace utad
 {
+	struct RenderInfo
+	{
+		friend class Scene;
+
+		Camera camera;
+		Light dirLight[1];
+		ArrayList<Light> pointLights;
+		Skybox skybox[1];
+
+	private:
+		RenderInfo() {}
+	};
+
 	class Scene
 	{
 		friend class Engine;
@@ -20,7 +35,7 @@ namespace utad
 		EntityPool* m_EntityPool;
 		MeshRenderer* m_MeshRenderer;
 		SkyboxRenderer* m_SkyboxRenderer;
-		Camera m_Camera;
+		RenderInfo m_RenderInfo;
 	private:
 		Scene();
 		~Scene();

@@ -20,6 +20,16 @@ namespace utad
 
 	static MeshID g_NextMeshID = 1;
 
+	static const char* targetToStr(GLenum target)
+	{
+		switch (target)
+		{
+			case GL_ARRAY_BUFFER: return "Vertex Buffer";
+			case GL_ELEMENT_ARRAY_BUFFER: return "Index Buffer";
+		}
+		return "Other";
+	}
+
 	ModelLoader::ModelLoader()
 	{
 	}
@@ -46,7 +56,7 @@ namespace utad
 		auto start = steady_clock::now();
 
 		Model* result = new Model();
-		Map<int, Buffer*> buffers;
+		Map<int, BufferView> buffers;
 		Map<String, Texture2D*> textures;
 
 		ModelInfo info;
@@ -115,40 +125,57 @@ namespace utad
 
 	void ModelLoader::loadMesh(ModelInfo& info, gltf::Node& node, ModelNode& result)
 	{
+		if (node.mesh < 0) return;
+
 		gltf::Model& model = *info.model;
-		Map<int, Buffer*>& buffers = *info.buffers;
-		VertexArray* vertexArray = new VertexArray();
+		Map<int, BufferView>& buffers = *info.buffers;
 		gltf::Mesh& mesh = model.meshes[node.mesh];
 		gltf::Primitive primitive = mesh.primitives[0]; // Only supports 1 primitive per mesh for now
 		gltf::Accessor& indexAccessor = model.accessors[primitive.indices];
+		
+		VertexArray* vertexArray = new VertexArray();
+		vertexArray->bind();
 
 		if (m_DebugMode) std::cout << "\tLoading mesh " << mesh.name << std::endl;
+
+		for (auto [index, bufferView] : buffers)
+		{
+			if (bufferView.target == GL_ELEMENT_ARRAY_BUFFER)
+			{
+				bufferView.buffer->bind(GL_ELEMENT_ARRAY_BUFFER);
+				vertexArray->setIndexBuffer(bufferView.buffer);
+			}
+		}
 
 		for (const auto [attribName, accessorIndex] : primitive.attributes)
 		{
 			gltf::Accessor& accessor = model.accessors[accessorIndex];
-			const uint stride = accessor.ByteStride(model.bufferViews[accessor.bufferView]);
+			gltf::BufferView& bufferView = model.bufferViews[accessor.bufferView];
+			const uint stride = accessor.ByteStride(bufferView);
 
 			int count = 1;
 			if (accessor.type != TINYGLTF_TYPE_SCALAR) count = accessor.type;
 
-			int binding = accessor.bufferView;
-			VertexBuffer* buffer = static_cast<VertexBuffer*>(buffers[binding]);
-			vertexArray->addVertexBuffer(binding, buffer, stride);
-
+			VertexBuffer* buffer = buffers[accessor.bufferView].buffer;
+			vertexArray->addVertexBuffer(accessor.bufferView, buffer, stride);
+			
 			int location = -1;
 			if (attribName == "POSITION") location = 0;
 			else if (attribName == "NORMAL") location = 1;
 			else if (attribName == "TEXCOORD_0") location = 2;
+			else if (attribName == "TANGENT") location = 3;
+
+			if (location == -1) continue;
 
 			VertexAttrib attrib;
+			attrib.location = location;
 			attrib.count = count;
 			attrib.type = accessor.componentType;
 
 			if (location >= 0)
-				vertexArray->setVertexAttrib(binding, attrib, location, model.bufferViews[binding].byteOffset);
+				vertexArray->setVertexAttrib(accessor.bufferView, attrib, location, accessor.byteOffset);
 			else
-				std::cout << "Missing vaa: " << attribName << std::endl;
+				std::cout << "Unknown attribute: " << attribName << std::endl;
 		}
 
 		const uint meshIndex = result.m_Model.m_Meshes.size();
@@ -162,7 +189,7 @@ namespace utad
 		result.m_Model.m_Meshes.push_back(outMesh);
 		result.m_Mesh = meshIndex;
 
-		vertexArray->destroyVertexBuffers();
+		vertexArray->unbind();
 	}
 
 	template<typename T>
@@ -186,8 +213,13 @@ namespace utad
 
 	void ModelLoader::loadMaterial(ModelInfo& info, gltf::Node& node, ModelNode& result)
 	{
+		if (node.mesh < 0) return;
+
 		gltf::Model& model = *info.model;
 		gltf::Mesh& mesh = model.meshes[node.mesh];
+
+		if (mesh.primitives[0].material < 0) return;
+
 		gltf::Material& mat = model.materials[mesh.primitives[0].material];
 		gltf::PbrMetallicRoughness& pbr = mat.pbrMetallicRoughness;
 
@@ -217,7 +249,8 @@ namespace utad
 	void ModelLoader::loadBuffers(ModelInfo& info)
 	{
 		gltf::Model& model = *info.model;
-		Map<int, Buffer*>& buffers = *info.buffers;
+		Map<int, BufferView>& bufferViews = *info.buffers;
+		Map<int, Buffer*> buffers;
 
 		if(m_DebugMode) std::cout << "\tLoading buffers... (" << model.bufferViews.size() << ")" << std::endl;
 
@@ -225,17 +258,27 @@ namespace utad
 		{
 			const gltf::BufferView& bufferView = model.bufferViews[i];
 			if (bufferView.target == 0) continue;
-			std::cout << "\t\tLoading buffer: '" << bufferView.name << "'" << std::endl;
-			const gltf::Buffer& buffer = model.buffers[bufferView.buffer];
-			buffers[i] = createGLBuffer(i, info, bufferView, buffer);
+
+			std::cout << "\t\tLoading buffer: '" << bufferView.name << "' (" << targetToStr(bufferView.target) << ")" << std::endl;
+
+			Buffer* buffer = createGLBuffer(bufferView, model.buffers[bufferView.buffer]);
+
+			BufferView view = {};
+			view.target = bufferView.target;
+			view.offset = bufferView.byteOffset;
+			view.size = bufferView.byteLength;
+			view.buffer = buffer;
+
+			bufferViews[i] = std::move(view);
 		}
 	}
 
-	Buffer* ModelLoader::createGLBuffer(uint binding, const ModelInfo& info, const gltf::BufferView& bufferView, const gltf::Buffer& buffer)
+	Buffer* ModelLoader::createGLBuffer(const gltf::BufferView& bufferView, const gltf::Buffer& buffer)
 	{
-		Buffer* result = Buffer::create(bufferView.target);
+		Buffer* result = new Buffer();
 
 		BufferAllocInfo allocInfo = {};
+		allocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
 		allocInfo.size = bufferView.byteLength;
 		allocInfo.data = const_cast<unsigned char*>(buffer.data.data() + bufferView.byteOffset);
 
@@ -335,8 +378,8 @@ namespace utad
 			Texture2D* texture = new Texture2D();
 			texture->wrap(GL_TEXTURE_WRAP_S, sampler.wrapS);
 			texture->wrap(GL_TEXTURE_WRAP_T, sampler.wrapT);
-			texture->filter(GL_TEXTURE_MIN_FILTER, sampler.minFilter);
-			texture->filter(GL_TEXTURE_MAG_FILTER, sampler.magFilter);
+			if(sampler.minFilter != -1) texture->filter(GL_TEXTURE_MIN_FILTER, sampler.minFilter);
+			if(sampler.magFilter != -1) texture->filter(GL_TEXTURE_MAG_FILTER, sampler.magFilter);
 
 			Texture2DAllocInfo allocInfo = {};
 			allocInfo.format = toSizedFormat(pixelFormat, img.bits, img.pixel_type);
