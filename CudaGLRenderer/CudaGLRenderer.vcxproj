@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glad\src\glad.c" />
+    <ClCompile Include="include\engine\graphics\Texture.cpp" />
     <ClCompile Include="src\engine\assets\AssetsManager.cpp" />
     <ClCompile Include="src\engine\assets\Image.cpp" />
     <ClCompile Include="src\engine\assets\Material.cpp" />
@@ -25,6 +26,7 @@
     <ClCompile Include="src\engine\events\EventSystem.cpp" />
     <ClCompile Include="src\engine\events\Input.cpp" />
     <ClCompile Include="src\engine\graphics\Buffer.cpp" />
+    <ClCompile Include="src\engine\graphics\Cubemap.cpp" />
     <ClCompile Include="src\engine\graphics\DebugCallback.cpp" />
     <ClCompile Include="src\engine\graphics\Framebuffer.cpp" />
     <ClCompile Include="src\engine\graphics\glad.c" />

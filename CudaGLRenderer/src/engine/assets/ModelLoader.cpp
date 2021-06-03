@@ -232,8 +232,8 @@ namespace utad
 		material->albedoMap(toTexture2D(info, pbr.baseColorTexture.index, material->albedoMap()));
 		material->normalScale(static_cast<float>(mat.normalTexture.scale));
 		material->normalMap(toTexture2D(info, mat.normalTexture.index, material->normalMap()));
-		material->emissiveColor(toColor(mat.emissiveFactor));
-		material->emissiveMap(toTexture2D(info, mat.emissiveTexture.index, material->emissiveMap()));
+		//material->emissiveColor(toColor(mat.emissiveFactor));
+		//material->emissiveMap(toTexture2D(info, mat.emissiveTexture.index, material->emissiveMap()));
 		material->roughness(static_cast<float>(pbr.roughnessFactor));
 		material->metallic(static_cast<float>(pbr.metallicFactor));
 		material->metallicRoughnessMap(toTexture2D(info, pbr.metallicRoughnessTexture.index, material->metallicRoughnessMap()));
@@ -381,7 +381,7 @@ namespace utad
 			if(sampler.minFilter != -1) texture->filter(GL_TEXTURE_MIN_FILTER, sampler.minFilter);
 			if(sampler.magFilter != -1) texture->filter(GL_TEXTURE_MAG_FILTER, sampler.magFilter);
 
-			Texture2DAllocInfo allocInfo = {};
+			TextureAllocInfo allocInfo = {};
 			allocInfo.format = toSizedFormat(pixelFormat, img.bits, img.pixel_type);
 			allocInfo.width = img.width;
 			allocInfo.height = img.height;

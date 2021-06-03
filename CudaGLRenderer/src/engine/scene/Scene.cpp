@@ -59,6 +59,21 @@ namespace utad
 		return m_RenderInfo.camera;
 	}
 
+	Light& Scene::dirLight()
+	{
+		return m_RenderInfo.dirLight;
+	}
+
+	void Scene::enableDirLight(bool enable)
+	{
+		m_RenderInfo.enableDirLight = enable;
+	}
+
+	ArrayList<Light>& Scene::pointLights()
+	{
+		return m_RenderInfo.pointLights;
+	}
+
 	void Scene::update()
 	{
 		for (Entity* entity : m_EntityPool->entities())

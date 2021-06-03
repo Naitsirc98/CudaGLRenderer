@@ -68,7 +68,7 @@ namespace utad
 		m_Shader->bind();
 		{
 			setCameraUniforms(camera);
-			setLightUniforms(renderInfo.dirLight, renderInfo.pointLights);
+			setLightUniforms(renderInfo.enableDirLight, renderInfo.dirLight, renderInfo.pointLights);
 			setSkyboxUniforms(renderInfo.skybox);
 
 			Mesh* lastMesh = nullptr;
@@ -124,12 +124,12 @@ namespace utad
 		shader->setUniform(name + ".ambientFactor", light.ambientFactor);
 	}
 
-	void MeshRenderer::setLightUniforms(const Light* dirLight, const ArrayList<Light>& pointLights)
+	void MeshRenderer::setLightUniforms(bool dirLightPresent, const Light& dirLight, const ArrayList<Light>& pointLights)
 	{
 		m_Shader->setUniform("u_AmbientColor", Vector3(0.2f, 0.2f, 0.2f));
 
-		m_Shader->setUniform("u_DirLightPresent", dirLight != nullptr);
-		if (dirLight != nullptr) setLight(m_Shader, "u_DirLight", *dirLight);
+		m_Shader->setUniform("u_DirLightPresent", dirLightPresent);
+		if (dirLightPresent) setLight(m_Shader, "u_DirLight", dirLight);
 
 		m_Shader->setUniform("u_PointLightsCount", pointLights.size());
 

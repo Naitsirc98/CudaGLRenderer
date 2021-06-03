@@ -108,6 +108,14 @@ public:
 	{
 		Scene& scene = Scene::get();
 
+		scene.dirLight().direction = {0, 0, 1};
+		scene.dirLight().color = {10, 10, 10};
+		scene.enableDirLight(true);
+
+		Light light = {};
+		light.position = {0, 1, 10};
+		scene.pointLights().push_back(std::move(light));
+
 		Entity* cameraController = Entity::create("CameraController");
 		cameraController->addScript(new CameraController());
 
@@ -118,10 +126,10 @@ public:
 		Entity* object = Entity::create();
 		object->meshView().mesh(model->meshes()[0]);
 		object->meshView().material(model->materials()[0]);
-		object->transform().modelMatrix(model->nodes()[0]->transformation());
+		object->transform().rotate(45, Vector3(1, 0, 0));
 		//object->addScript(new Move());
 
-		scene.camera().position({0, 0, 0});
+		scene.camera().position({0, 0, 10});
 	}
 
 	void onUpdate()

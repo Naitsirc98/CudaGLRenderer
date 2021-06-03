@@ -48,7 +48,7 @@ namespace utad
 	private:
 		void render(const RenderInfo& camera);
 		void setCameraUniforms(const Camera& camera);
-		void setLightUniforms(const Light* dirLight, const ArrayList<Light>& pointLights);
+		void setLightUniforms(bool dirLightPresent, const Light& dirLight, const ArrayList<Light>& pointLights);
 		void setSkyboxUniforms(const Skybox* skybox);
 		void setMaterialUniforms(const Material& material);
 		void clearRenderQueues();

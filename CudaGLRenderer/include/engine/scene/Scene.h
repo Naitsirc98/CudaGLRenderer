@@ -13,7 +13,8 @@ namespace utad
 		friend class Scene;
 
 		Camera camera;
-		Light dirLight[1];
+		Light dirLight;
+		bool enableDirLight;
 		ArrayList<Light> pointLights;
 		Skybox skybox[1];
 
@@ -45,6 +46,9 @@ namespace utad
 		void destroyAllEntities();
 		Entity* find(const String& name) const;
 		Camera& camera();
+		Light& dirLight();
+		void enableDirLight(bool enable);
+		ArrayList<Light>& pointLights();
 	private:
 		void update();
 		void lastUpdate();

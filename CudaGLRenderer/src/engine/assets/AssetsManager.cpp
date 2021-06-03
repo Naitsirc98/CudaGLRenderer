@@ -10,7 +10,7 @@ namespace utad
 	{
 		Texture2D* texture = new Texture2D();
 		
-		Texture2DAllocInfo allocInfo = {};
+		TextureAllocInfo allocInfo = {};
 		allocInfo.format = GL_SRGB8_ALPHA8;
 		allocInfo.width = image->width();
 		allocInfo.height = image->height();
