@@ -168,7 +168,6 @@ namespace utad
 			if (location == -1) continue;
 
 			VertexAttrib attrib;
-			attrib.location = location;
 			attrib.count = count;
 			attrib.type = accessor.componentType;
 

@@ -36,6 +36,8 @@ namespace utad
 		s_Instance = new AssetsManager();
 		s_Instance->m_WhiteTexture = createTextureFromImage(ImageFactory::createWhiteImage(GL_RGBA));
 		s_Instance->m_BlackTexture = createTextureFromImage(ImageFactory::createBlackImage(GL_RGBA));
+		s_Instance->m_SkyboxLoader = new SkyboxLoader();
+		s_Instance->m_SkyboxLoader->init();
 		return s_Instance;
 	}
 
@@ -71,6 +73,8 @@ namespace utad
 
 		UTAD_DELETE(m_WhiteTexture);
 		UTAD_DELETE(m_BlackTexture);
+
+		UTAD_DELETE(m_SkyboxLoader);
 	}
 
 	Model* AssetsManager::createModel(const String& name, const String& path)
@@ -121,6 +125,11 @@ namespace utad
 	Texture2D* AssetsManager::getBlackTexture()
 	{
 		return s_Instance->m_BlackTexture;
+	}
+
+	Skybox* AssetsManager::loadSkybox(const String& path, const SkyboxLoadInfo& loadInfo)
+	{
+		return s_Instance->m_SkyboxLoader->loadSkybox(path, loadInfo);
 	}
 
 	void AssetsManager::initMaterialTextures(Material* material)

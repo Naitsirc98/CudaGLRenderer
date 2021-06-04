@@ -4,7 +4,7 @@
 
 namespace utad
 {
-	class Texture2D;
+	class Texture;
 
 	struct ShaderStage
 	{
@@ -22,7 +22,7 @@ namespace utad
 		ShaderStage* m_GeometryStage{nullptr};
 		ShaderStage* m_FragmentStage{nullptr};
 		Map<String, size_t> m_TextureUnits;
-		ArrayList<Texture2D*> m_BoundTextures;
+		ArrayList<Texture*> m_BoundTextures;
 	public:
 		Shader(const String& name);
 		~Shader();
@@ -32,7 +32,7 @@ namespace utad
 		void compile();
 		void bind();
 		void unbind();
-		void setTexture(const String& samplerName, Texture2D* texture);
+		void setTexture(const String& samplerName, Texture* texture);
 
 		template<typename T>
 		void setUniform(const String& name, const T& value) {}

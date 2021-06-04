@@ -30,9 +30,17 @@ namespace utad
 		void* pixels;
 	};
 
-	int mipLevelsOf(int width, int height);
+	class Texture
+	{
+	public:
+		static int mipLevelsOf(int width, int height);
 
-	class Texture2D
+		virtual Handle handle() const = 0;
+		virtual void bind(int unit = 0) = 0;
+		virtual void unbind(int unit = 0) = 0;
+	};
+
+	class Texture2D : public Texture
 	{
 	private:
 		Handle m_Handle;
@@ -43,7 +51,7 @@ namespace utad
 		Texture2D(const Texture2D& other) = delete;
 		~Texture2D();
 		Texture2D& operator=(const Texture2D& other) = delete;
-		Handle handle() const { return m_Handle; }
+		Handle handle() const override { return m_Handle; }
 		void allocate(const TextureAllocInfo& allocInfo);
 		void update(const Texture2DUpdateInfo& updateInfo);
 		void filter(GLenum filterType, GLenum filter);
@@ -52,11 +60,11 @@ namespace utad
 		void generateMipmaps();
 		int width() const;
 		int height() const;
-		void bind(int unit = 0);
-		void unbind(int unit = 0);
+		void bind(int unit = 0) override;
+		void unbind(int unit = 0) override;
 	};
 
-	class Cubemap
+	class Cubemap : public Texture
 	{
 	private:
 		Handle m_Handle;
@@ -67,7 +75,7 @@ namespace utad
 		Cubemap(const Cubemap& other) = delete;
 		~Cubemap();
 		Cubemap& operator=(const Cubemap& other) = delete;
-		Handle handle() const { return m_Handle; }
+		Handle handle() const override { return m_Handle; }
 		void allocate(const TextureAllocInfo& allocInfo);
 		void update(const CubemapUpdateInfo& updateInfo);
 		void filter(GLenum filterType, GLenum filter);
@@ -76,7 +84,7 @@ namespace utad
 		void generateMipmaps();
 		int width() const;
 		int height() const;
-		void bind(int unit = 0);
-		void unbind(int unit = 0);
+		void bind(int unit = 0) override;
+		void unbind(int unit = 0) override;
 	};
 }

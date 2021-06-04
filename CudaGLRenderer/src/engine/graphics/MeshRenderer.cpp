@@ -7,20 +7,22 @@ namespace utad
 	static const char* VERTEX_SHADER_FILE = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/shaders/pbr.vert";
 	static const char* FRAGMENT_SHADER_FILE = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/shaders/pbr.frag";
 
-	static ShaderStage* createShaderStage(GLenum type, const char* name, const char* filename)
+	static ShaderStage createShaderStage(GLenum type, const char* name, const char* filename)
 	{
-		ShaderStage* stage = new ShaderStage();
-		stage->type = type;
-		stage->name = name;
-		stage->sourceCode = std::move(Files::readAllText(filename));
+		ShaderStage stage = {};
+		stage.type = type;
+		stage.name = name;
+		stage.sourceCode = std::move(Files::readAllText(filename));
 		return stage;
 	}
 
 	MeshRenderer::MeshRenderer()
 	{
 		m_Shader = new Shader("PBR Shader");
-		m_Shader->attach(createShaderStage(GL_VERTEX_SHADER, "PBR VERTEX", VERTEX_SHADER_FILE));
-		m_Shader->attach(createShaderStage(GL_FRAGMENT_SHADER, "PBR FRAGMENT", FRAGMENT_SHADER_FILE));
+		ShaderStage vertexStage = std::move(createShaderStage(GL_VERTEX_SHADER, "PBR VERTEX", VERTEX_SHADER_FILE));
+		ShaderStage fragmentStage = std::move(createShaderStage(GL_FRAGMENT_SHADER, "PBR FRAGMENT", FRAGMENT_SHADER_FILE));
+		m_Shader->attach(&vertexStage);
+		m_Shader->attach(&fragmentStage);
 		m_Shader->compile();
 
 		RenderQueue* defaultRenderQueue = new RenderQueue();
@@ -144,6 +146,12 @@ namespace utad
 
 		if (skybox == nullptr) return;
 
+		m_Shader->setTexture("u_EnvironmentMap", skybox->environmentMap);
+		m_Shader->setTexture("u_IrradianceMap", skybox->irradianceMap);
+		m_Shader->setTexture("u_PrefilterMap", skybox->prefilterMap);
+		m_Shader->setTexture("u_BRDFMap", skybox->brdfMap);
+		m_Shader->setUniform("u_MaxPrefilterLOD", skybox->maxPrefilterLOD);
+		m_Shader->setUniform("u_PrefilterLODBias", skybox->prefilterLODBias);
 	}
 
 	void MeshRenderer::setMaterialUniforms(const Material& material)

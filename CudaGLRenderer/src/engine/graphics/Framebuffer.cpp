@@ -19,6 +19,11 @@ namespace utad
 		glBindFramebuffer(GL_FRAMEBUFFER, m_Handle);
 	}
 
+	void Framebuffer::unbind()
+	{
+		Framebuffer::bindDefault();
+	}
+
 	void Framebuffer::setDepthOnly()
 	{
 		GLenum buffer = GL_NONE;
@@ -29,6 +34,11 @@ namespace utad
 	void Framebuffer::addTextureAttachment(GLenum attachment, Texture2D* texture, int level)
 	{
 		glNamedFramebufferTexture(m_Handle, attachment, texture->handle(), level);
+	}
+
+	void Framebuffer::detachTextureAttachment(GLenum attachment)
+	{
+		glNamedFramebufferTexture(m_Handle, attachment, NULL, 0);
 	}
 
 	void Framebuffer::ensureComplete()

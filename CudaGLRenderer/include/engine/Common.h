@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 #include <exception>
 #include <stdexcept>
 #include <unordered_map>
@@ -10,6 +11,7 @@
 #include <deque>
 #include <unordered_set>
 #include <functional>
+#include <optional>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
@@ -31,6 +33,9 @@ namespace utad
 	template<typename T>
 	using ArrayList = std::vector<T>;
 
+	template<typename T, size_t Size>
+	using Array = std::array<T, Size>;
+
 	template<typename K, typename V>
 	using Map = std::unordered_map<K, V>;
 
@@ -51,6 +56,9 @@ namespace utad
 
 	template<typename R, typename ...Args>
 	using Function = std::function<R(Args...)>;
+
+	template<typename T>
+	using Optional = std::optional<T>;
 
 	using KeyModifiersBitMask = int;
 

@@ -15,7 +15,7 @@ namespace utad
 
 	void Cubemap::allocate(const TextureAllocInfo& allocInfo)
 	{
-		int levels = allocInfo.levels == 0 ? mipLevelsOf(allocInfo.width, allocInfo.height) : allocInfo.levels;
+		int levels = allocInfo.levels == 0 ? Texture::mipLevelsOf(allocInfo.width, allocInfo.height) : allocInfo.levels;
 		glTextureStorage2D(m_Handle, levels, allocInfo.format, allocInfo.width, allocInfo.height);
 		m_Width = allocInfo.width;
 		m_Height = allocInfo.height;

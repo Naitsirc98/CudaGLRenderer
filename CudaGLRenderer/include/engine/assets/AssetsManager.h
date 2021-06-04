@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "engine/graphics/Texture.h"
 #include "engine/assets/ModelLoader.h"
+#include "SkyboxLoader.h"
 
 namespace utad
 {
@@ -21,6 +22,7 @@ namespace utad
 		Map<String, Material*> m_Materials;
 		Texture2D* m_WhiteTexture;
 		Texture2D* m_BlackTexture;
+		SkyboxLoader* m_SkyboxLoader;
 	private:
 		AssetsManager();
 		~AssetsManager();
@@ -31,6 +33,7 @@ namespace utad
 		static Material* getMaterial(const String& name);
 		static Texture2D* getWhiteTexture();
 		static Texture2D* getBlackTexture();
+		static Skybox* loadSkybox(const String& path, const SkyboxLoadInfo& loadInfo = DEFAULT_SKYBOX_LOAD_INFO);
 	private:
 		static void initMaterialTextures(Material* material);
 	};

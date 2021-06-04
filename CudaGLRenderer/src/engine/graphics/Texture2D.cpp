@@ -16,7 +16,7 @@ namespace utad
 
 	void Texture2D::allocate(const TextureAllocInfo& allocInfo)
 	{
-		int levels = allocInfo.levels == 0 ? mipLevelsOf(allocInfo.width, allocInfo.height) : allocInfo.levels;
+		int levels = allocInfo.levels == 0 ? Texture::mipLevelsOf(allocInfo.width, allocInfo.height) : allocInfo.levels;
 		glTextureStorage2D(m_Handle, levels, allocInfo.format, allocInfo.width, allocInfo.height);
 		m_Width = allocInfo.width;
 		m_Height = allocInfo.height;
@@ -69,7 +69,7 @@ namespace utad
 		glBindTextureUnit(unit, 0);
 	}
 
-	int mipLevelsOf(int width, int height)
+	int Texture::mipLevelsOf(int width, int height)
 	{
 		return (int) math::log2(math::max((float)width, (float)height) + 1.0f);
 	}

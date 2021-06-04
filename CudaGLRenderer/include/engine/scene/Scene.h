@@ -4,7 +4,7 @@
 #include "engine/graphics/SkyboxRenderer.h"
 #include "Camera.h"
 #include "Light.h"
-#include "Skybox.h"
+#include "engine/assets/Skybox.h"
 
 namespace utad
 {
@@ -16,7 +16,7 @@ namespace utad
 		Light dirLight;
 		bool enableDirLight;
 		ArrayList<Light> pointLights;
-		Skybox skybox[1];
+		Skybox* skybox{nullptr};
 
 	private:
 		RenderInfo() {}

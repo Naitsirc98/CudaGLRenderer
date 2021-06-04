@@ -115,10 +115,6 @@ namespace utad
 		deleteShaderStage(m_Handle, vertexShader);
 		deleteShaderStage(m_Handle, geometryShader);
 		deleteShaderStage(m_Handle, fragmentShader);
-
-		UTAD_DELETE(m_VertexStage);
-		UTAD_DELETE(m_GeometryStage);
-		UTAD_DELETE(m_FragmentStage);
 	}
 
 	void Shader::bind()
@@ -139,7 +135,7 @@ namespace utad
 		m_TextureUnits.clear();
 	}
 
-	void Shader::setTexture(const String& samplerName, Texture2D* texture)
+	void Shader::setTexture(const String& samplerName, Texture* texture)
 	{
 		if (texture == nullptr) return;
 

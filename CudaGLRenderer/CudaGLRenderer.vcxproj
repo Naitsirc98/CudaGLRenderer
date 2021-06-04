@@ -12,12 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glad\src\glad.c" />
-    <ClCompile Include="include\engine\graphics\Texture.cpp" />
     <ClCompile Include="src\engine\assets\AssetsManager.cpp" />
     <ClCompile Include="src\engine\assets\Image.cpp" />
     <ClCompile Include="src\engine\assets\Material.cpp" />
     <ClCompile Include="src\engine\assets\Model.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
+    <ClCompile Include="src\engine\assets\Skybox.cpp" />
+    <ClCompile Include="src\engine\assets\SkyboxLoader.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
     <ClCompile Include="src\engine\entities\Entity.cpp" />
     <ClCompile Include="src\engine\entities\EntityPool.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="include\engine\Application.h" />
     <ClInclude Include="include\engine\assets\AssetsManager.h" />
     <ClInclude Include="include\engine\assets\Image.h" />
+    <ClInclude Include="include\engine\assets\SkyboxLoader.h" />
     <ClInclude Include="include\engine\graphics\DebugCallback.h" />
     <ClInclude Include="include\engine\scene\Light.h" />
     <ClInclude Include="include\engine\assets\Material.h" />
@@ -78,7 +80,7 @@
     <ClInclude Include="include\engine\io\Files.h" />
     <ClInclude Include="include\engine\scene\Camera.h" />
     <ClInclude Include="include\engine\scene\Scene.h" />
-    <ClInclude Include="include\engine\scene\Skybox.h" />
+    <ClInclude Include="include\engine\assets\Skybox.h" />
     <ClInclude Include="include\engine\Time.h" />
     <ClInclude Include="include\engine\events\EventSystem.h" />
     <ClInclude Include="include\engine\events\Input.h" />
@@ -86,8 +88,19 @@
     <ClInclude Include="include\engine\events\Mouse.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\JavaDevelopment\Beryl\src\main\resources\textures\skybox\hdr\indoor.hdr" />
     <None Include="res\shaders\pbr.frag" />
     <None Include="res\shaders\pbr.vert" />
+    <None Include="res\shaders\skybox\brdf.frag" />
+    <None Include="res\shaders\skybox\brdf.vert" />
+    <None Include="res\shaders\skybox\equirect_to_cubemap.frag" />
+    <None Include="res\shaders\skybox\equirect_to_cubemap.vert" />
+    <None Include="res\shaders\skybox\irradiance_map.frag" />
+    <None Include="res\shaders\skybox\irradiance_map.vert" />
+    <None Include="res\shaders\skybox\prefilter_map.frag" />
+    <None Include="res\shaders\skybox\prefilter_map.vert" />
+    <None Include="res\shaders\skybox\skybox.frag" />
+    <None Include="res\shaders\skybox\skybox.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FD85E8D7-CBFB-464D-B5BF-A7916FAC64E8}</ProjectGuid>

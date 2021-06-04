@@ -15,8 +15,10 @@ namespace utad
 		Framebuffer& operator=(const Framebuffer& other) = delete;
 		Handle handle() const { return m_Handle; }
 		void bind();
+		void unbind();
 		void setDepthOnly();
 		void addTextureAttachment(GLenum attachment, Texture2D* texture, int level = 0);
+		void detachTextureAttachment(GLenum attachment);
 		void ensureComplete();
 	public:
 		static void bindDefault();
