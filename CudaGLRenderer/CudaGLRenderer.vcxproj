@@ -17,6 +17,7 @@
     <ClCompile Include="src\engine\assets\Material.cpp" />
     <ClCompile Include="src\engine\assets\Model.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
+    <ClCompile Include="src\engine\assets\Primitives.cpp" />
     <ClCompile Include="src\engine\assets\Skybox.cpp" />
     <ClCompile Include="src\engine\assets\SkyboxLoader.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="include\engine\Application.h" />
     <ClInclude Include="include\engine\assets\AssetsManager.h" />
     <ClInclude Include="include\engine\assets\Image.h" />
+    <ClInclude Include="include\engine\assets\Primitives.h" />
     <ClInclude Include="include\engine\assets\SkyboxLoader.h" />
     <ClInclude Include="include\engine\graphics\DebugCallback.h" />
     <ClInclude Include="include\engine\scene\Light.h" />

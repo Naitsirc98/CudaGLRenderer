@@ -1,66 +1,10 @@
 #include "engine/assets/SkyboxLoader.h"
 #include "engine/io/Files.h"
 #include "engine/assets/Image.h"
+#include "engine/assets/Primitives.h"
 
 namespace utad
 {
-	static const GLenum QUAD_DRAW_MODE = GL_TRIANGLE_STRIP;
-	static const size_t QUAD_VERTICES_COUNT = 4;
-	static float QUAD_VERTICES[] = {
-		// positions        // texture Coords
-		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f
-	};
-
-	static const GLenum CUBE_DRAW_MODE = GL_TRIANGLES;
-	static const size_t CUBE_VERTICES_COUNT = 36;
-	static float CUBE_VERTICES[] = {
-		// back face
-		-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-		 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-		 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
-		 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-		-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-		-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-		// front face
-		-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-		 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-		 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-		 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-		-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-		-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-		// left face
-		-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-		-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-		-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-		-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-		-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-		-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-		// right face
-		 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-		 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-		 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
-		 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-		 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-		 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
-		// bottom face
-		-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-		 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-		 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-		 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-		-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-		-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-		// top face
-		-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-		 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-		 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
-		 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-		-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-		-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left  
-	};
-
 	SkyboxLoader::SkyboxLoader()
 	{
 	}
@@ -80,8 +24,14 @@ namespace utad
 	{
 		Skybox* skybox = new Skybox();
 
+		skybox->environmentMap = createEnvironmentMap(hdrImagePath, loadInfo);
+		skybox->irradianceMap = createIrradianceMap(skybox->environmentMap, loadInfo);
+		skybox->prefilterMap = createPrefilterMap(skybox->environmentMap, loadInfo);
+		skybox->brdfMap = createBRDFMap(skybox->environmentMap, loadInfo);
 		skybox->maxPrefilterLOD = loadInfo.maxLOD;
 		skybox->prefilterLODBias = loadInfo.lodBias;
+
+		Framebuffer::bindDefault();
 
 		return skybox;
 	}
@@ -105,21 +55,31 @@ namespace utad
 
 		bakeEnvironmentMap(hdrTexture, environmentMap, loadInfo.environmentMapSize);
 
+		UTAD_DELETE(hdrTexture);
+
 		return environmentMap;
 	}
 
 	Texture2D* SkyboxLoader::loadHDRTexture(const String& hdrImagePath, const SkyboxLoadInfo& loadInfo)
 	{
 		Texture2D* hdrTexture = new Texture2D();
-		Image* image = ImageFactory::createImage(hdrImagePath, GL_RGBA16F, true);
+		Image* image = ImageFactory::createImage(hdrImagePath, GL_RGB16F, true);
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_RGBA16F;
+		allocInfo.format = GL_RGB16F;
 		allocInfo.width = image->width();
 		allocInfo.height = image->height();
-		allocInfo.levels = 0;
+		allocInfo.levels = 1;
 
 		hdrTexture->allocate(std::move(allocInfo));
+
+		Texture2DUpdateInfo updateInfo = {};
+		updateInfo.format = GL_RGB;
+		updateInfo.level = 0;
+		updateInfo.type = GL_FLOAT;
+		updateInfo.pixels = image->pixels();
+
+		hdrTexture->update(std::move(updateInfo));
 
 		hdrTexture->wrap(GL_CLAMP_TO_EDGE);
 		hdrTexture->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -253,7 +213,7 @@ namespace utad
 			{
 				m_QuadVAO->bind();
 				{
-					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+					glDrawArrays(Primitives::quadDrawMode, 0, Primitives::quadVertexCount);
 				}
 				m_QuadVAO->unbind();
 			}
@@ -272,12 +232,12 @@ namespace utad
 	static Array<Matrix4, 6> getViewMatrices()
 	{
 		return {
-			math::lookAt(Vector3(0.0f), {1.0f, 0.0f, 0.0f},  {0.0f, -1.0f, 0.0f}),
-			math::lookAt(Vector3(0.0f), {-1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}),
-			math::lookAt(Vector3(0.0f), {0.0f, 1.0f, 0.0f},  {0.0f, 0.0f, 1.0f}),
-			math::lookAt(Vector3(0.0f), {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}),
-			math::lookAt(Vector3(0.0f), {0.0f, 0.0f, 1.0f},  {0.0f, -1.0f, 0.0f}),
-			math::lookAt(Vector3(0.0f), {0.0f, 0.0f, -1.0f}, {0.0f, -1.0f, 0.0f})
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 1.0f,  0.0f,  0.0f), Vector3(0.0f, -1.0f,  0.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(-1.0f,  0.0f,  0.0f), Vector3(0.0f, -1.0f,  0.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f,  1.0f,  0.0f), Vector3(0.0f,  0.0f,  1.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f, -1.0f,  0.0f), Vector3(0.0f,  0.0f, -1.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f,  0.0f,  1.0f), Vector3(0.0f, -1.0f,  0.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f, 0.0f, -1.0f),  Vector3( 0.0f, -1.0f, 0.0f))
 		};
 	}
 
@@ -297,7 +257,8 @@ namespace utad
 				{
 					GLenum face = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
 					
-					shader->setUniform("u_ProjectionViewMatrix", projMatrix * viewMatrices[i]);
+					Matrix4 projViewMatrix = projMatrix * viewMatrices[i];
+					shader->setUniform("u_ProjectionViewMatrix", projViewMatrix);
 					
 					m_Framebuffer->bind();
 
@@ -309,6 +270,8 @@ namespace utad
 			m_Framebuffer->unbind();
 		}
 		m_CubeVAO->unbind();
+
+		glFinish();
 	}
 
 	void SkyboxLoader::createFramebuffer()
@@ -324,63 +287,12 @@ namespace utad
 
 	void SkyboxLoader::createQuad()
 	{
-		m_QuadVAO = new VertexArray();
-
-		VertexBuffer* vbo = new VertexBuffer();
-		
-		BufferAllocInfo vboAllocInfo = {};
-		vboAllocInfo.size = QUAD_VERTICES_COUNT * sizeof(float);
-		vboAllocInfo.data = QUAD_VERTICES;
-		vboAllocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
-
-		vbo->allocate(std::move(vboAllocInfo));
-
-		VertexAttrib position = {};
-		position.count = 3;
-		position.type = GL_FLOAT;
-
-		VertexAttrib texCoords = {};
-		texCoords.count = 2;
-		texCoords.type = GL_FLOAT;
-
-		m_QuadVAO->addVertexBuffer(0, vbo, 5 * sizeof(float));
-		m_QuadVAO->setVertexAttrib(0, position, 0, 0);
-		m_QuadVAO->setVertexAttrib(0, texCoords, 1, 3 * sizeof(float));
-
-		m_QuadVAO->setDestroyBuffersOnDelete();
+		m_QuadVAO = Primitives::createQuadVAO();
 	}
 
 	void SkyboxLoader::createCube()
 	{
-		m_CubeVAO = new VertexArray();
-
-		VertexBuffer* vbo = new VertexBuffer();
-
-		BufferAllocInfo vboAllocInfo = {};
-		vboAllocInfo.size = QUAD_VERTICES_COUNT * sizeof(float);
-		vboAllocInfo.data = QUAD_VERTICES;
-		vboAllocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
-
-		vbo->allocate(std::move(vboAllocInfo));
-
-		VertexAttrib position = {};
-		position.count = 3;
-		position.type = GL_FLOAT;
-
-		VertexAttrib normal = {};
-		normal.count = 3;
-		normal.type = GL_FLOAT;
-
-		VertexAttrib texCoords = {};
-		texCoords.count = 2;
-		texCoords.type = GL_FLOAT;
-
-		m_CubeVAO->addVertexBuffer(0, vbo, 8 * sizeof(float));
-		m_CubeVAO->setVertexAttrib(0, position, 0, 0);
-		m_CubeVAO->setVertexAttrib(0, normal, 1, 3 * sizeof(float));
-		m_CubeVAO->setVertexAttrib(0, texCoords, 2, 6 * sizeof(float));
-
-		m_CubeVAO->setDestroyBuffersOnDelete();
+		m_CubeVAO = Primitives::createCubeVAO();
 	}
 
 	void SkyboxLoader::createShaders()
@@ -398,7 +310,7 @@ namespace utad
 
 	void SkyboxLoader::createEnvironmentMapShader()
 	{
-		Shader* shader = new Shader("EnvironmentMap");
+		m_EnvironmentMapShader = new Shader("EnvironmentMap");
 		
 		ShaderStage vertex = {};
 		vertex.name = "EnvironmentMap Vertex Shader";
@@ -410,10 +322,10 @@ namespace utad
 		frag.type = GL_FRAGMENT_SHADER;
 		frag.sourceCode = std::move(Files::readAllText(SHADERS_DIR + ENVIRONMENT_MAP_FRAGMENT_SHADER_FILE));
 
-		shader->attach(&vertex);
-		shader->attach(&frag);
+		m_EnvironmentMapShader->attach(&vertex);
+		m_EnvironmentMapShader->attach(&frag);
 
-		shader->compile();
+		m_EnvironmentMapShader->compile();
 	}
 
 	static const char* IRRADIANCE_MAP_VERTEX_SHADER_FILE = "irradiance_map.vert";
@@ -421,7 +333,7 @@ namespace utad
 
 	void SkyboxLoader::createIrradianceMapShader()
 	{
-		Shader* shader = new Shader("Irradiance");
+		m_IrradianceShader = new Shader("Irradiance");
 
 		ShaderStage vertex = {};
 		vertex.name = "Irradiance Vertex Shader";
@@ -433,10 +345,10 @@ namespace utad
 		frag.type = GL_FRAGMENT_SHADER;
 		frag.sourceCode = std::move(Files::readAllText(SHADERS_DIR + IRRADIANCE_MAP_FRAGMENT_SHADER_FILE));
 
-		shader->attach(&vertex);
-		shader->attach(&frag);
+		m_IrradianceShader->attach(&vertex);
+		m_IrradianceShader->attach(&frag);
 
-		shader->compile();
+		m_IrradianceShader->compile();
 	}
 
 	static const char* PREFILTER_MAP_VERTEX_SHADER_FILE = "prefilter_map.vert";
@@ -444,7 +356,7 @@ namespace utad
 
 	void SkyboxLoader::createPrefilterMapShader()
 	{
-		Shader* shader = new Shader("PrefilterMap");
+		m_PrefilterShader = new Shader("PrefilterMap");
 
 		ShaderStage vertex = {};
 		vertex.name = "Prefilter Vertex Shader";
@@ -456,10 +368,10 @@ namespace utad
 		frag.type = GL_FRAGMENT_SHADER;
 		frag.sourceCode = std::move(Files::readAllText(SHADERS_DIR + PREFILTER_MAP_FRAGMENT_SHADER_FILE));
 
-		shader->attach(&vertex);
-		shader->attach(&frag);
+		m_PrefilterShader->attach(&vertex);
+		m_PrefilterShader->attach(&frag);
 
-		shader->compile();
+		m_PrefilterShader->compile();
 	}
 
 	static const char* BRDF_MAP_VERTEX_SHADER_FILE = "brdf.vert";
@@ -467,7 +379,7 @@ namespace utad
 
 	void SkyboxLoader::createBRDFMapShader()
 	{
-		Shader* shader = new Shader("BRDFMap");
+		m_BRDFShader = new Shader("BRDFMap");
 
 		ShaderStage vertex = {};
 		vertex.name = "BRDF Vertex Shader";
@@ -479,9 +391,9 @@ namespace utad
 		frag.type = GL_FRAGMENT_SHADER;
 		frag.sourceCode = std::move(Files::readAllText(SHADERS_DIR + BRDF_MAP_FRAGMENT_SHADER_FILE));
 
-		shader->attach(&vertex);
-		shader->attach(&frag);
+		m_BRDFShader->attach(&vertex);
+		m_BRDFShader->attach(&frag);
 
-		shader->compile();
+		m_BRDFShader->compile();
 	}
 }

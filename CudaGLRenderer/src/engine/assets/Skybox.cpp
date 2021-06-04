@@ -4,8 +4,5 @@
 
 namespace utad
 {
-	Skybox* Skybox::create(const String& path, const SkyboxLoadInfo& loadInfo)
-	{
-		return Assets::get().loadSkybox(path, loadInfo);
-	}
+
 }

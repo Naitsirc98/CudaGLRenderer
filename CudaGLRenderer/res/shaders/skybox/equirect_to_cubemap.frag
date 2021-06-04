@@ -8,8 +8,8 @@ layout(location = 0) in vec3 frag_WorldPosition;
 layout(location = 0) out vec4 out_FinalColor;
 
 
-vec2 sampleSphericalMap(vec3 v) {
-
+vec2 sampleSphericalMap(vec3 v) 
+{
     vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
     // Inverse atan
     uv = uv * vec2(0.1591, 0.3183) + 0.5;

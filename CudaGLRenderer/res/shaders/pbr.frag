@@ -263,7 +263,7 @@ vec3 getNormalFromMap(Material material, vec2 uv, vec3 position, vec3 normal)
     vec3 B = -normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
-    return normalize(TBN * tangentNormal);
+    return normalize(TBN * tangentNormal * material.normalScale);
  }
 
  vec3 getNormal(Material material, vec2 uv, vec3 position, vec3 normal)

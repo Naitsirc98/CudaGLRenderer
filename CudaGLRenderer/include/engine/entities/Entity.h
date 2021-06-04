@@ -26,6 +26,7 @@ namespace utad
 		Transform m_Transform;
 		ArrayList<Script*> m_Scripts;
 		MeshView m_MeshView;
+		bool m_Enabled{true};
 	private:
 		Entity();
 		Entity(const Entity& other) = delete;
@@ -46,6 +47,8 @@ namespace utad
 		void addScript(Script* script);
 		void removeScript(Script* script);
 		MeshView& meshView();
+		bool enabled() const;
+		void setEnabled(bool enable);
 		void destroy();
 	private:
 		void init(EntityID id, const String& name, uint sceneIndex);

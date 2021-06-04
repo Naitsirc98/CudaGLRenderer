@@ -27,8 +27,5 @@ namespace utad
 
 	private:
 		Skybox() = default;
-
-	public:
-		static Skybox* create(const String& path, const SkyboxLoadInfo& loadInfo);
 	};
 }

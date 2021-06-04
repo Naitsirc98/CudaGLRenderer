@@ -1,6 +1,7 @@
 #include "engine/graphics/MeshRenderer.h"
 #include "engine/io/Files.h"
 #include "engine/scene/Scene.h"
+#include "engine/graphics/Window.h"
 
 namespace utad
 {
@@ -58,10 +59,15 @@ namespace utad
 	{
 		const Camera& camera = renderInfo.camera;
 		const Color& clearColor = camera.clearColor();
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
 		glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		glEnable(GL_BLEND);
+		
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

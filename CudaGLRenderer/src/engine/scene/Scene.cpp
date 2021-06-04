@@ -1,4 +1,5 @@
 #include "engine/scene/Scene.h"
+#include "engine/graphics/Window.h"
 
 namespace utad
 {
@@ -74,11 +75,26 @@ namespace utad
 		return m_RenderInfo.pointLights;
 	}
 
+	Skybox* Scene::skybox() const
+	{
+		return m_RenderInfo.skybox;
+	}
+
+	void Scene::setSkybox(Skybox* skybox, bool deleteExisting)
+	{
+		if (deleteExisting)
+		{
+			UTAD_DELETE(m_RenderInfo.skybox);
+		}
+		m_RenderInfo.skybox = skybox;
+	}
+
 	void Scene::update()
 	{
 		for (Entity* entity : m_EntityPool->entities())
 		{
 			if (entity->id() == NULL) continue;
+			if (!entity->enabled()) continue;
 			entity->update();
 		}
 	}
@@ -92,12 +108,18 @@ namespace utad
 		for (Entity* entity : m_EntityPool->entities())
 		{
 			if (entity->id() == NULL) continue;
+			if (!entity->enabled()) continue;
 			entity->meshView().update(*m_MeshRenderer);
 		}
 	}
 
 	void Scene::render()
 	{
+		const Window& window = Window::get();
+		Framebuffer::bindDefault();
+		glViewport(0, 0, window.width(), window.height());
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 		m_MeshRenderer->render(m_RenderInfo);
 		m_SkyboxRenderer->render(m_RenderInfo);
 	}

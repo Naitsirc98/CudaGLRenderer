@@ -49,6 +49,8 @@ namespace utad
 		Light& dirLight();
 		void enableDirLight(bool enable);
 		ArrayList<Light>& pointLights();
+		Skybox* skybox() const;
+		void setSkybox(Skybox* skybox, bool deleteExisting = true);
 	private:
 		void update();
 		void lastUpdate();

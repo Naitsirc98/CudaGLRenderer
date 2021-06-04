@@ -7,7 +7,7 @@ namespace utad
 {
     struct SkyboxLoadInfo
     {
-        int environmentMapSize{0};
+        int environmentMapSize{2048};
         int irradianceMapSize{64};
         int prefilterMapSize{2048};
         int brdfSize{512};

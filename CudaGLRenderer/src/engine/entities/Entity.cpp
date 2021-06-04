@@ -126,13 +126,23 @@ namespace utad
 
 		for (Entity* child : m_Children)
 		{
-			child->update();
+			if(child->enabled()) child->update();
 		}
 	}
 
 	MeshView& Entity::meshView()
 	{
 		return m_MeshView;
+	}
+
+	bool Entity::enabled() const
+	{
+		return m_Enabled;
+	}
+
+	void Entity::setEnabled(bool enable)
+	{
+		m_Enabled = enable;
 	}
 
 	void Entity::onDestroy()

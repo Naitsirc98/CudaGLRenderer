@@ -9,6 +9,9 @@ namespace utad
 	{
 		friend class Scene;
 	private:
+		Shader* m_Shader;
+		VertexArray* m_CubeVAO;
+	private:
 		SkyboxRenderer();
 		~SkyboxRenderer();
 	public:
