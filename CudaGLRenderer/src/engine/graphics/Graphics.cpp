@@ -1,6 +1,8 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/graphics/Window.h"
 #include "engine/events/EventSystem.h"
+#include "engine/assets/Primitives.h"
+#include "engine/io/Files.h"
 
 namespace utad
 {
@@ -10,11 +12,28 @@ namespace utad
 	Texture2D* Graphics::s_ColorTexture;
 	Texture2D* Graphics::s_BrightnessTexture;
 	Texture2D* Graphics::s_DepthTexture;
+	VertexArray* Graphics::s_QuadVAO;
+	Shader* Graphics::s_QuadShader;
 
 
 	Framebuffer* Graphics::getDefaultFramebuffer()
 	{
 		return s_DefaultFramebuffer;
+	}
+
+	Texture2D* Graphics::getColorTexture()
+	{
+		return s_ColorTexture;
+	}
+
+	Texture2D* Graphics::getBrightnessTexture()
+	{
+		return s_BrightnessTexture;
+	}
+
+	Texture2D* Graphics::getDepthTexture()
+	{
+		return s_DepthTexture;
 	}
 
 	void Graphics::begin()
@@ -28,22 +47,22 @@ namespace utad
 
 	void Graphics::end()
 	{
-		const GLint width = Window::get().width();
-		const GLint height = Window::get().height();
+		glFinish();
 
-		glBlitNamedFramebuffer(
-			s_DefaultFramebuffer->handle(),
-			SCREEN_FRAMEBUFFER,
-			0,
-			0,
-			width,
-			height,
-			0,
-			0,
-			width,
-			height,
-			GL_COLOR_BUFFER_BIT,
-			GL_LINEAR);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		s_QuadShader->bind();
+		{
+			s_QuadShader->setTexture("u_Texture", s_ColorTexture);
+			s_QuadVAO->bind();
+			{
+				glDrawArrays(Primitives::quadDrawMode, 0, Primitives::quadVertexCount);
+			}
+			s_QuadVAO->unbind();
+		}
+		s_QuadShader->unbind();
 
 		Window::get().swapBuffers();
 	}
@@ -51,6 +70,8 @@ namespace utad
 	void Graphics::init()
 	{
 		createFramebuffer();
+		createQuad();
+		createShader();
 
 		EventSystem::addEventCallback(EventType::WindowResize, [&](const Event& e) {			
 			freeFramebuffer();
@@ -61,6 +82,8 @@ namespace utad
 	void Graphics::destroy()
 	{
 		freeFramebuffer();
+		UTAD_DELETE(s_QuadVAO);
+		UTAD_DELETE(s_QuadShader);
 	}
 
 	void Graphics::createColorTexture()
@@ -102,7 +125,7 @@ namespace utad
 		s_DepthTexture = new Texture2D();
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_DEPTH_COMPONENT24;
+		allocInfo.format = GL_DEPTH_COMPONENT32;
 		allocInfo.width = Window::get().width();
 		allocInfo.height = Window::get().height();
 		allocInfo.levels = 1;
@@ -135,5 +158,28 @@ namespace utad
 		UTAD_DELETE(s_ColorTexture);
 		UTAD_DELETE(s_BrightnessTexture);
 		UTAD_DELETE(s_DepthTexture);
+	}
+
+	void Graphics::createQuad()
+	{
+		s_QuadVAO = Primitives::createQuadVAO();
+	}
+
+	void Graphics::createShader()
+	{
+		s_QuadShader = new Shader("Quad Shader");
+
+		ShaderStage vertex = {};
+		vertex.type = GL_VERTEX_SHADER;
+		vertex.sourceCode = Files::readAllText("G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/shaders/quad.vert");
+
+		ShaderStage fragment = {};
+		fragment.type = GL_FRAGMENT_SHADER;
+		fragment.sourceCode = Files::readAllText("G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/shaders/quad.frag");
+
+		s_QuadShader->attach(&vertex);
+		s_QuadShader->attach(&fragment);
+
+		s_QuadShader->compile();
 	}
 }

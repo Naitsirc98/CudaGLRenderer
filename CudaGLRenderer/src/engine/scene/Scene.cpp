@@ -26,6 +26,7 @@ namespace utad
 		m_EntityPool = new EntityPool();
 		m_MeshRenderer = new MeshRenderer();
 		m_SkyboxRenderer = new SkyboxRenderer();
+		m_PostFXRenderer = new PostFXRenderer();
 	}
 
 	Scene::~Scene()
@@ -33,6 +34,7 @@ namespace utad
 		UTAD_DELETE(m_EntityPool);
 		UTAD_DELETE(m_MeshRenderer);
 		UTAD_DELETE(m_SkyboxRenderer);
+		UTAD_DELETE(m_PostFXRenderer);
 	}
 
 	Entity* Scene::createEntity(const String& name)
@@ -89,6 +91,11 @@ namespace utad
 		m_RenderInfo.skybox = skybox;
 	}
 
+	Queue<PostFX>& Scene::postEffects()
+	{
+		return m_RenderInfo.postEffects;
+	}
+
 	void Scene::update()
 	{
 		for (Entity* entity : m_EntityPool->entities())
@@ -117,6 +124,7 @@ namespace utad
 	{
 		m_MeshRenderer->render(m_RenderInfo);
 		m_SkyboxRenderer->render(m_RenderInfo);
+		m_PostFXRenderer->render(m_RenderInfo);
 	}
 
 }

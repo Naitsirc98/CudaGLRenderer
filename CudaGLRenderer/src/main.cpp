@@ -143,8 +143,23 @@ public:
 		scene.camera().position({0, 0.5f, 7});
 	}
 
+	float lastTime = 0;
+
 	void onUpdate()
 	{
+		if (Input::isKeyActive(Key::Key_F10) && Time::time() - lastTime >= 0.3f)
+		{
+			lastTime = Time::time();
+
+			if (Scene::get().postEffects().empty())
+			{
+				Scene::get().postEffects().push_back(PostFX::Inversion);
+			}
+			else
+			{
+				Scene::get().postEffects().clear();
+			}
+		}
 	}
 };
 

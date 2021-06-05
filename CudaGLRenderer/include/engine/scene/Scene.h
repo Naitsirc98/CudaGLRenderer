@@ -1,10 +1,12 @@
 #pragma once
+
 #include "engine/entities/EntityPool.h"
-#include "engine/graphics/MeshRenderer.h"
-#include "engine/graphics/SkyboxRenderer.h"
 #include "Camera.h"
 #include "Light.h"
 #include "engine/assets/Skybox.h"
+#include "engine/graphics/MeshRenderer.h"
+#include "engine/graphics/SkyboxRenderer.h"
+#include "engine/graphics/postfx/PostFXRenderer.h"
 
 namespace utad
 {
@@ -17,6 +19,7 @@ namespace utad
 		bool enableDirLight;
 		ArrayList<Light> pointLights;
 		Skybox* skybox{nullptr};
+		Queue<PostFX> postEffects;
 
 	private:
 		RenderInfo() {}
@@ -36,6 +39,7 @@ namespace utad
 		EntityPool* m_EntityPool;
 		MeshRenderer* m_MeshRenderer;
 		SkyboxRenderer* m_SkyboxRenderer;
+		PostFXRenderer* m_PostFXRenderer;
 		RenderInfo m_RenderInfo;
 	private:
 		Scene();
@@ -51,6 +55,7 @@ namespace utad
 		ArrayList<Light>& pointLights();
 		Skybox* skybox() const;
 		void setSkybox(Skybox* skybox, bool deleteExisting = true);
+		Queue<PostFX>& postEffects();
 	private:
 		void update();
 		void lastUpdate();

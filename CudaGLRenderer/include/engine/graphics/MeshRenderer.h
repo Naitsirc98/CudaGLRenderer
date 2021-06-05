@@ -46,7 +46,7 @@ namespace utad
 		~MeshRenderer();
 		RenderQueue& getRenderQueue(const String& name);
 	private:
-		void render(const RenderInfo& camera);
+		void render(const RenderInfo& info);
 		void render(const Matrix4* transformation, const Mesh* mesh, const Material* material);
 		void setCameraUniforms(const Camera& camera);
 		void setLightUniforms(bool dirLightPresent, const Light& dirLight, const ArrayList<Light>& pointLights);

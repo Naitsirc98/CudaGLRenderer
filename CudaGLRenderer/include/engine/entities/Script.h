@@ -26,8 +26,8 @@ namespace utad
 	public:
 		LambdaScript(const Function <void>& onUpdateFunc = LambdaScript::defaultFunction) : m_OnUpdate(onUpdateFunc) { }
 		void onUpdate() override { m_OnUpdate(); }
-		LambdaScript& setOnUpdate(const Function<void>& function) { this->m_OnUpdate = function; }
-		LambdaScript& setOnDestroy(const Function<void>& function) { this->m_OnDestroy = function; }
+		LambdaScript& setOnUpdate(const Function<void>& function) { this->m_OnUpdate = function; return *this; }
+		LambdaScript& setOnDestroy(const Function<void>& function) { this->m_OnDestroy = function; return *this;}
 	private:
 		static void defaultFunction() {}
 	};

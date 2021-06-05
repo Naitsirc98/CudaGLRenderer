@@ -90,6 +90,13 @@ namespace utad
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	void* Texture2D::pixels(int level, GLenum format, GLenum type, size_t size, void* buffer) const
+	{
+		if (buffer == nullptr) buffer = new byte[size];
+		glGetTextureImage(m_Handle, level, format, type, size, buffer);
+		return buffer;
+	}
+
 	Texture2D* Texture2D::load(const String& imagePath, GLenum format, bool flipY)
 	{
 		Image* image = ImageFactory::createImage(imagePath, format, flipY);

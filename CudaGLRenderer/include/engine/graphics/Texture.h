@@ -65,6 +65,7 @@ namespace utad
 		int height() const;
 		void bind(int unit = 0) override;
 		void unbind(int unit = 0) override;
+		void* pixels(int level, GLenum format, GLenum type, size_t size, void* buffer = nullptr) const;
 	public:
 		static Texture2D* load(const String& imagePath, GLenum format = GL_RGBA, bool flipY = true);
 	};
