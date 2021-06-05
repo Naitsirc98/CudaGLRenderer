@@ -100,6 +100,18 @@ public:
 		return mat;
 	}
 
+	void createSphere(const String& name, const Vector3& pos)
+	{
+		static Mesh* mesh = Primitives::createSphereMesh(64, 64);
+		Material* material = createMaterial(name);
+
+		Entity* sphere = Entity::create();
+		sphere->transform().position() = pos;
+		sphere->meshView().mesh(mesh);
+		sphere->meshView().material(material);
+		sphere->setEnabled(true);
+	}
+
 	void onStart()
 	{
 		Scene& scene = Scene::get();
@@ -120,25 +132,15 @@ public:
 
 		ModelLoader loader;
 		loader.debugMode(true);
-		Model* model = loader.load("TheModel", SPHERE);
+		Model* model = loader.load("TheModel", HELMET);
 
-		Mesh* mesh = Primitives::createSphereMesh(64, 64);
-		Material* material = model->materials().empty() ? nullptr : model->materials()[0];
+		createSphere("rusted_iron", {0, 0, 0});
+		createSphere("gold", {-2.5f, 0, 0});
+		createSphere("wall", {2.5f, 0, 0});
+		createSphere("plastic", {-5.0f, 0, 0});
+		createSphere("grass", {5.0f, 0, 0});
 
-		if (material == nullptr)
-		{
-			material = createMaterial("gold");
-		}
-		//material->fresnel0(0.02f);
-
-		Entity* object = Entity::create();
-		object->meshView().mesh(mesh);
-		object->meshView().material(material);
-		//object->transform().rotate(45, Vector3(1, 0, 0));
-		object->setEnabled(true);
-
-		scene.camera().position({0, 0.5f, 5});
-
+		scene.camera().position({0, 0.5f, 7});
 	}
 
 	void onUpdate()

@@ -312,6 +312,9 @@ namespace utad
 				WindowResizeEvent& event = static_cast<WindowResizeEvent&>(e);
 				if (m_State == WindowState::MINIMIZED && (event.size().x > 0 || event.size().y > 0))
 					m_State = WindowState::WINDOWED;
+
+				m_Width = event.size().x;
+				m_Height = event.size().y;
 			});
 
 	}
