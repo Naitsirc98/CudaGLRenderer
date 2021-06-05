@@ -21,7 +21,7 @@ namespace utad
 
 	void Framebuffer::unbind()
 	{
-		Framebuffer::bindDefault();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void Framebuffer::setDepthOnly()
@@ -45,10 +45,5 @@ namespace utad
 	{
 		const GLint status = glCheckNamedFramebufferStatus(m_Handle, GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE) throw UTAD_EXCEPTION(String("Framebuffer is not complete: ").append(std::to_string(status)));
-	}
-
-	void Framebuffer::bindDefault()
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }

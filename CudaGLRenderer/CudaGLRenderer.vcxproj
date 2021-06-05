@@ -31,6 +31,7 @@
     <ClCompile Include="src\engine\graphics\DebugCallback.cpp" />
     <ClCompile Include="src\engine\graphics\Framebuffer.cpp" />
     <ClCompile Include="src\engine\graphics\glad.c" />
+    <ClCompile Include="src\engine\graphics\Graphics.cpp" />
     <ClCompile Include="src\engine\graphics\MeshRenderer.cpp" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\SkyboxRenderer.cpp" />

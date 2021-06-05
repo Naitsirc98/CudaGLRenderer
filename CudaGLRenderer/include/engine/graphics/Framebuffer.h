@@ -20,7 +20,5 @@ namespace utad
 		void addTextureAttachment(GLenum attachment, Texture2D* texture, int level = 0);
 		void detachTextureAttachment(GLenum attachment);
 		void ensureComplete();
-	public:
-		static void bindDefault();
 	};
 }

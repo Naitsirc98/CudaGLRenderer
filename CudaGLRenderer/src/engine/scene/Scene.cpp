@@ -115,11 +115,6 @@ namespace utad
 
 	void Scene::render()
 	{
-		const Window& window = Window::get();
-		Framebuffer::bindDefault();
-		glViewport(0, 0, window.width(), window.height());
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 		m_MeshRenderer->render(m_RenderInfo);
 		m_SkyboxRenderer->render(m_RenderInfo);
 	}

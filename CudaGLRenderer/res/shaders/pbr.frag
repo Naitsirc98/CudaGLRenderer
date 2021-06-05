@@ -84,7 +84,8 @@ layout(location = 0) in Fragment
 	vec2 texCoords;
 } fragment;
 
-layout(location = 0) out vec4 out_FragmentColor;
+layout(location = 0) out vec4 out_Color;
+layout(location = 1) out vec4 out_Brightness;
 
 RenderInfo g_Info;
 
@@ -349,8 +350,10 @@ vec4 computeLighting()
 void main()
 {
 	vec4 color = computeLighting();
-
     vec4 emissive = u_Material.emissiveColor * texture(u_EmissiveMap, fragment.texCoords);
 
-	out_FragmentColor = vec4((color + emissive).rgb, u_Material.alpha);
+	out_Color = vec4((color + emissive).rgb, u_Material.alpha);
+
+    float brightness = dot(out_Color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    out_Brightness = brightness > 1.0 ? vec4(out_Color.rgb, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
 }

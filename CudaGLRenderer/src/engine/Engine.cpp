@@ -66,6 +66,7 @@ namespace utad
 		AssetsManager::init();
 		m_Scene = Scene::init();
 		m_Window->show();
+		Graphics::init();
 		m_App.onStart();
 	}
 
@@ -119,9 +120,12 @@ namespace utad
 
 	void Engine::render()
 	{
-		m_Scene->render();
-		m_App.onRender();
-		m_Window->swapBuffers();
+		Graphics::begin();
+		{
+			m_Scene->render();
+			m_App.onRender();
+		}
+		Graphics::end();
 	}
 
 	void Engine::shutdown()
