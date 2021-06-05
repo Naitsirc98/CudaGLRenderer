@@ -51,6 +51,7 @@ namespace utad
 			m_Shader->setUniform("u_ProjectionMatrix", info.camera.projectionMatrix());
 			m_Shader->setUniform("u_ViewMatrix", info.camera.viewMatrix());
 			m_Shader->setTexture("u_SkyboxTexture", info.skybox->environmentMap);
+			m_Shader->setUniform("u_EnableHDR", true);
 
 			m_CubeVAO->bind();
 			{

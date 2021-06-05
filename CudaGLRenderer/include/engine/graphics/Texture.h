@@ -40,6 +40,8 @@ namespace utad
 		virtual void unbind(int unit = 0) = 0;
 	};
 
+	class Image;
+
 	class Texture2D : public Texture
 	{
 	private:
@@ -54,6 +56,7 @@ namespace utad
 		Handle handle() const override { return m_Handle; }
 		void allocate(const TextureAllocInfo& allocInfo);
 		void update(const Texture2DUpdateInfo& updateInfo);
+		void setImage(const Image* image, bool deleteImage = true);
 		void filter(GLenum filterType, GLenum filter);
 		void wrap(GLenum clamp);
 		void wrap(GLenum coord, GLenum clamp);
@@ -62,6 +65,8 @@ namespace utad
 		int height() const;
 		void bind(int unit = 0) override;
 		void unbind(int unit = 0) override;
+	public:
+		static Texture2D* load(const String& imagePath, GLenum format = GL_RGBA, bool flipY = true);
 	};
 
 	class Cubemap : public Texture

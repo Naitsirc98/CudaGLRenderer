@@ -128,6 +128,9 @@ namespace utad
 		if (node.mesh < 0) return;
 
 		gltf::Model& model = *info.model;
+
+		if (model.meshes.empty()) return;
+
 		Map<int, BufferView>& buffers = *info.buffers;
 		gltf::Mesh& mesh = model.meshes[node.mesh];
 		gltf::Primitive primitive = mesh.primitives[0]; // Only supports 1 primitive per mesh for now
@@ -217,6 +220,7 @@ namespace utad
 		gltf::Model& model = *info.model;
 		gltf::Mesh& mesh = model.meshes[node.mesh];
 
+		if (model.materials.empty()) return;
 		if (mesh.primitives[0].material < 0) return;
 
 		gltf::Material& mat = model.materials[mesh.primitives[0].material];
@@ -236,8 +240,8 @@ namespace utad
 		material->roughness(static_cast<float>(pbr.roughnessFactor));
 		material->metallic(static_cast<float>(pbr.metallicFactor));
 		material->metallicRoughnessMap(toTexture2D(info, pbr.metallicRoughnessTexture.index, material->metallicRoughnessMap()));
-		material->occlussion(static_cast<float>(mat.occlusionTexture.strength));
-		material->occlussionMap(toTexture2D(info, mat.occlusionTexture.index, material->occlussionMap()));
+		material->occlusion(static_cast<float>(mat.occlusionTexture.strength));
+		material->occlusionMap(toTexture2D(info, mat.occlusionTexture.index, material->occlusionMap()));
 		material->alpha(mat.alphaMode == "OPAQUE" ? 1 : static_cast<float>(mat.alphaCutoff));
 	
 		const uint materialIndex = result.m_Model.m_Materials.size();
@@ -284,75 +288,6 @@ namespace utad
 		result->allocate(allocInfo);
 
 		return result;
-	}
-
-	static GLenum getPixelFormatFrom(int component)
-	{
-		switch (component)
-		{
-			case 1: return GL_RED;
-			case 2: return GL_RG;
-			case 3: return GL_RGB;
-			case 4: return GL_RGBA;
-		}
-		throw UTAD_EXCEPTION(String("Unknown format for components: ").append(std::to_string(component)));
-	}
-
-	static GLenum toSizedFormatRED(int bits, int type)
-	{
-		switch (bits)
-		{
-			case 8: return GL_R8;
-			case 16: return type == GL_FLOAT ? GL_R16F : GL_R16;
-			case 32: return type == GL_FLOAT ? GL_R32F : GL_R32UI;
-		}
-		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
-	}
-
-	static GLenum toSizedFormatRG(int bits, int type)
-	{
-		switch (bits)
-		{
-			case 8: return GL_RG8;
-			case 16: return type == GL_FLOAT ? GL_RG16F : GL_RG16;
-			case 32: return type == GL_FLOAT ? GL_RG32F : GL_RG32UI;
-		}
-		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
-	}
-
-	static GLenum toSizedFormatRGB(int bits, int type)
-	{
-		switch (bits)
-		{
-			case 8: return GL_RGB8;
-			case 16: return type == GL_FLOAT ? GL_RGB16F : GL_RGB16;
-			case 32: return type == GL_FLOAT ? GL_RGB32F : GL_RGB32UI;
-		}
-		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
-	}
-
-	static GLenum toSizedFormatRGBA(int bits, int type)
-	{
-		switch (bits)
-		{
-			case 8: return GL_RGBA8;
-			case 16: return type == GL_FLOAT ? GL_RGBA16F : GL_RGBA16;
-			case 32: return type == GL_FLOAT ? GL_RGBA32F : GL_RGBA32UI;
-		}
-		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
-	}
-
-	static GLenum toSizedFormat(GLenum format, int bits, int type)
-	{
-		switch (format)
-		{
-			case GL_RED: return toSizedFormatRED(bits, type);
-			case GL_RG: return toSizedFormatRG(bits, type);
-			case GL_RGB: return toSizedFormatRGB(bits, type);
-			case GL_RGBA: return toSizedFormatRGBA(bits, type);
-		}
-		throw UTAD_EXCEPTION(String("Unknown combination of format, bits and type: ").append(std::to_string(format)).append(" + ")
-			.append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
 	}
 
 	void ModelLoader::loadTextures(ModelInfo& info)

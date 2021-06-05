@@ -8,8 +8,8 @@ namespace utad
     struct SkyboxLoadInfo
     {
         int environmentMapSize{2048};
-        int irradianceMapSize{64};
-        int prefilterMapSize{2048};
+        int irradianceMapSize{32};
+        int prefilterMapSize{128};
         int brdfSize{512};
         float maxLOD{4.0f};
         float lodBias{-0.5f};

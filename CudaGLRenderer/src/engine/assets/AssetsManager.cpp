@@ -110,6 +110,7 @@ namespace utad
 		if (material != nullptr) throw UTAD_EXCEPTION(String("Material ").append(name).append(" already exists!"));
 		auto& materials = s_Instance->m_Materials;
 		material = new Material(g_MaterialID++);
+		initMaterialTextures(material);
 		materials[name] = material;
 		return material;
 	}
@@ -140,7 +141,7 @@ namespace utad
 	{
 		material->albedoMap(s_Instance->m_WhiteTexture);
 		material->metallicRoughnessMap(s_Instance->m_WhiteTexture);
-		material->occlussionMap(s_Instance->m_WhiteTexture);
+		material->occlusionMap(s_Instance->m_WhiteTexture);
 		material->normalMap(s_Instance->m_WhiteTexture);
 		material->emissiveMap(s_Instance->m_BlackTexture);
 	}

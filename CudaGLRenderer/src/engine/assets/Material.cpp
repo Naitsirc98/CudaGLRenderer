@@ -1,4 +1,5 @@
 #include "engine/assets/Material.h"
+#include "engine/assets/AssetsManager.h"
 
 namespace utad
 {
@@ -70,6 +71,28 @@ namespace utad
 		return *this;
 	}
 
+	Texture2D* Material::metallicMap() const
+	{
+		return m_MetallicMap;
+	}
+
+	Material& Material::metallicMap(Texture2D* map)
+	{
+		m_MetallicMap = map;
+		return *this;
+	}
+
+	Texture2D* Material::roughnessMap() const
+	{
+		return m_RoughnessMap;
+	}
+
+	Material& Material::roughnessMap(Texture2D* map)
+	{
+		m_RoughnessMap = map;
+		return *this;
+	}
+
 	Texture2D* Material::metallicRoughnessMap() const
 	{
 		return m_MetallicRoughnessMap;
@@ -81,23 +104,23 @@ namespace utad
 		return *this;
 	}
 
-	float Material::occlussion() const
+	float Material::occlusion() const
 	{
 		return m_Occlusion;
 	}
 
-	Material& Material::occlussion(float occlussion)
+	Material& Material::occlusion(float occlusion)
 	{
-		m_Occlusion = occlussion;
+		m_Occlusion = occlusion;
 		return *this;
 	}
 
-	Texture2D* Material::occlussionMap() const
+	Texture2D* Material::occlusionMap() const
 	{
 		return m_OcclussionMap;
 	}
 
-	Material& Material::occlussionMap(Texture2D* map)
+	Material& Material::occlusionMap(Texture2D* map)
 	{
 		m_OcclussionMap = map;
 		return *this;
@@ -133,6 +156,7 @@ namespace utad
 	Material& Material::normalMap(Texture2D* map)
 	{
 		m_NormalMap = map;
+		useNormalMap(map != nullptr);
 		return *this;
 	}
 
@@ -155,6 +179,28 @@ namespace utad
 	Material& Material::alpha(float alpha)
 	{
 		m_Alpha = alpha;
+		return *this;
+	}
+
+	bool Material::useNormalMap() const
+	{
+		return m_UseNormalMap;
+	}
+
+	Material& Material::useNormalMap(bool use)
+	{
+		m_UseNormalMap = use;
+		return *this;
+	}
+
+	bool Material::useCombinedMetallicRoughnessMap() const
+	{
+		return m_UseCombinedMetallicRoughnessMap;
+	}
+
+	Material& Material::useCombinedMetallicRoughnessMap(bool use)
+	{
+		m_UseCombinedMetallicRoughnessMap = use;
 		return *this;
 	}
 }

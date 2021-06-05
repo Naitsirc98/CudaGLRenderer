@@ -16,6 +16,8 @@ namespace utad
 		Color m_EmissiveColor{colors::BLACK};
 		// Textures
 		Texture2D* m_AlbedoMap{nullptr};
+		Texture2D* m_MetallicMap{nullptr};
+		Texture2D* m_RoughnessMap{nullptr};
 		Texture2D* m_MetallicRoughnessMap{nullptr};
 		Texture2D* m_OcclussionMap{nullptr};
 		Texture2D* m_EmissiveMap{nullptr};
@@ -27,6 +29,9 @@ namespace utad
 		float m_Occlusion{1.0f};
 		float m_Fresnel0{0.02f};
 		float m_NormalScale{1.0f};
+		// Flags
+		bool m_UseNormalMap{false};
+		bool m_UseCombinedMetallicRoughnessMap{true};
 	private:
 		Material(MaterialID id);
 		~Material();
@@ -40,12 +45,16 @@ namespace utad
 		Material& metallic(float metallic);
 		float roughness() const;
 		Material& roughness(float roughness);
+		Texture2D* metallicMap() const;
+		Material& metallicMap(Texture2D* map);
+		Texture2D* roughnessMap() const;
+		Material& roughnessMap(Texture2D* map);
 		Texture2D* metallicRoughnessMap() const;
 		Material& metallicRoughnessMap(Texture2D* map);
-		float occlussion() const;
-		Material& occlussion(float occlussion);
-		Texture2D* occlussionMap() const;
-		Material& occlussionMap(Texture2D* map);
+		float occlusion() const;
+		Material& occlusion(float occlussion);
+		Texture2D* occlusionMap() const;
+		Material& occlusionMap(Texture2D* map);
 		const Color& emissiveColor() const;
 		Material& emissiveColor(const Color& color);
 		Texture2D* emissiveMap() const;
@@ -58,5 +67,9 @@ namespace utad
 		Material& fresnel0(float fresnel0);
 		float alpha() const;
 		Material& alpha(float alpha);
+		bool useNormalMap() const;
+		Material& useNormalMap(bool use);
+		bool useCombinedMetallicRoughnessMap() const;
+		Material& useCombinedMetallicRoughnessMap(bool use);
 	};
 }

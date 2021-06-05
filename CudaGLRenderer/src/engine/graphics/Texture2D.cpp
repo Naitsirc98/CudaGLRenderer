@@ -1,5 +1,5 @@
 #include "engine/graphics/Texture.h"
-#include "engine/Common.h"
+#include "engine/assets/Image.h"
 
 namespace utad
 {
@@ -25,6 +25,25 @@ namespace utad
 	void Texture2D::update(const Texture2DUpdateInfo& updateInfo)
 	{
 		glTextureSubImage2D(m_Handle, 0, 0, 0, m_Width, m_Height, updateInfo.format, updateInfo.type, updateInfo.pixels);
+	}
+
+	void Texture2D::setImage(const Image* image, bool deleteImage)
+	{
+		TextureAllocInfo allocInfo = {};
+		allocInfo.format = toSizedFormat(image->format(), bitsOfFormat(image->format()), image->type());
+		allocInfo.width = image->width();
+		allocInfo.height = image->height();
+		allocInfo.levels = 0;
+
+		allocate(std::move(allocInfo));
+
+		Texture2DUpdateInfo updateInfo = {};
+		updateInfo.format = image->format();
+		updateInfo.level = 0;
+		updateInfo.type = image->type();
+		updateInfo.pixels = (void*)image->pixels();
+
+		update(std::move(updateInfo));
 	}
 
 	void Texture2D::filter(GLenum filterType, GLenum filter)
@@ -69,6 +88,22 @@ namespace utad
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	Texture2D* Texture2D::load(const String& imagePath, GLenum format, bool flipY)
+	{
+		Image* image = ImageFactory::createImage(imagePath, format, flipY);
+
+		Texture2D* texture = new Texture2D();
+		texture->setImage(image, true);
+
+		texture->wrap(GL_REPEAT);
+		texture->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		texture->filter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		texture->generateMipmaps();
+
+		return texture;
 	}
 
 	int Texture::mipLevelsOf(int width, int height)

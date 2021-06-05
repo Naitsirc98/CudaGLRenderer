@@ -113,13 +113,13 @@ namespace utad
 
 		irradianceMap->allocate(std::move(allocInfo));
 
+		bakeIrradianceMap(environmentMap, irradianceMap, loadInfo.irradianceMapSize);
+
 		irradianceMap->wrap(GL_CLAMP_TO_EDGE);
-		irradianceMap->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		irradianceMap->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		irradianceMap->filter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		irradianceMap->generateMipmaps();
-
-		bakeIrradianceMap(environmentMap, irradianceMap, loadInfo.irradianceMapSize);
 
 		return irradianceMap;
 	}
@@ -153,7 +153,11 @@ namespace utad
 
 		bakePrefilterMap(environmentMap, prefilterMap, loadInfo.prefilterMapSize, mipLevels);
 
-		//prefilterMap->generateMipmaps(); // TODO??
+		prefilterMap->wrap(GL_CLAMP_TO_EDGE);
+		prefilterMap->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		prefilterMap->filter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		prefilterMap->generateMipmaps();
 
 		return prefilterMap;
 	}
@@ -163,7 +167,7 @@ namespace utad
 		m_PrefilterShader->bind();
 		{
 			m_PrefilterShader->setTexture("u_EnvironmentMap", environmentMap);
-			m_PrefilterShader->setUniform("u_Resolution", environmentMap->width()); // TODO
+			m_PrefilterShader->setUniform("u_Resolution", environmentMap->width());
 
 			const int minMipLevel = mipLevels - 1;
 
@@ -190,11 +194,11 @@ namespace utad
 
 		brdf->allocate(std::move(allocInfo));
 
-		brdf->wrap(GL_CLAMP_TO_EDGE);
-		brdf->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		brdf->filter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		bakeBRDFMap(brdf, loadInfo.brdfSize);
+
+		brdf->wrap(GL_CLAMP_TO_EDGE);
+		brdf->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		brdf->filter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		return brdf;
 	}
@@ -219,7 +223,6 @@ namespace utad
 				m_QuadVAO->unbind();
 			}
 			m_BRDFShader->unbind();
-			glFinish();
 		}
 		m_Framebuffer->unbind();
 
@@ -228,18 +231,18 @@ namespace utad
 
 	static Matrix4 getProjectionMatrix()
 	{
-		return math::perspective(math::radians(90.0f), 1.0f, 0.1f, 100.0f);
+		return math::perspective(math::radians(90.0f), 1.0f, 0.1f, 10.0f);
 	}
 
 	static Array<Matrix4, 6> getViewMatrices()
 	{
 		return {
-			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 1.0f,  0.0f,  0.0f), Vector3(0.0f, -1.0f,  0.0f)),
-			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(-1.0f,  0.0f,  0.0f), Vector3(0.0f, -1.0f,  0.0f)),
-			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f,  1.0f,  0.0f), Vector3(0.0f,  0.0f,  1.0f)),
-			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f, -1.0f,  0.0f), Vector3(0.0f,  0.0f, -1.0f)),
-			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f,  0.0f,  1.0f), Vector3(0.0f, -1.0f,  0.0f)),
-			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3( 0.0f, 0.0f, -1.0f),  Vector3( 0.0f, -1.0f, 0.0f))
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f,  0.0f,  0.0f), Vector3(0.0f, -1.0f,  0.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(-1.0f,  0.0f,  0.0f),Vector3(0.0f, -1.0f,  0.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f,  1.0f,  0.0f), Vector3(0.0f,  0.0f,  1.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, -1.0f,  0.0f), Vector3(0.0f,  0.0f, -1.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f,  0.0f,  1.0f), Vector3(0.0f, -1.0f,  0.0f)),
+			math::lookAt(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f,  0.0f, -1.0f), Vector3(0.0f, -1.0f,  0.0f))
 		};
 	}
 
@@ -264,6 +267,8 @@ namespace utad
 					m_Framebuffer->bind();
 
 					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, face, cubemap->handle(), mipmapLevel);
+
+					glClear(GL_COLOR_BUFFER_BIT);
 
 					glDrawArrays(Primitives::cubeDrawMode, 0, Primitives::cubeVertexCount);
 				}

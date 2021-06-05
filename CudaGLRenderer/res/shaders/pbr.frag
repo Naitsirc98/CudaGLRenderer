@@ -13,11 +13,16 @@ struct Material
 	float occlusion;
 	float fresnel0;
 	float normalScale;
+
+    bool useNormalMap;
+    bool useCombinedMetallicRoughnessMap;
 };
 
 uniform sampler2D u_AlbedoMap;
+uniform sampler2D u_MetallicMap;
+uniform sampler2D u_RoughnessMap;
 uniform sampler2D u_MetallicRoughnessMap;
-uniform sampler2D u_OcclussionMap;
+uniform sampler2D u_OcclusionMap;
 uniform sampler2D u_EmissiveMap;
 uniform sampler2D u_NormalMap;
 
@@ -50,7 +55,7 @@ struct RenderInfo
 
     float metallic;
     float roughness;
-    float occlussion; 
+    float occlusion; 
 };
 
 uniform Material u_Material;
@@ -273,17 +278,21 @@ vec4 getAlbedo(Material material, vec2 uv)
 
 float getMetallic(Material material, vec2 uv)
 {
-    return texture(u_MetallicRoughnessMap, uv).r * material.metallic;
+    return u_Material.useCombinedMetallicRoughnessMap 
+        ? texture(u_MetallicRoughnessMap, uv).b * material.metallic
+        : texture(u_MetallicMap, uv).r * material.metallic;
 }
 
 float getRoughness(Material material, vec2 uv)
 {
-    return texture(u_MetallicRoughnessMap, uv).g * material.roughness;
+    return u_Material.useCombinedMetallicRoughnessMap 
+        ? texture(u_MetallicRoughnessMap, uv).g * material.roughness
+        : texture(u_RoughnessMap, uv).r * material.roughness;
 }
 
 float getOcclusion(Material material, vec2 uv) 
 {
-    return texture(u_OcclussionMap, uv).r * material.occlusion;
+    return texture(u_OcclusionMap, uv).r * material.occlusion;
 }
 
 vec3 getF0(Material material, vec3 albedo, float metallic) 
@@ -298,8 +307,8 @@ vec4 computeLighting()
     g_Info.albedo = getAlbedo(u_Material, texCoords).rgb;
     g_Info.metallic = getMetallic(u_Material, texCoords);
     g_Info.roughness = getRoughness(u_Material, texCoords);
-    g_Info.occlussion = getOcclusion(u_Material, texCoords);
-    g_Info.normal = getNormal(u_Material, texCoords, fragment.position, fragment.normal);
+    g_Info.occlusion = getOcclusion(u_Material, texCoords);
+    g_Info.normal = u_Material.useNormalMap ? getNormal(u_Material, texCoords, fragment.position, fragment.normal) : fragment.normal;
     g_Info.F0 = getF0(u_Material, g_Info.albedo, g_Info.metallic);
 
     g_Info.viewDir = normalize(u_Camera.position - fragment.position);
@@ -319,11 +328,11 @@ vec4 computeLighting()
     if(u_SkyboxPresent)
     {
         // If skybox is present, then apply Image Based Lighting (IBL)
-        ambient = (kD * getDiffuseIBL() + getSpecularIBL(F, angle)) * g_Info.occlussion;
+        ambient = (kD * getDiffuseIBL() + getSpecularIBL(F, angle)) * g_Info.occlusion;
     }
     else
     {
-        ambient = kD * u_AmbientColor * g_Info.albedo * g_Info.occlussion;
+        ambient = kD * u_AmbientColor * g_Info.albedo * g_Info.occlusion;
     }
 
     vec3 color = ambient + L0;

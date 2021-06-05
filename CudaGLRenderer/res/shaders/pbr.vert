@@ -20,8 +20,8 @@ void main()
 	vec4 worldPos = u_ModelMatrix * vec4(in_Position, 1.0);
 
 	fragment.position = worldPos.xyz;
-	fragment.normal = in_Normal;
-	fragment.texCoords = in_TexCoords;//vec2(in_TexCoords.x, 1.0 - in_TexCoords.y);
+	fragment.normal = normalize(in_Normal);
+	fragment.texCoords = in_TexCoords;
 
 	gl_Position = u_ProjMatrix * u_ViewMatrix * worldPos;
 }

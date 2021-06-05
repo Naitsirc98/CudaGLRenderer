@@ -18,7 +18,6 @@
     <ClCompile Include="src\engine\assets\Model.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
     <ClCompile Include="src\engine\assets\Primitives.cpp" />
-    <ClCompile Include="src\engine\assets\Skybox.cpp" />
     <ClCompile Include="src\engine\assets\SkyboxLoader.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
     <ClCompile Include="src\engine\entities\Entity.cpp" />

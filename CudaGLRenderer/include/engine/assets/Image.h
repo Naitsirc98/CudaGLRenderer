@@ -7,9 +7,16 @@ namespace utad
 	using ImageDeallocator = Function<void, void*>;
 
 	uint32_t sizeOfFormat(GLenum format);
+	uint32_t bitsOfFormat(GLenum format);
 	uint32_t channelsOfFormat(GLenum format);
 	bool isFloatFormat(GLenum format);
 	GLenum formatFromChannels(uint32_t channels, bool floatFormat = false);
+	GLenum getPixelFormatFrom(int component);
+	GLenum toSizedFormatRED(int bits, int type);
+	GLenum toSizedFormatRG(int bits, int type);
+	GLenum toSizedFormatRGB(int bits, int type);
+	GLenum toSizedFormatRGBA(int bits, int type);
+	GLenum toSizedFormat(GLenum format, int bits, int type);
 
 	class Image
 	{
@@ -31,6 +38,7 @@ namespace utad
 		uint32_t width() const { return m_Width; }
 		uint32_t height() const { return m_Height; }
 		GLenum format() const { return m_Format; }
+		GLenum type() const { return isFloatFormat(m_Format) ? GL_FLOAT : GL_UNSIGNED_BYTE; }
 		const void* pixels() const { return m_Pixels; }
 		void* pixels() { return m_Pixels; }
 	};

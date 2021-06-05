@@ -55,7 +55,7 @@ namespace utad
 
 	Image* ImageFactory::createWhiteImage(GLenum format, uint32_t width, uint32_t height)
 	{
-		return createImage(format, width, height, -1);
+		return createImage(format, width, height, 0xFFFFFFFF);
 	}
 
 	Image* ImageFactory::createBlackImage(GLenum format, uint32_t width, uint32_t height)
@@ -114,6 +114,12 @@ namespace utad
 		return isFloatFormat(format) ? channels * sizeof(float) : channels;
 	}
 
+	uint32_t bitsOfFormat(GLenum format)
+	{
+		uint32_t channels = channelsOfFormat(format);
+		return isFloatFormat(format) ? 16 : 8;
+	}
+
 	uint32_t channelsOfFormat(GLenum format)
 	{
 		switch (format)
@@ -165,5 +171,74 @@ namespace utad
 			return floatFormat ? GL_RGBA16F : GL_RGBA;
 		}
 		return GL_NONE;
+	}
+
+	GLenum getPixelFormatFrom(int component)
+	{
+		switch (component)
+		{
+			case 1: return GL_RED;
+			case 2: return GL_RG;
+			case 3: return GL_RGB;
+			case 4: return GL_RGBA;
+		}
+		throw UTAD_EXCEPTION(String("Unknown format for components: ").append(std::to_string(component)));
+	}
+
+	GLenum toSizedFormatRED(int bits, int type)
+	{
+		switch (bits)
+		{
+			case 8: return GL_R8;
+			case 16: return type == GL_FLOAT ? GL_R16F : GL_R16;
+			case 32: return type == GL_FLOAT ? GL_R32F : GL_R32UI;
+		}
+		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
+	}
+
+	GLenum toSizedFormatRG(int bits, int type)
+	{
+		switch (bits)
+		{
+			case 8: return GL_RG8;
+			case 16: return type == GL_FLOAT ? GL_RG16F : GL_RG16;
+			case 32: return type == GL_FLOAT ? GL_RG32F : GL_RG32UI;
+		}
+		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
+	}
+
+	GLenum toSizedFormatRGB(int bits, int type)
+	{
+		switch (bits)
+		{
+			case 8: return GL_RGB8;
+			case 16: return type == GL_FLOAT ? GL_RGB16F : GL_RGB16;
+			case 32: return type == GL_FLOAT ? GL_RGB32F : GL_RGB32UI;
+		}
+		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
+	}
+
+	GLenum toSizedFormatRGBA(int bits, int type)
+	{
+		switch (bits)
+		{
+			case 8: return GL_RGBA8;
+			case 16: return type == GL_FLOAT ? GL_RGBA16F : GL_RGBA16;
+			case 32: return type == GL_FLOAT ? GL_RGBA32F : GL_RGBA32UI;
+		}
+		throw UTAD_EXCEPTION(String("Unknown combination of bits and type: ").append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
+	}
+
+	GLenum toSizedFormat(GLenum format, int bits, int type)
+	{
+		switch (format)
+		{
+			case GL_RED: return toSizedFormatRED(bits, type);
+			case GL_RG: return toSizedFormatRG(bits, type);
+			case GL_RGB: return toSizedFormatRGB(bits, type);
+			case GL_RGBA: return toSizedFormatRGBA(bits, type);
+		}
+		throw UTAD_EXCEPTION(String("Unknown combination of format, bits and type: ").append(std::to_string(format)).append(" + ")
+			.append(std::to_string(bits)).append(" + ").append(std::to_string(type)));
 	}
 }

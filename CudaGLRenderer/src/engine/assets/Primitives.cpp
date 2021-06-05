@@ -76,13 +76,12 @@ namespace utad
 		{
 			for (int x = 0; x <= xSegments; x++)
 			{
-
 				float xSeg = (float)x / (float)xSegments;
 				float ySeg = (float)y / (float)ySegments;
 
-				float xPos = (float)(cosf(xSeg * 2 * PI) * sin(ySeg * PI));
-				float yPos = (float)(cosf(ySeg * PI));
-				float zPos = (float)(sinf(xSeg * 2 * PI) * sin(ySeg * PI));
+				float xPos = (float)(std::cos(xSeg * 2 * PI) * std::sin(ySeg * PI));
+				float yPos = (float)(std::cos(ySeg * PI));
+				float zPos = (float)(std::sin(xSeg * 2 * PI) * std::sin(ySeg * PI));
 
 				// Position
 				vertices[index++] = xPos;

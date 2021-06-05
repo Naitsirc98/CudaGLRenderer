@@ -15,7 +15,7 @@ namespace utad
 		Cubemap* prefilterMap{nullptr};
 		Texture2D* brdfMap{nullptr};
 		float maxPrefilterLOD{4.0f};
-		float prefilterLODBias{-0.5f};
+		float prefilterLODBias{-0.25f};
 
 		~Skybox()
 		{

@@ -4,7 +4,10 @@ using namespace utad;
 
 static const char* CUBE = "G:/glTF-Sample-Models-master/2.0/Cube/glTF/Cube.gltf";
 static const char* BOX = "G:/glTF-Sample-Models-master/2.0/Box/glTF/Box.gltf";
+static const char* SPHERE = "G:/glTF-Sample-Models-master/2.0/Sphere/Sphere.gltf";
 static const char* HELMET = "G:/glTF-Sample-Models-master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf";
+
+static const String TEXTURES_DIR = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/textures/";
 
 class CameraController : public Script
 {
@@ -76,34 +79,27 @@ public:
 	}
 };
 
-
-class Move : public Script
-{
-private:
-	Transform* m_Transform;
-	float m_Direction = 1;
-	float m_LastTime = Time::time();
-public:
-	void onStart() override
-	{
-		m_Transform = &entity()->transform();
-	}
-
-	void onUpdate() override
-	{
-		m_Transform->position() += Vector3(0, 0, 1) * Time::deltaTime() * m_Direction;
-
-		if (Time::time() - m_LastTime >= 2.5f)
-		{
-			m_Direction *= -1;
-			m_LastTime = Time::time();
-		}
-	}
-};
-
 class MyApp : public Application
 {
 public:
+	Material* createMaterial(const String& name)
+	{
+		static const float flipY = false;
+
+		Material* mat = Assets::createMaterial(name);
+		mat->albedoMap(Texture2D::load(TEXTURES_DIR + name + "/albedo.png", GL_RGBA, flipY));
+		mat->normalMap(Texture2D::load(TEXTURES_DIR + name + "/normal.png", GL_RGBA, flipY));
+		mat->metallicMap(Texture2D::load(TEXTURES_DIR + name + "/metallic.png", GL_RGBA, flipY));
+		mat->roughnessMap(Texture2D::load(TEXTURES_DIR + name + "/roughness.png", GL_RGBA, flipY));
+		mat->occlusionMap(Texture2D::load(TEXTURES_DIR + name + "/ao.png", GL_RGBA, flipY));
+		mat->emissiveColor(colors::BLACK);
+
+		mat->useNormalMap(true);
+		mat->useCombinedMetallicRoughnessMap(false);
+		
+		return mat;
+	}
+
 	void onStart()
 	{
 		Scene& scene = Scene::get();
@@ -111,8 +107,8 @@ public:
 		scene.setSkybox(Assets::get().loadSkybox("G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/skybox/indoor.hdr"));
 
 		scene.dirLight().direction = {0, 0, 1};
-		scene.dirLight().color = {10, 10, 10};
-		scene.enableDirLight(false);
+		scene.dirLight().color = {1, 1, 1};
+		scene.enableDirLight(true);
 
 		Light light = {};
 		light.position = {0, 1, 3};
@@ -124,27 +120,22 @@ public:
 
 		ModelLoader loader;
 		loader.debugMode(true);
-		Model* model = loader.load("TheModel", HELMET);
+		Model* model = loader.load("TheModel", SPHERE);
+
+		Mesh* mesh = Primitives::createSphereMesh(64, 64);
+		Material* material = model->materials().empty() ? nullptr : model->materials()[0];
+
+		if (material == nullptr)
+		{
+			material = createMaterial("gold");
+		}
+		//material->fresnel0(0.02f);
 
 		Entity* object = Entity::create();
-		object->meshView().mesh(model->meshes()[0]);
-		object->meshView().material(model->materials()[0]);
-		model->materials()[0]->fresnel0(0.5f);
-		object->transform().rotate(45, Vector3(1, 0, 0));
+		object->meshView().mesh(mesh);
+		object->meshView().material(material);
+		//object->transform().rotate(45, Vector3(1, 0, 0));
 		object->setEnabled(true);
-
-		//Entity* object = Entity::create();
-		//
-		//Mesh* mesh = Primitives::createSphereMesh(64, 64);
-		//Material* mat = Assets::createMaterial("SphereMat");
-		//mat->albedo({1, 1, 1, 1});
-		//mat->emissiveColor({1, 1, 1, 1});
-		//mat->metallic(1);
-		//mat->roughness(0.4f);
-		//mat->occlussion(0.8f);
-		//
-		//object->meshView().mesh(mesh);
-		//object->meshView().material(mat);
 
 		scene.camera().position({0, 0.5f, 5});
 

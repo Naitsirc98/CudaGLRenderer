@@ -63,8 +63,7 @@ namespace utad
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		glDisable(GL_CULL_FACE);
 
 		glEnable(GL_BLEND);
 		
@@ -79,39 +78,32 @@ namespace utad
 			setLightUniforms(renderInfo.enableDirLight, renderInfo.dirLight, renderInfo.pointLights);
 			setSkyboxUniforms(renderInfo.skybox);
 
-			Mesh* lastMesh = nullptr;
-			Material* lastMaterial = nullptr;
-
 			for (auto [name, queue] : m_RenderQueues)
 			{
 				if (!queue->enabled) continue;
 
 				for (RenderCommand& command : queue->commands)
 				{
-					m_Shader->setUniform("u_ModelMatrix", *command.transformation);
-
-					if (lastMaterial != command.material)
-					{
-						setMaterialUniforms(*command.material);
-						lastMaterial = command.material;
-					}
-
-					Mesh* mesh = command.mesh;
-
-					if (lastMesh != mesh)
-					{
-						mesh->vertexArray()->bind();
-						lastMesh = mesh;
-					}
-
-					if (mesh->vertexArray()->indexBuffer() != nullptr)
-						glDrawElements(mesh->drawMode(), mesh->indexCount(), mesh->indexType(), (void*)mesh->indexBufferOffset());
-					else
-						glDrawArrays(mesh->drawMode(), 0, mesh->indexCount());
+					render(command.transformation, command.mesh, command.material);
 				}
 			}
 		}
 		m_Shader->unbind();
+	}
+
+	void MeshRenderer::render(const Matrix4* transformation, const Mesh* mesh, const Material* material)
+	{
+		m_Shader->setUniform("u_ModelMatrix", *transformation);
+		setMaterialUniforms(*material);
+
+		mesh->vertexArray()->bind();
+		{
+			if (mesh->vertexArray()->indexBuffer() != nullptr)
+				glDrawElements(mesh->drawMode(), mesh->indexCount(), mesh->indexType(), (void*)mesh->indexBufferOffset());
+			else
+				glDrawArrays(mesh->drawMode(), 0, mesh->indexCount());
+		}
+		mesh->vertexArray()->unbind();
 	}
 
 	void MeshRenderer::setCameraUniforms(const Camera& camera)
@@ -121,14 +113,14 @@ namespace utad
 		m_Shader->setUniform("u_Camera.position", camera.position());
 	}
 
-	static void setLight(Shader* shader, const String& name, const Light& light)
+	static void setLight(Shader* shader, const String& name, const Light& light, bool isPointLight = true)
 	{
 		shader->setUniform(name + ".color", light.color);
-		shader->setUniform(name + ".position", light.position);
+		if(isPointLight) shader->setUniform(name + ".position", light.position);
 		shader->setUniform(name + ".direction", light.direction);
-		shader->setUniform(name + ".constant", light.constant);
-		shader->setUniform(name + ".linear", light.linear);
-		shader->setUniform(name + ".quadratic", light.quadratic);
+		if(isPointLight) shader->setUniform(name + ".constant", light.constant);
+		if(isPointLight) shader->setUniform(name + ".linear", light.linear);
+		if(isPointLight) shader->setUniform(name + ".quadratic", light.quadratic);
 		shader->setUniform(name + ".ambientFactor", light.ambientFactor);
 	}
 
@@ -137,7 +129,7 @@ namespace utad
 		m_Shader->setUniform("u_AmbientColor", Vector3(0.2f, 0.2f, 0.2f));
 
 		m_Shader->setUniform("u_DirLightPresent", dirLightPresent);
-		if (dirLightPresent) setLight(m_Shader, "u_DirLight", dirLight);
+		if (dirLightPresent) setLight(m_Shader, "u_DirLight", dirLight, false);
 
 
 		const int count = std::min(pointLights.size(), (size_t)20);
@@ -152,9 +144,9 @@ namespace utad
 
 		if (skybox == nullptr) return;
 
-		m_Shader->setTexture(0, "u_IrradianceMap", skybox->irradianceMap);
-		m_Shader->setTexture(1, "u_PrefilterMap", skybox->prefilterMap);
-		m_Shader->setTexture(2, "u_BRDF", skybox->brdfMap);
+		m_Shader->setTexture("u_IrradianceMap", skybox->irradianceMap);
+		m_Shader->setTexture("u_PrefilterMap", skybox->prefilterMap);
+		m_Shader->setTexture("u_BRDF", skybox->brdfMap);
 		m_Shader->setUniform("u_MaxPrefilterLOD", skybox->maxPrefilterLOD);
 		m_Shader->setUniform("u_PrefilterLODBias", skybox->prefilterLODBias);
 	}
@@ -166,14 +158,28 @@ namespace utad
 		m_Shader->setUniform("u_Material.alpha", material.alpha());
 		m_Shader->setUniform("u_Material.metallic", material.metallic());
 		m_Shader->setUniform("u_Material.roughness", material.roughness());
+		m_Shader->setUniform("u_Material.occlusion", material.occlusion());
 		m_Shader->setUniform("u_Material.fresnel0", material.fresnel0());
 		m_Shader->setUniform("u_Material.normalScale", material.normalScale());
 
-		m_Shader->setTexture(10, "u_AlbedoMap", material.albedoMap());
-		m_Shader->setTexture(11, "u_MetallicRoughnessMap", material.metallicRoughnessMap());
-		m_Shader->setTexture(12, "u_OcclussionMap", material.occlussionMap());
-		m_Shader->setTexture(13, "u_EmissiveMap", material.emissiveMap());
-		m_Shader->setTexture(14, "u_NormalMap", material.normalMap());
+		m_Shader->setTexture("u_AlbedoMap", material.albedoMap());
+		
+		if (material.useCombinedMetallicRoughnessMap())
+		{
+			m_Shader->setTexture("u_MetallicRoughnessMap", material.metallicRoughnessMap());
+		}
+		else
+		{
+			m_Shader->setTexture("u_MetallicMap", material.metallicMap());
+			m_Shader->setTexture("u_RoughnessMap", material.roughnessMap());
+		}
+
+		m_Shader->setTexture("u_OcclusionMap", material.occlusionMap());
+		m_Shader->setTexture("u_EmissiveMap", material.emissiveMap());
+		m_Shader->setTexture("u_NormalMap", material.normalMap());
+
+		m_Shader->setUniform("u_Material.useNormalMap", material.useNormalMap());
+		m_Shader->setUniform("u_Material.useCombinedMetallicRoughnessMap", material.useCombinedMetallicRoughnessMap());
 	}
 
 	void MeshRenderer::clearRenderQueues()
