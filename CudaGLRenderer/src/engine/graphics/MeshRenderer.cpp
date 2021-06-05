@@ -139,10 +139,10 @@ namespace utad
 		m_Shader->setUniform("u_DirLightPresent", dirLightPresent);
 		if (dirLightPresent) setLight(m_Shader, "u_DirLight", dirLight);
 
-		m_Shader->setUniform("u_PointLightsCount", pointLights.size());
 
-		const size_t count = std::min(pointLights.size(), (size_t)20);
-		for (size_t i = 0;i < count;++i)
+		const int count = std::min(pointLights.size(), (size_t)20);
+		m_Shader->setUniform("u_PointLightsCount", count);
+		for (int i = 0;i < count;++i)
 			setLight(m_Shader, String("u_PointLights[").append(std::to_string(i)).append("]"), pointLights[i]);
 	}
 
@@ -152,10 +152,9 @@ namespace utad
 
 		if (skybox == nullptr) return;
 
-		m_Shader->setTexture("u_EnvironmentMap", skybox->environmentMap);
-		m_Shader->setTexture("u_IrradianceMap", skybox->irradianceMap);
-		m_Shader->setTexture("u_PrefilterMap", skybox->prefilterMap);
-		m_Shader->setTexture("u_BRDFMap", skybox->brdfMap);
+		m_Shader->setTexture(0, "u_IrradianceMap", skybox->irradianceMap);
+		m_Shader->setTexture(1, "u_PrefilterMap", skybox->prefilterMap);
+		m_Shader->setTexture(2, "u_BRDF", skybox->brdfMap);
 		m_Shader->setUniform("u_MaxPrefilterLOD", skybox->maxPrefilterLOD);
 		m_Shader->setUniform("u_PrefilterLODBias", skybox->prefilterLODBias);
 	}
@@ -170,11 +169,11 @@ namespace utad
 		m_Shader->setUniform("u_Material.fresnel0", material.fresnel0());
 		m_Shader->setUniform("u_Material.normalScale", material.normalScale());
 
-		m_Shader->setTexture("u_AlbedoMap", material.albedoMap());
-		m_Shader->setTexture("u_MetallicRoughnessMap", material.metallicRoughnessMap());
-		m_Shader->setTexture("u_OcclussionMap", material.occlussionMap());
-		m_Shader->setTexture("u_EmissiveMap", material.emissiveMap());
-		m_Shader->setTexture("u_NormalMap", material.normalMap());
+		m_Shader->setTexture(10, "u_AlbedoMap", material.albedoMap());
+		m_Shader->setTexture(11, "u_MetallicRoughnessMap", material.metallicRoughnessMap());
+		m_Shader->setTexture(12, "u_OcclussionMap", material.occlussionMap());
+		m_Shader->setTexture(13, "u_EmissiveMap", material.emissiveMap());
+		m_Shader->setTexture(14, "u_NormalMap", material.normalMap());
 	}
 
 	void MeshRenderer::clearRenderQueues()

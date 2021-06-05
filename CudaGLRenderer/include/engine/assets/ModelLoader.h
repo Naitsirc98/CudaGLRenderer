@@ -14,7 +14,7 @@ namespace utad
 	{
 		gltf::Model* model;
 		Map<int, BufferView>* buffers;
-		Map<String, Texture2D*>* textures;
+		ArrayList<Texture2D*>* textures;
 	};
 
 	class ModelLoader

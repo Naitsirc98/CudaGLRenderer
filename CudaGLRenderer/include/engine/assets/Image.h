@@ -40,7 +40,7 @@ namespace utad
 	public:
 		static Image * createWhiteImage(GLenum format, uint32_t width = 1, uint32_t height = 1);
 		static Image* createBlackImage(GLenum format, uint32_t width = 1, uint32_t height = 1);
-		static Image* createImage(const String& path, GLenum format, bool flipY = false);
+		static Image* createImage(const String& path, GLenum format, bool flipY);
 		static Image* createImage(void* pixels, GLenum format, uint32_t width = 1, uint32_t height = 1);
 		static Image* createImage(GLenum format, uint32_t width = 1, uint32_t height = 1,  uint32_t value = 0);
 	private:

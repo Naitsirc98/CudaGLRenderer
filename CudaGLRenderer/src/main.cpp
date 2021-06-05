@@ -112,11 +112,11 @@ public:
 
 		scene.dirLight().direction = {0, 0, 1};
 		scene.dirLight().color = {10, 10, 10};
-		scene.enableDirLight(true);
+		scene.enableDirLight(false);
 
 		Light light = {};
-		light.position = {0, 1, 10};
-		light.color = {30, 30, 30};
+		light.position = {0, 1, 3};
+		light.color = {10, 10, 10};
 		scene.pointLights().push_back(std::move(light));
 
 		Entity* cameraController = Entity::create("CameraController");
@@ -129,18 +129,29 @@ public:
 		Entity* object = Entity::create();
 		object->meshView().mesh(model->meshes()[0]);
 		object->meshView().material(model->materials()[0]);
+		model->materials()[0]->fresnel0(0.5f);
 		object->transform().rotate(45, Vector3(1, 0, 0));
-		object->setEnabled(false);
+		object->setEnabled(true);
 
-		scene.camera().position({0, 0, 10});
+		//Entity* object = Entity::create();
+		//
+		//Mesh* mesh = Primitives::createSphereMesh(64, 64);
+		//Material* mat = Assets::createMaterial("SphereMat");
+		//mat->albedo({1, 1, 1, 1});
+		//mat->emissiveColor({1, 1, 1, 1});
+		//mat->metallic(1);
+		//mat->roughness(0.4f);
+		//mat->occlussion(0.8f);
+		//
+		//object->meshView().mesh(mesh);
+		//object->meshView().material(mat);
+
+		scene.camera().position({0, 0.5f, 5});
+
 	}
 
 	void onUpdate()
 	{
-		if (Input::isKeyActive(Key::Key_Space))
-		{
-			std::cout << "Space key active" << std::endl;
-		}
 	}
 };
 

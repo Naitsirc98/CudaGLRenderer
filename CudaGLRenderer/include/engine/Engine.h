@@ -8,6 +8,7 @@
 #include "events/Input.h"
 #include "assets/AssetsManager.h"
 #include "scene/Scene.h"
+#include "engine/assets/Primitives.h"
 
 #define UTAD_EXIT_SUCCESS 0
 #define UTAD_EXIT_FAILURE 1

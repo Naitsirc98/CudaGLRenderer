@@ -34,9 +34,13 @@ namespace utad
 		void bind();
 		void unbind();
 		void setTexture(const String& samplerName, Texture* texture);
+		void setTexture(int unit, const String& samplerName, Texture* texture);
 
 		template<typename T>
-		void setUniform(const String& name, const T& value) {}
+		void setUniform(const String& name, const T& value)
+		{
+			throw UTAD_EXCEPTION("Unknown type of uniform");
+		}
 
 		template<>
 		void setUniform<bool>(const String& name, const bool& value)

@@ -57,7 +57,7 @@ namespace utad
 
 		Model* result = new Model();
 		Map<int, BufferView> buffers;
-		Map<String, Texture2D*> textures;
+		ArrayList<Texture2D*> textures;
 
 		ModelInfo info;
 		info.model = &model;
@@ -206,7 +206,7 @@ namespace utad
 	{
 		if (texIndex < 0) return defaultTexture;
 		auto& textures = *info.textures;
-		Texture2D* texture = textures[info.model->textures[texIndex].name];
+		Texture2D* texture = textures[texIndex];
 		return texture != nullptr ? texture : defaultTexture;
 	}
 
@@ -231,8 +231,8 @@ namespace utad
 		material->albedoMap(toTexture2D(info, pbr.baseColorTexture.index, material->albedoMap()));
 		material->normalScale(static_cast<float>(mat.normalTexture.scale));
 		material->normalMap(toTexture2D(info, mat.normalTexture.index, material->normalMap()));
-		//material->emissiveColor(toColor(mat.emissiveFactor));
-		//material->emissiveMap(toTexture2D(info, mat.emissiveTexture.index, material->emissiveMap()));
+		material->emissiveColor(toColor(mat.emissiveFactor));
+		material->emissiveMap(toTexture2D(info, mat.emissiveTexture.index, material->emissiveMap()));
 		material->roughness(static_cast<float>(pbr.roughnessFactor));
 		material->metallic(static_cast<float>(pbr.metallicFactor));
 		material->metallicRoughnessMap(toTexture2D(info, pbr.metallicRoughnessTexture.index, material->metallicRoughnessMap()));
@@ -362,10 +362,12 @@ namespace utad
 
 		if (m_DebugMode) std::cout << "Loading textures... (" << model.textures.size() << ")" << std::endl;
 
-		for (gltf::Texture& tex : model.textures)
+		for (int i = 0;i < model.textures.size();++i)
 		{
+			const gltf::Texture& tex = model.textures[i];
+
 			if (tex.source < 0) continue;
-			if (textures.find(tex.name) != textures.end()) continue;
+			//if (textures.find(tex.name) != textures.end()) continue;
 
 			if (m_DebugMode) std::cout << "\t\tLoading texture '" << tex.name << "'" << std::endl;
 
@@ -396,7 +398,7 @@ namespace utad
 			texture->update(updateInfo);
 			texture->generateMipmaps();
 
-			textures[tex.name] = texture;
+			textures.push_back(texture);
 		}
 	}
 }

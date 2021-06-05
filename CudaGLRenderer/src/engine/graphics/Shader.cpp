@@ -124,8 +124,6 @@ namespace utad
 
 	void Shader::unbind()
 	{
-		glUseProgram(0);
-
 		for (size_t unit = 0; unit < m_BoundTextures.size(); ++unit)
 		{
 			m_BoundTextures[unit]->unbind(unit);
@@ -133,13 +131,15 @@ namespace utad
 
 		m_BoundTextures.clear();
 		m_TextureUnits.clear();
+
+		glUseProgram(0);
 	}
 
 	void Shader::setTexture(const String& samplerName, Texture* texture)
 	{
 		if (texture == nullptr) return;
 
-		size_t unit;
+		int unit;
 
 		if (m_TextureUnits.find(samplerName) != m_TextureUnits.end())
 			unit = m_TextureUnits[samplerName];
@@ -151,6 +151,13 @@ namespace utad
 
 		m_BoundTextures.push_back(texture);
 		m_TextureUnits[samplerName] = unit;
+	}
+
+	void Shader::setTexture(int unit, const String& samplerName, Texture* texture)
+	{
+		if (texture == nullptr) return;
+		setUniform(samplerName, unit);
+		texture->bind(unit);
 	}
 
 }

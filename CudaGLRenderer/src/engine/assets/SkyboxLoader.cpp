@@ -2,6 +2,7 @@
 #include "engine/io/Files.h"
 #include "engine/assets/Image.h"
 #include "engine/assets/Primitives.h"
+#include "engine/graphics/Window.h"
 
 namespace utad
 {
@@ -30,8 +31,6 @@ namespace utad
 		skybox->brdfMap = createBRDFMap(skybox->environmentMap, loadInfo);
 		skybox->maxPrefilterLOD = loadInfo.maxLOD;
 		skybox->prefilterLODBias = loadInfo.lodBias;
-
-		Framebuffer::bindDefault();
 
 		return skybox;
 	}
@@ -64,15 +63,15 @@ namespace utad
 	{
 		Texture2D* hdrTexture = new Texture2D();
 		Image* image = ImageFactory::createImage(hdrImagePath, GL_RGB16F, true);
-
+		
 		TextureAllocInfo allocInfo = {};
 		allocInfo.format = GL_RGB16F;
 		allocInfo.width = image->width();
 		allocInfo.height = image->height();
 		allocInfo.levels = 1;
-
+		
 		hdrTexture->allocate(std::move(allocInfo));
-
+		
 		Texture2DUpdateInfo updateInfo = {};
 		updateInfo.format = GL_RGB;
 		updateInfo.level = 0;
@@ -80,7 +79,7 @@ namespace utad
 		updateInfo.pixels = image->pixels();
 
 		hdrTexture->update(std::move(updateInfo));
-
+		
 		hdrTexture->wrap(GL_CLAMP_TO_EDGE);
 		hdrTexture->filter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		hdrTexture->filter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -154,6 +153,8 @@ namespace utad
 
 		bakePrefilterMap(environmentMap, prefilterMap, loadInfo.prefilterMapSize, mipLevels);
 
+		//prefilterMap->generateMipmaps(); // TODO??
+
 		return prefilterMap;
 	}
 
@@ -218,10 +219,11 @@ namespace utad
 				m_QuadVAO->unbind();
 			}
 			m_BRDFShader->unbind();
-
-			m_Framebuffer->detachTextureAttachment(GL_COLOR_ATTACHMENT0);
+			glFinish();
 		}
 		m_Framebuffer->unbind();
+
+		m_Framebuffer->detachTextureAttachment(GL_COLOR_ATTACHMENT0);
 	}
 
 	static Matrix4 getProjectionMatrix()
@@ -257,20 +259,20 @@ namespace utad
 				{
 					GLenum face = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
 					
-					Matrix4 projViewMatrix = projMatrix * viewMatrices[i];
-					shader->setUniform("u_ProjectionViewMatrix", projViewMatrix);
+					shader->setUniform("u_ProjectionViewMatrix", projMatrix * viewMatrices[i]);
 					
 					m_Framebuffer->bind();
 
 					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, face, cubemap->handle(), mipmapLevel);
 
-					glDrawArrays(GL_TRIANGLES, 0, 36);
+					glDrawArrays(Primitives::cubeDrawMode, 0, Primitives::cubeVertexCount);
 				}
 			}
 			m_Framebuffer->unbind();
 		}
 		m_CubeVAO->unbind();
 
+		glViewport(0, 0, Window::get().width(), Window::get().height());
 		glFinish();
 	}
 

@@ -249,8 +249,8 @@ vec3 getSpecularIBL(vec3 F, float angle)
     return prefilteredColor * (F * brdf.x + brdf.y);    
 }
 
-vec3 getNormalFromMap(Material material, vec2 uv, vec3 position, vec3 normal)
-{
+ vec3 getNormal(Material material, vec2 uv, vec3 position, vec3 normal)
+ {
     vec3 tangentNormal = texture(u_NormalMap, uv).xyz * 2.0 - 1.0;
 
     vec3 Q1 = dFdx(position);
@@ -264,11 +264,6 @@ vec3 getNormalFromMap(Material material, vec2 uv, vec3 position, vec3 normal)
     mat3 TBN = mat3(T, B, N);
 
     return normalize(TBN * tangentNormal * material.normalScale);
- }
-
- vec3 getNormal(Material material, vec2 uv, vec3 position, vec3 normal)
- {
-     return getNormalFromMap(material, uv, position, normal);
  }
 
 vec4 getAlbedo(Material material, vec2 uv) 
@@ -331,7 +326,15 @@ vec4 computeLighting()
         ambient = kD * u_AmbientColor * g_Info.albedo * g_Info.occlussion;
     }
 
-    return vec4(ambient + L0, 1.0);
+    vec3 color = ambient + L0;
+
+    // HDR tonemapping
+    color /= (color + vec3(1.0));
+
+    // Gamma correct
+    color = pow(color, vec3(1.0 / 2.2));
+
+    return vec4(color, 1.0);
 }
 
 void main()

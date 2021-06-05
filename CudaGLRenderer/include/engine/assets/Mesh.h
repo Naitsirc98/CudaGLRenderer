@@ -10,15 +10,15 @@ namespace utad
 	{
 		friend class AssetsManager;
 		friend class ModelLoader;
+		friend class Primitives;
 	private:
 		VertexArray* m_VertexArray{nullptr};
 		GLenum m_DrawMode;
 		uint m_IndexCount;
 		GLenum m_IndexType;
 		uint m_IndexBufferOffset;
-	private:
-		Mesh(VertexArray* vao) : m_VertexArray(vao) {}
 	public:
+		Mesh(VertexArray* vao) : m_VertexArray(vao) {}
 		~Mesh() { UTAD_DELETE(m_VertexArray);}
 		VertexArray* vertexArray() const { return m_VertexArray; }
 		GLenum drawMode() const {return m_DrawMode;};

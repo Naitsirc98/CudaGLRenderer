@@ -40,6 +40,7 @@ namespace utad
 		byte* mapMemory(GLenum mapFlags);
 		byte* mappedMemory() const;
 		void unmapMemory();
+		size_t size() const;
 	};
 
 	using VertexBuffer = Buffer;

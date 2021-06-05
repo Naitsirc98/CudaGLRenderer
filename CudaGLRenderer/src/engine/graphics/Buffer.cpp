@@ -56,4 +56,9 @@ namespace utad
 		glUnmapNamedBuffer(m_Handle);
 		m_MappedMemory = nullptr;
 	}
+
+	size_t Buffer::size() const
+	{
+		return m_Size;
+	}
 }

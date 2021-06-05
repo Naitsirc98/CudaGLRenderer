@@ -61,12 +61,14 @@ namespace utad
 
 	void Texture2D::bind(int unit)
 	{
-		glBindTextureUnit(unit, m_Handle);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, m_Handle);
 	}
 
 	void Texture2D::unbind(int unit)
 	{
-		glBindTextureUnit(unit, 0);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	int Texture::mipLevelsOf(int width, int height)

@@ -55,7 +55,7 @@ namespace utad
 
 	Image* ImageFactory::createWhiteImage(GLenum format, uint32_t width, uint32_t height)
 	{
-		return createImage(format, width, height, UINT32_MAX);
+		return createImage(format, width, height, -1);
 	}
 
 	Image* ImageFactory::createBlackImage(GLenum format, uint32_t width, uint32_t height)
@@ -97,6 +97,8 @@ namespace utad
 			pixels = stbi_load_from_memory(rawData, (int32_t)fileContents.size, &width, &height, &channels, desiredChannels);
 
 		delete[] fileContents.data;
+
+		stbi_set_flip_vertically_on_load(false);
 
 		if (pixels == nullptr)
 			throw UTAD_EXCEPTION(String("Failed to create image from file: ").append(stbi_failure_reason()));

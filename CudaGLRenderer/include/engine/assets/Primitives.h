@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/graphics/Graphics.h"
+#include "Mesh.h"
 
 namespace utad
 {
@@ -18,6 +19,10 @@ namespace utad
 		static VertexArray* createCubeVAO();
 
 		static VertexArray* createQuadVAO();
+
+		static VertexArray* createSphereVAO(int xSegments, int ySegments);
+
+		static Mesh* createSphereMesh(int xSegments, int ySegments);
 	};
 
 }

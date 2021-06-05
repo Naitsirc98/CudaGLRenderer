@@ -21,7 +21,7 @@ void main()
 
 	fragment.position = worldPos.xyz;
 	fragment.normal = in_Normal;
-	fragment.texCoords = in_TexCoords;
+	fragment.texCoords = in_TexCoords;//vec2(in_TexCoords.x, 1.0 - in_TexCoords.y);
 
 	gl_Position = u_ProjMatrix * u_ViewMatrix * worldPos;
 }

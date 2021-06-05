@@ -5,7 +5,7 @@ namespace utad
 {
 	Framebuffer::Framebuffer()
 	{
-		glGenFramebuffers(1, &m_Handle);
+		glCreateFramebuffers(1, &m_Handle);
 	}
 
 	Framebuffer::~Framebuffer()

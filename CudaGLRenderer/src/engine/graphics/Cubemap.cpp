@@ -69,11 +69,14 @@ namespace utad
 
 	void Cubemap::bind(int unit)
 	{
-		glBindTextureUnit(unit, m_Handle);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_Handle);
 	}
 
 	void Cubemap::unbind(int unit)
 	{
-		glBindTextureUnit(unit, 0);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
+
 }
