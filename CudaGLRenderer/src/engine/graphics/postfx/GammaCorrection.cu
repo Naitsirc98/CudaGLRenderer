@@ -8,11 +8,11 @@ namespace utad
 	{
 		static const float gamma = 1.0f / 2.2f;
 
-		const int row = GET_ROW;
-		const int column = GET_COLUMN;
-		if (row >= height || column >= width) return;
+		const int x = CUDA_X_POS;
+		const int y = CUDA_Y_POS;
+		if (x >= width || y >= height) return;
 
-		Pixel& pixel = pixels[row * width + column];
+		Pixel& pixel = pixels[CUDA_INDEX_XY(x, y, width)];
 
 		float r = pixel.r / 255.0f;
 		float g = pixel.g / 255.0f;

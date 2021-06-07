@@ -5,8 +5,9 @@
 #include <device_launch_parameters.h>
 #include <iostream>
 
-#define GET_ROW (threadIdx.y + blockIdx.y * blockDim.y);
-#define GET_COLUMN (threadIdx.x + blockIdx.x * blockDim.x);
+#define CUDA_X_POS threadIdx.x + blockIdx.x * blockDim.x
+#define CUDA_Y_POS threadIdx.y + blockIdx.y * blockDim.y
+#define CUDA_INDEX_XY(x, y, width) (y) * (width) + (x)
 
 #define checkCudaErrors(val) check( (val), #val, __FILE__, __LINE__)
 

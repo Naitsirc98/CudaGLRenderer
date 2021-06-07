@@ -5,6 +5,7 @@
 #include "engine/graphics/postfx/InversionPostFX.cuh"
 #include "engine/graphics/postfx/GammaCorrection.cuh"
 #include "engine/graphics/postfx/Grayscale.cuh"
+#include "engine/graphics/postfx/GaussianBlur.cuh"
 #include <cuda_gl_interop.h>
 
 namespace utad
@@ -44,6 +45,7 @@ namespace utad
 					executeGammaCorrectionFX(framebufferInfo);
 					break;
 				case PostFX::Blur:
+					executeGaussianBlurFX(framebufferInfo);
 					break;
 				case PostFX::Bloom:
 					break;

@@ -8,11 +8,11 @@ namespace utad
 {
 	__global__ void kernel_Inversion(Pixel* pixels, int width, int height, int size)
 	{
-		const int row = GET_ROW;
-		const int column = GET_COLUMN;
-		if (row >= height || column >= width) return;
+		const int x = CUDA_X_POS;
+		const int y = CUDA_Y_POS;
+		if (x >= width || y >= height) return;
 
-		Pixel& pixel = pixels[row * width + column];
+		Pixel& pixel = pixels[CUDA_INDEX_XY(x, y, width)];
 
 		pixel.r = 255 - pixel.r;
 		pixel.g = 255 - pixel.g;

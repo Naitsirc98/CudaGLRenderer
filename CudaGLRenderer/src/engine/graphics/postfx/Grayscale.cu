@@ -6,11 +6,11 @@ namespace utad
 {
 	__global__ void kernel_Grayscale(Pixel* pixels, int width, int height, int size)
 	{
-		const int row = GET_ROW;
-		const int column = GET_COLUMN;
-		if (row >= height || column >= width) return;
+		const int x = CUDA_X_POS;
+		const int y = CUDA_Y_POS;
+		if (x >= width || y >= height) return;
 
-		Pixel& pixel = pixels[row * width + column];
+		Pixel& pixel = pixels[CUDA_INDEX_XY(x, y, width)];
 
 		const float color = pixel.r * 0.299f + pixel.g * 0.587f + pixel.b * 0.114f;
 
