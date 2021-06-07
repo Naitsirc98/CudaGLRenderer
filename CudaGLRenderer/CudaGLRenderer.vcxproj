@@ -54,6 +54,8 @@
     <ClInclude Include="include\engine\assets\Primitives.h" />
     <ClInclude Include="include\engine\assets\SkyboxLoader.h" />
     <ClInclude Include="include\engine\graphics\DebugCallback.h" />
+    <ClInclude Include="include\engine\graphics\postfx\GammaCorrection.cuh" />
+    <ClInclude Include="include\engine\graphics\postfx\Grayscale.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\InversionPostFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\PostFXRenderer.h" />
     <ClInclude Include="include\engine\scene\Light.h" />
@@ -111,6 +113,8 @@
     <None Include="res\shaders\skybox\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="src\engine\graphics\postfx\GammaCorrection.cu" />
+    <CudaCompile Include="src\engine\graphics\postfx\Grayscale.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\InversionPostFX.cu" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

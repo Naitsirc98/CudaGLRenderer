@@ -339,10 +339,10 @@ vec4 computeLighting()
     vec3 color = ambient + L0;
 
     // HDR tonemapping
-    color /= (color + vec3(1.0));
+    //color /= (color + vec3(1.0));
 
     // Gamma correct
-    color = pow(color, vec3(1.0 / 2.2));
+    //color = pow(color, vec3(1.0 / 2.2));
 
     return vec4(color, 1.0);
 }

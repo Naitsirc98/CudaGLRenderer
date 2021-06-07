@@ -3,9 +3,28 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#include <iostream>
+
+#define GET_ROW (threadIdx.y + blockIdx.y * blockDim.y);
+#define GET_COLUMN (threadIdx.x + blockIdx.x * blockDim.x);
+
+#define checkCudaErrors(val) check( (val), #val, __FILE__, __LINE__)
+
+template<typename T>
+void check(T err, const char* const func, const char* const file, const int line) {
+	if (err != cudaSuccess) {
+		std::cerr << "CUDA error at: " << file << ":" << line << std::endl;
+		std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
+	}
+}
 
 namespace utad
 {
+	__device__ __host__ struct Pixel
+	{
+		unsigned char r, g, b, a;
+	};
+
 	class Cuda
 	{
 	public:
@@ -37,12 +56,10 @@ namespace utad
 
 	__device__ struct FramebufferInfo
 	{
-		float* d_color;
-		float* d_brightness;
-		float* d_depth;
-
+		void* d_pixels;
 		int width;
 		int height;
-		int size;
+		int pixelCount;
+		int bytes;
 	};
 }

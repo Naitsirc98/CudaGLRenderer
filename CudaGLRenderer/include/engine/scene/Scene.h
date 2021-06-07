@@ -19,7 +19,7 @@ namespace utad
 		bool enableDirLight;
 		ArrayList<Light> pointLights;
 		Skybox* skybox{nullptr};
-		Queue<PostFX> postEffects;
+		ArrayList<PostFX> postEffects;
 
 	private:
 		RenderInfo() {}
@@ -55,7 +55,7 @@ namespace utad
 		ArrayList<Light>& pointLights();
 		Skybox* skybox() const;
 		void setSkybox(Skybox* skybox, bool deleteExisting = true);
-		Queue<PostFX>& postEffects();
+		ArrayList<PostFX>& postEffects();
 	private:
 		void update();
 		void lastUpdate();

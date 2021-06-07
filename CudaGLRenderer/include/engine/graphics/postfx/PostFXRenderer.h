@@ -10,7 +10,6 @@ namespace utad
 		None,
 		Grayscale,
 		Inversion,
-		ToneMapping,
 		GammaCorrection,
 		Blur,
 		Bloom
@@ -20,14 +19,15 @@ namespace utad
 	{
 		friend class Scene;
 	private:
-		float* m_h_ColorBuffer{nullptr};
-		float* m_d_ColorBuffer{nullptr};
+		unsigned char* m_h_ColorBuffer{nullptr};
+		unsigned char* m_d_ColorBuffer{nullptr};
 		int m_ColorBufferSize{0};
+		Buffer* m_PixelBuffer{nullptr};
 	private:
 		PostFXRenderer();
 		~PostFXRenderer();
 		void render(const RenderInfo& renderInfo);
 		FramebufferInfo createFramebufferInfo();
-		float* copyTexture(int size, GLenum format, Texture2D* texture);
+		unsigned char* copyTexture(int size, GLenum format, Texture2D* texture);
 	};
 }

@@ -1,12 +1,10 @@
-﻿#pragma once
-
-#include "engine/graphics/postfx/InversionPostFX.cuh"
+﻿#include "engine/graphics/postfx/GammaCorrection.cuh"
 #include "engine/graphics/postfx/CUDACommons.h"
 #include <math.h>
 
 namespace utad
 {
-	__global__ void kernel_Inversion(Pixel* pixels, int width, int height, int size)
+	__global__ void kernel_Grayscale(Pixel* pixels, int width, int height, int size)
 	{
 		const int row = GET_ROW;
 		const int column = GET_COLUMN;
@@ -14,12 +12,14 @@ namespace utad
 
 		Pixel& pixel = pixels[row * width + column];
 
-		pixel.r = 255 - pixel.r;
-		pixel.g = 255 - pixel.g;
-		pixel.b = 255 - pixel.b;
+		const float color = pixel.r * 0.299f + pixel.g * 0.587f + pixel.b * 0.114f;
+
+		pixel.r = color;
+		pixel.g = color;
+		pixel.b = color;
 	}
 
-	void executeInversionFX(const FramebufferInfo& info)
+	void executeGrayscaleFX(const FramebufferInfo& info)
 	{
 		const int numThreads = 32;
 		const int gridSizeX = floor(info.width / numThreads) + 1;
@@ -30,6 +30,6 @@ namespace utad
 
 		Pixel* pixels = (Pixel*)info.d_pixels;
 
-		kernel_Inversion<<<gridSize, blockSize>>>(pixels, info.width, info.height, info.pixelCount);
+		kernel_Grayscale<<<gridSize, blockSize>>>(pixels, info.width, info.height, info.pixelCount);
 	}
 }

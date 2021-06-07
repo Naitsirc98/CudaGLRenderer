@@ -91,7 +91,7 @@ namespace utad
 		s_ColorTexture = new Texture2D();
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_RGBA32F;
+		allocInfo.format = GL_RGBA8;
 		allocInfo.width = Window::get().width();
 		allocInfo.height = Window::get().height();
 		allocInfo.levels = 1;
@@ -108,7 +108,7 @@ namespace utad
 		s_BrightnessTexture = new Texture2D();
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_RGBA32F;
+		allocInfo.format = GL_RGBA8;
 		allocInfo.width = Window::get().width();
 		allocInfo.height = Window::get().height();
 		allocInfo.levels = 1;
@@ -125,7 +125,7 @@ namespace utad
 		s_DepthTexture = new Texture2D();
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_DEPTH_COMPONENT32;
+		allocInfo.format = GL_DEPTH_COMPONENT24;
 		allocInfo.width = Window::get().width();
 		allocInfo.height = Window::get().height();
 		allocInfo.levels = 1;

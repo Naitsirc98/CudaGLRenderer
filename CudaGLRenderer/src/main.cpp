@@ -134,32 +134,50 @@ public:
 		loader.debugMode(true);
 		Model* model = loader.load("TheModel", HELMET);
 
-		createSphere("rusted_iron", {0, 0, 0});
-		createSphere("gold", {-2.5f, 0, 0});
-		createSphere("wall", {2.5f, 0, 0});
-		createSphere("plastic", {-5.0f, 0, 0});
-		createSphere("grass", {5.0f, 0, 0});
+		Entity* object = Entity::create();
+		object->meshView().mesh(model->meshes()[0]);
+		object->meshView().material(model->materials()[0]);
+		object->transform().rotate(45, {1, 0, 0});
+
+		//createSphere("rusted_iron", {0, 0, 0});
+		//createSphere("gold", {-2.5f, 0, 0});
+		//createSphere("wall", {2.5f, 0, 0});
+		//createSphere("plastic", {-5.0f, 0, 0});
+		//createSphere("grass", {5.0f, 0, 0});
 
 		scene.camera().position({0, 0.5f, 7});
 	}
 
 	float lastTime = 0;
+	Set<PostFX> activeEffects;
+
+	void triggerEffect(PostFX postFX)
+	{
+		Scene& scene = Scene::get();
+		if (activeEffects.find(postFX) != activeEffects.end())
+		{
+			const auto pos = std::find(scene.postEffects().begin(), scene.postEffects().end(), postFX);
+			scene.postEffects().erase(pos);
+			activeEffects.erase(postFX);
+		}
+		else
+		{
+			scene.postEffects().push_back(postFX);
+			activeEffects.insert(postFX);
+		}
+
+		lastTime = Time::time();
+	}
 
 	void onUpdate()
 	{
-		if (Input::isKeyActive(Key::Key_F10) && Time::time() - lastTime >= 0.3f)
-		{
-			lastTime = Time::time();
+		if (Time::time() - lastTime < 0.3f) return;
 
-			if (Scene::get().postEffects().empty())
-			{
-				Scene::get().postEffects().push_back(PostFX::Inversion);
-			}
-			else
-			{
-				Scene::get().postEffects().clear();
-			}
-		}
+		if (Input::isKeyActive(Key::Key_F6)) triggerEffect(PostFX::Grayscale);
+		if (Input::isKeyActive(Key::Key_F7)) triggerEffect(PostFX::Inversion);
+		if (Input::isKeyActive(Key::Key_F8)) triggerEffect(PostFX::GammaCorrection);
+		if (Input::isKeyActive(Key::Key_F9)) triggerEffect(PostFX::Blur);
+		if (Input::isKeyActive(Key::Key_F10)) triggerEffect(PostFX::Bloom);
 	}
 };
 

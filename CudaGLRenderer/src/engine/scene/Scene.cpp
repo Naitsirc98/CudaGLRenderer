@@ -91,7 +91,7 @@ namespace utad
 		m_RenderInfo.skybox = skybox;
 	}
 
-	Queue<PostFX>& Scene::postEffects()
+	ArrayList<PostFX>& Scene::postEffects()
 	{
 		return m_RenderInfo.postEffects;
 	}

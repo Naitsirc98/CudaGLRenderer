@@ -15,8 +15,8 @@ void main() {
     if(u_EnableHDR) 
     {
         // HDR tonemap and gamma correct
-        color /= (color + vec4(1.0));
-        color = pow(color, vec4(1.0 / 2.2));
+        //color /= (color + vec4(1.0));
+        //color = pow(color, vec4(1.0 / 2.2));
     }
 
     out_FinalColor = color;
