@@ -21,13 +21,11 @@ namespace utad
 		UTAD_DELETE(m_PixelBuffer);
 	}
 
-	void PostFXRenderer::render(const RenderInfo& renderInfo)
+	void PostFXRenderer::render(const SceneSetup& renderInfo)
 	{
 		if (renderInfo.postEffects.empty()) return;
 
-		Graphics::getDefaultFramebuffer()->unbind();
-
-		FramebufferInfo framebufferInfo = createFramebufferInfo();
+		begin();
 
 		for(const PostFX& postFX : renderInfo.postEffects)
 		{
@@ -36,46 +34,29 @@ namespace utad
 			switch (postFX)
 			{
 				case PostFX::Grayscale:
-					executeGrayscaleFX(framebufferInfo);
+					executeGrayscaleFX(m_RenderInfo);
 					break;
 				case PostFX::Inversion:
-					executeInversionFX(framebufferInfo);
+					executeInversionFX(m_RenderInfo);
 					break;
 				case PostFX::GammaCorrection:
-					executeGammaCorrectionFX(framebufferInfo);
+					executeGammaCorrectionFX(m_RenderInfo);
 					break;
 				case PostFX::Blur:
-					executeGaussianBlurFX(framebufferInfo);
+					executeGaussianBlurFX(m_RenderInfo);
 					break;
 				case PostFX::Bloom:
 					break;
 			}
 		}
-		cudaDeviceSynchronize();
-		checkCudaErrors(cudaGetLastError());
 
-		Cuda::copyDeviceToHost(m_d_ColorBuffer, m_h_ColorBuffer, m_ColorBufferSize);
-		
-		Texture2DUpdateInfo updateInfo = {};
-		updateInfo.format = GL_RGBA;
-		updateInfo.type = GL_UNSIGNED_BYTE;
-		updateInfo.level = 0;
-		updateInfo.pixels = m_h_ColorBuffer;
-		
-		Graphics::getColorTexture()->update(std::move(updateInfo));
+		end();
 	}
 
-	unsigned char* PostFXRenderer::copyTexture(int size, GLenum format, Texture2D* texture)
+	void PostFXRenderer::begin()
 	{
-		texture->pixels(0, format, GL_UNSIGNED_BYTE, size, m_h_ColorBuffer);
-		Cuda::copyHostToDevice(m_h_ColorBuffer, m_d_ColorBuffer, size);
-		return m_d_ColorBuffer;
-	}
-
-	FramebufferInfo PostFXRenderer::createFramebufferInfo()
-	{
-		FramebufferInfo info = {};
-
+		Graphics::getDefaultFramebuffer()->unbind();
+		RenderInfo& info = m_RenderInfo;
 		Texture2D* colorTexture = Graphics::getColorTexture();
 
 		info.width = colorTexture->width();
@@ -89,14 +70,35 @@ namespace utad
 			m_h_ColorBuffer = new unsigned char[info.bytes];
 			
 			Cuda::free(m_d_ColorBuffer);
-			m_d_ColorBuffer = Cuda::malloc<unsigned char>(info.bytes);
+			m_d_ColorBuffer = (unsigned char*)Cuda::malloc(info.bytes);
 		
 			m_ColorBufferSize = info.bytes;
 		}
 		
 		info.d_pixels = copyTexture(info.bytes, GL_RGBA, colorTexture);
+	}
 
-		return info;
+	void PostFXRenderer::end()
+	{
+		cudaDeviceSynchronize();
+		CUDA_CHECK;
+
+		Cuda::copyDeviceToHost(m_d_ColorBuffer, m_h_ColorBuffer, m_ColorBufferSize);
+
+		Texture2DUpdateInfo updateInfo = {};
+		updateInfo.format = GL_RGBA;
+		updateInfo.type = GL_UNSIGNED_BYTE;
+		updateInfo.level = 0;
+		updateInfo.pixels = m_h_ColorBuffer;
+
+		Graphics::getColorTexture()->update(std::move(updateInfo));
+	}
+
+	unsigned char* PostFXRenderer::copyTexture(int size, GLenum format, Texture2D* texture)
+	{
+		texture->pixels(0, format, GL_UNSIGNED_BYTE, size, m_h_ColorBuffer);
+		Cuda::copyHostToDevice(m_h_ColorBuffer, m_d_ColorBuffer, size);
+		return m_d_ColorBuffer;
 	}
 }
 

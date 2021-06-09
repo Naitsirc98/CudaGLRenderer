@@ -1,9 +1,11 @@
 #pragma once
 
+#include "CUDACommons.h"
+
 namespace utad
 {
+	struct SceneSetup;
 	struct RenderInfo;
-	struct FramebufferInfo;
 
 	enum class PostFX
 	{
@@ -23,11 +25,14 @@ namespace utad
 		unsigned char* m_d_ColorBuffer{nullptr};
 		int m_ColorBufferSize{0};
 		Buffer* m_PixelBuffer{nullptr};
+		CudaResource* m_TextureResource{ nullptr };
+		RenderInfo m_RenderInfo;
 	private:
 		PostFXRenderer();
 		~PostFXRenderer();
-		void render(const RenderInfo& renderInfo);
-		FramebufferInfo createFramebufferInfo();
+		void render(const SceneSetup& renderInfo);
+		void begin();
+		void end();
 		unsigned char* copyTexture(int size, GLenum format, Texture2D* texture);
 	};
 }

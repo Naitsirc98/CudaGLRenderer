@@ -10,7 +10,7 @@
 
 namespace utad
 {
-	struct RenderInfo
+	struct SceneSetup
 	{
 		friend class Scene;
 
@@ -22,7 +22,7 @@ namespace utad
 		ArrayList<PostFX> postEffects;
 
 	private:
-		RenderInfo() {}
+		SceneSetup() {}
 	};
 
 	class Scene
@@ -40,7 +40,7 @@ namespace utad
 		MeshRenderer* m_MeshRenderer;
 		SkyboxRenderer* m_SkyboxRenderer;
 		PostFXRenderer* m_PostFXRenderer;
-		RenderInfo m_RenderInfo;
+		SceneSetup m_RenderInfo;
 	private:
 		Scene();
 		~Scene();

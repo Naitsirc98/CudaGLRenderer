@@ -15,10 +15,12 @@
     <ClCompile Include="src\engine\assets\AssetsManager.cpp" />
     <ClCompile Include="src\engine\assets\Image.cpp" />
     <ClCompile Include="src\engine\assets\Material.cpp" />
+    <ClCompile Include="src\engine\assets\Mesh.cpp" />
     <ClCompile Include="src\engine\assets\Model.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
     <ClCompile Include="src\engine\assets\Primitives.cpp" />
     <ClCompile Include="src\engine\assets\SkyboxLoader.cpp" />
+    <ClCompile Include="src\engine\collisions\Collisions.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
     <ClCompile Include="src\engine\entities\Entity.cpp" />
     <ClCompile Include="src\engine\entities\EntityPool.cpp" />
@@ -33,6 +35,7 @@
     <ClCompile Include="src\engine\graphics\glad.c" />
     <ClCompile Include="src\engine\graphics\Graphics.cpp" />
     <ClCompile Include="src\engine\graphics\MeshRenderer.cpp" />
+    <ClCompile Include="src\engine\graphics\postfx\CudaCommons.cpp" />
     <ClCompile Include="src\engine\graphics\postfx\PostFXRenderer.cpp" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\SkyboxRenderer.cpp" />
@@ -59,6 +62,7 @@
     <ClInclude Include="include\engine\graphics\postfx\Grayscale.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\InversionPostFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\PostFXRenderer.h" />
+    <ClInclude Include="include\engine\collisions\Collisions.h" />
     <ClInclude Include="include\engine\scene\Light.h" />
     <ClInclude Include="include\engine\assets\Material.h" />
     <ClInclude Include="include\engine\assets\Mesh.h" />

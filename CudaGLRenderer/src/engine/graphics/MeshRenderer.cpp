@@ -55,7 +55,7 @@ namespace utad
 		return *m_RenderQueues[name];
 	}
 
-	void MeshRenderer::render(const RenderInfo& renderInfo)
+	void MeshRenderer::render(const SceneSetup& renderInfo)
 	{
 		const Camera& camera = renderInfo.camera;
 		const Color& clearColor = camera.clearColor();

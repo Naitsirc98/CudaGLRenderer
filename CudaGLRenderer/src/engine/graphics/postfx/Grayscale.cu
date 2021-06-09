@@ -19,7 +19,7 @@ namespace utad
 		pixel.b = color;
 	}
 
-	void executeGrayscaleFX(const FramebufferInfo& info)
+	void executeGrayscaleFX(const RenderInfo& info)
 	{
 		const int numThreads = 32;
 		const int gridSizeX = floor(info.width / numThreads) + 1;

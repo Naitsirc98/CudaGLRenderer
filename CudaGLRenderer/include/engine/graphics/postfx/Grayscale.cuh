@@ -4,5 +4,5 @@
 
 namespace utad
 {
-	extern void executeGrayscaleFX(const utad::FramebufferInfo& framebufferInfo);
+	extern void executeGrayscaleFX(const utad::RenderInfo& framebufferInfo);
 }

@@ -4,5 +4,5 @@
 
 namespace utad
 {
-	extern void executeGammaCorrectionFX(const utad::FramebufferInfo& framebufferInfo);
+	extern void executeGammaCorrectionFX(const utad::RenderInfo& framebufferInfo);
 }

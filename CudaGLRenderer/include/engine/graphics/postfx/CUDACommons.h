@@ -9,7 +9,8 @@
 #define CUDA_Y_POS threadIdx.y + blockIdx.y * blockDim.y
 #define CUDA_INDEX_XY(x, y, width) (y) * (width) + (x)
 
-#define checkCudaErrors(val) check( (val), #val, __FILE__, __LINE__)
+#define CUDA_CHECK_ERROR(val) check( (val), #val, __FILE__, __LINE__)
+#define CUDA_CHECK CUDA_CHECK_ERROR(cudaGetLastError())
 
 template<typename T>
 void check(T err, const char* const func, const char* const file, const int line) {
@@ -21,7 +22,9 @@ void check(T err, const char* const func, const char* const file, const int line
 
 namespace utad
 {
-	__device__ __host__ struct Pixel
+	using CudaResource = cudaGraphicsResource;
+
+	__device__ struct Pixel
 	{
 		unsigned char r, g, b, a;
 	};
@@ -29,34 +32,17 @@ namespace utad
 	class Cuda
 	{
 	public:
-		
-		template<typename T>
-		static T* malloc(int bytes)
-		{
-			T* d_ptr = nullptr;
-			cudaMalloc(&d_ptr, bytes);
-			return d_ptr;
-		}
-
-		static void free(void* d_ptr)
-		{
-			cudaFree(d_ptr);
-		}
-
-		static void copyHostToDevice(const void* src, void* dst, size_t bytes)
-		{
-			cudaMemcpy(dst, src, bytes, cudaMemcpyKind::cudaMemcpyHostToDevice);
-		}
-
-		static void copyDeviceToHost(const void* src, void* dst, size_t bytes)
-		{
-			cudaMemcpy(dst, src, bytes, cudaMemcpyKind::cudaMemcpyDeviceToHost);
-		}
+		static void* malloc(int bytes);
+		static void free(void* d_ptr);
+		static void copyHostToDevice(const void* src, void* dst, size_t bytes);
+		static void copyDeviceToHost(const void* src, void* dst, size_t bytes);
+		static void createResource(cudaGraphicsResource_t& resource, int glTexture, cudaGraphicsMapFlags mapFlags);
+		static void destroyResource(cudaGraphicsResource_t& resource);
 	};
 
-
-	__device__ struct FramebufferInfo
+	__device__ struct RenderInfo
 	{
+		CudaResource* texture;
 		void* d_pixels;
 		int width;
 		int height;

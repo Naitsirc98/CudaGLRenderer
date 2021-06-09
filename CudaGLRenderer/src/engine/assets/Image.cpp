@@ -81,22 +81,12 @@ namespace utad
 		int32_t desiredChannels = format == format == GL_NONE ? STBI_default : channelsOfFormat(format);
 		void* pixels;
 
-		const BinaryFile fileContents = Files::readAllBytes(path);
-		const stbi_uc* rawData = reinterpret_cast<stbi_uc*>(fileContents.data);
-
-		if (rawData == nullptr)
-		{
-			throw UTAD_EXCEPTION(String("Could not read fileContents ").append(path));
-		}
-
 		stbi_set_flip_vertically_on_load(flipY);
 
 		if (format != format == GL_NONE && isFloatFormat(format))
-			pixels = stbi_loadf_from_memory(rawData, (int32_t)fileContents.size, &width, &height, &channels, desiredChannels);
+			pixels = stbi_loadf(path.c_str(), &width, &height, &channels, desiredChannels);
 		else
-			pixels = stbi_load_from_memory(rawData, (int32_t)fileContents.size, &width, &height, &channels, desiredChannels);
-
-		delete[] fileContents.data;
+			pixels = stbi_load(path.c_str(), &width, &height, &channels, desiredChannels);
 
 		stbi_set_flip_vertically_on_load(false);
 

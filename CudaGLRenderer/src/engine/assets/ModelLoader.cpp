@@ -32,6 +32,10 @@ namespace utad
 
 	ModelLoader::ModelLoader()
 	{
+		m_VertexAttribsByName["POSITION"] = VertexAttrib::Position;
+		m_VertexAttribsByName["NORMAL"] = VertexAttrib::Normal;
+		m_VertexAttribsByName["TEXCOORD_0"] = VertexAttrib::TexCoords;
+		m_VertexAttribsByName["TANGENT"] = VertexAttrib::Tangent;
 	}
 
 	ModelLoader::~ModelLoader()
@@ -131,7 +135,6 @@ namespace utad
 
 		if (model.meshes.empty()) return;
 
-		Map<int, BufferView>& buffers = *info.buffers;
 		gltf::Mesh& mesh = model.meshes[node.mesh];
 		gltf::Primitive primitive = mesh.primitives[0]; // Only supports 1 primitive per mesh for now
 		gltf::Accessor& indexAccessor = model.accessors[primitive.indices];
@@ -141,44 +144,7 @@ namespace utad
 
 		if (m_DebugMode) std::cout << "\tLoading mesh " << mesh.name << std::endl;
 
-		for (auto [index, bufferView] : buffers)
-		{
-			if (bufferView.target == GL_ELEMENT_ARRAY_BUFFER)
-			{
-				bufferView.buffer->bind(GL_ELEMENT_ARRAY_BUFFER);
-				vertexArray->setIndexBuffer(bufferView.buffer);
-			}
-		}
-
-		for (const auto [attribName, accessorIndex] : primitive.attributes)
-		{
-			gltf::Accessor& accessor = model.accessors[accessorIndex];
-			gltf::BufferView& bufferView = model.bufferViews[accessor.bufferView];
-			const uint stride = accessor.ByteStride(bufferView);
-
-			int count = 1;
-			if (accessor.type != TINYGLTF_TYPE_SCALAR) count = accessor.type;
-
-			VertexBuffer* buffer = buffers[accessor.bufferView].buffer;
-			vertexArray->addVertexBuffer(accessor.bufferView, buffer, stride);
-			
-			int location = -1;
-			if (attribName == "POSITION") location = 0;
-			else if (attribName == "NORMAL") location = 1;
-			else if (attribName == "TEXCOORD_0") location = 2;
-			else if (attribName == "TANGENT") location = 3;
-
-			if (location == -1) continue;
-
-			VertexAttrib attrib;
-			attrib.count = count;
-			attrib.type = accessor.componentType;
-
-			if (location >= 0)
-				vertexArray->setVertexAttrib(accessor.bufferView, attrib, location, accessor.byteOffset);
-			else
-				std::cout << "Unknown attribute: " << attribName << std::endl;
-		}
+		setupVertexBuffers(info, mesh, vertexArray);
 
 		const uint meshIndex = result.m_Model.m_Meshes.size();
 
@@ -192,6 +158,52 @@ namespace utad
 		result.m_Mesh = meshIndex;
 
 		vertexArray->unbind();
+	}
+
+	void ModelLoader::setupVertexBuffers(ModelInfo& info, const gltf::Mesh& mesh, VertexArray* vertexArray)
+	{
+		const gltf::Model& model = *info.model;
+		const gltf::Primitive& primitive = mesh.primitives[0];
+		Map<int, BufferView>& buffers = *info.buffers;
+
+		for (auto [index, bufferView] : buffers)
+		{
+			if (bufferView.target == GL_ELEMENT_ARRAY_BUFFER)
+			{
+				bufferView.buffer->bind(GL_ELEMENT_ARRAY_BUFFER);
+				vertexArray->setIndexBuffer(bufferView.buffer);
+			}
+		}
+
+		for (const auto [attribName, accessorIndex] : primitive.attributes)
+		{
+			const gltf::Accessor& accessor = model.accessors[accessorIndex];
+			const gltf::BufferView& bufferView = model.bufferViews[accessor.bufferView];
+			const uint stride = accessor.ByteStride(bufferView);
+
+			int count = 1;
+			if (accessor.type != TINYGLTF_TYPE_SCALAR) count = accessor.type;
+
+			VertexBuffer* buffer = buffers[accessor.bufferView].buffer;
+			vertexArray->addVertexBuffer(accessor.bufferView, buffer, stride);
+
+			VertexAttrib attrib;
+			if (!getVertexAttrib(attribName, attrib))
+			{
+				std::cout << "Unknown attribute: " << attribName << std::endl;
+				continue;
+			}
+
+			const VertexAttribDescription& desc = VertexAttribDescription::of(attrib);
+			vertexArray->setVertexAttribute(accessor.bufferView, attrib, accessor.byteOffset);
+		}
+	}
+
+	bool ModelLoader::getVertexAttrib(const String& attribName, VertexAttrib& attribute) const
+	{
+		if (m_VertexAttribsByName.find(attribName) == m_VertexAttribsByName.end()) return false;
+		attribute = m_VertexAttribsByName.at(attribName);
+		return true;
 	}
 
 	template<typename T>

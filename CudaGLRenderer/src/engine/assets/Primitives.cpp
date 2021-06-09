@@ -105,30 +105,21 @@ namespace utad
 		for (int y = 0; y < ySegments; y++)
 		{
 			if (y % 2 == 0)
-			{
-
 				for (int x = 0; x <= xSegments; x++) 
 				{
 					indices[index++] = y * (xSegments + 1) + x;
 					indices[index++] = (y + 1) * (xSegments + 1) + x;
 				}
-			}
 			else
-			{
 				for (int x = xSegments; x >= 0; x--)
 				{
 					indices[index++] = (y + 1) * (xSegments + 1) + x;
 					indices[index++] = y * (xSegments + 1) + x;
 				}
-			}
 		}
 
 		VertexArray* vao = new VertexArray();
-
 		VertexBuffer* vbo = new VertexBuffer();
-
-		vao->bind();
-		vbo->bind(GL_ARRAY_BUFFER);
 
 		BufferAllocInfo vboAllocInfo = {};
 		vboAllocInfo.size = vertexElementsCount * sizeof(float);
@@ -137,26 +128,8 @@ namespace utad
 
 		vbo->allocate(std::move(vboAllocInfo));
 
-		VertexAttrib position = {};
-		position.location = 0;
-		position.count = 3;
-		position.type = GL_FLOAT;
-
-		VertexAttrib normal = {};
-		position.location = 1;
-		normal.count = 3;
-		normal.type = GL_FLOAT;
-
-		VertexAttrib texCoords = {};
-		position.location = 2;
-		texCoords.count = 2;
-		texCoords.type = GL_FLOAT;
-
 		vao->addVertexBuffer(0, vbo, 8 * sizeof(float));
-
-		vao->setVertexAttrib(0, position, 0, 0);
-		vao->setVertexAttrib(0, normal, 1, 3 * sizeof(float));
-		vao->setVertexAttrib(0, texCoords, 2, 6 * sizeof(float));
+		vao->setVertexAttributes(0, {VertexAttrib::Position, VertexAttrib::Normal, VertexAttrib::TexCoords});
 
 		IndexBuffer* ibo = new IndexBuffer();
 		
@@ -167,18 +140,14 @@ namespace utad
 
 		ibo->allocate(std::move(iboAllocInfo));
 
-		UTAD_DELETE(vertices);
-		UTAD_DELETE(indices);
-
 		vao->setIndexBuffer(ibo);
 
 		vao->setDestroyBuffersOnDelete();
 
-		vbo->unbind(GL_ARRAY_BUFFER);
-		vao->unbind();
+		delete[] vertices;
+		delete[] indices;
 
 		return vao;
-
 	}
 
 	Mesh* Primitives::createSphereMesh(int xSegments, int ySegments)
@@ -197,11 +166,7 @@ namespace utad
 	VertexArray* Primitives::createCubeVAO()
 	{
 		VertexArray* vao = new VertexArray();
-
 		VertexBuffer* vbo = new VertexBuffer();
-
-		vao->bind();
-		vbo->bind(GL_ARRAY_BUFFER);
 
 		BufferAllocInfo vboAllocInfo = {};
 		vboAllocInfo.size = cubeVertices.size() * sizeof(float);
@@ -210,31 +175,9 @@ namespace utad
 
 		vbo->allocate(std::move(vboAllocInfo));
 
-		VertexAttrib position = {};
-		position.location = 0;
-		position.count = 3;
-		position.type = GL_FLOAT;
-
-		VertexAttrib normal = {};
-		position.location = 1;
-		normal.count = 3;
-		normal.type = GL_FLOAT;
-
-		VertexAttrib texCoords = {};
-		position.location = 2;
-		texCoords.count = 2;
-		texCoords.type = GL_FLOAT;
-
 		vao->addVertexBuffer(0, vbo, 8 * sizeof(float));
-
-		vao->setVertexAttrib(0, position,  0, 0);
-		vao->setVertexAttrib(0, normal,    1, 3 * sizeof(float));
-		vao->setVertexAttrib(0, texCoords, 2, 6 * sizeof(float));
-
+		vao->setVertexAttributes(0, {VertexAttrib::Position, VertexAttrib::Normal, VertexAttrib::TexCoords});
 		vao->setDestroyBuffersOnDelete();
-
-		vbo->unbind(GL_ARRAY_BUFFER);
-		vao->unbind();
 
 		return vao;
 	}
@@ -242,7 +185,6 @@ namespace utad
 	VertexArray* Primitives::createQuadVAO()
 	{
 		VertexArray* vao = new VertexArray();
-
 		VertexBuffer* vbo = new VertexBuffer();
 
 		BufferAllocInfo vboAllocInfo = {};
@@ -252,20 +194,8 @@ namespace utad
 
 		vbo->allocate(std::move(vboAllocInfo));
 
-		VertexAttrib position = {};
-		position.location = 0;
-		position.count = 3;
-		position.type = GL_FLOAT;
-
-		VertexAttrib texCoords = {};
-		texCoords.location = 2;
-		texCoords.count = 2;
-		texCoords.type = GL_FLOAT;
-
 		vao->addVertexBuffer(0, vbo, 5 * sizeof(float));
-		vao->setVertexAttrib(0, position, 0, 0);
-		vao->setVertexAttrib(0, texCoords, 2, 3 * sizeof(float));
-
+		vao->setVertexAttributes(0, {VertexAttrib::Position, VertexAttrib::TexCoords});
 		vao->setDestroyBuffersOnDelete();
 
 		return vao;

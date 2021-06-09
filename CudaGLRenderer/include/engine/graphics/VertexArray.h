@@ -4,63 +4,61 @@
 
 namespace utad
 {
-	struct VertexAttrib
+	struct Vertex
+	{
+		Vector4 position;
+		Vector3 normal;
+		Vector2 texCoords;
+		Vector3 tangent;
+		Color color;
+	};
+
+	enum class VertexAttrib
+	{
+		None,
+		Position,
+		Normal,
+		TexCoords,
+		Tangent,
+		Color
+	};
+
+	struct VertexAttribDescription
 	{
 		GLuint location;
 		GLenum type;
 		GLsizei count;
 		uint size() const;
 
-		bool operator<(const VertexAttrib& other) const
-		{
-			return location < other.location;
-		}
-
-		bool operator>(const VertexAttrib& other) const
-		{
-			return location > other.location;
-		}
-
-		bool operator<=(const VertexAttrib& other) const
-		{
-			return location <= other.location;
-		}
-
-		bool operator>=(const VertexAttrib& other) const
-		{
-			return location >= other.location;
-		}
+		static const VertexAttribDescription& of(VertexAttrib attribute);
+		static const String& name(VertexAttrib attribute);
 	};
 
-	class VertexAttribList
+	struct VertexBufferDescriptor
 	{
-	private:
-		ArrayList<VertexAttrib> m_Attributes;
-	public:
-		VertexAttribList(size_t initialCapacity = 3);
-		void add(const VertexAttrib& attrib);
-		void add(VertexAttrib&& attrib);
-		ArrayList<VertexAttrib>::const_iterator begin() const;
-		ArrayList<VertexAttrib>::const_iterator end() const;
-		uint stride() const;
+		uint binding;
+		VertexBuffer* buffer{nullptr};
+		ArrayList<VertexAttrib> attributes;
+		uint offset;
+		uint stride;
 	};
 
 	class VertexArray
 	{
 	private:
 		Handle m_Handle;
-		Map<uint, VertexBuffer*> m_VertexBuffers;
+		Map<uint, VertexBufferDescriptor> m_VertexBuffers;
 		IndexBuffer* m_IndexBuffer{nullptr};
 		bool m_DestroyBuffersOnDelete{true};
 	public:
 		VertexArray();
 		~VertexArray();
 		Handle handle() const;
-		VertexBuffer* vertexBuffer(uint binding) const;
-		bool addVertexBuffer(uint binding, VertexBuffer* buffer, uint stride);
-		bool addVertexBuffer(uint binding, VertexBuffer* buffer, const VertexAttribList& attributes);
-		void setVertexAttribs(uint binding, const VertexAttribList& attributes);
-		void setVertexAttrib(uint binding, const VertexAttrib& attrib, uint location, uint offset);
+		const VertexBufferDescriptor* get(uint binding) const;
+		bool addVertexBuffer(uint binding, VertexBuffer* buffer, uint stride, uint offset = 0);
+		void removeVertexBuffer(uint binding);
+		void setVertexAttributes(uint binding, const ArrayList<VertexAttrib>& attributes);
+		void setVertexAttribute(uint binding, VertexAttrib attribute, uint offset);
 		IndexBuffer* indexBuffer() const;
 		void setIndexBuffer(IndexBuffer* buffer);
 		void bind();
@@ -68,5 +66,16 @@ namespace utad
 		void destroyVertexBuffers();
 		void destroyIndexBuffer();
 		void setDestroyBuffersOnDelete(bool destroyBuffers = true);
+	public:
+		template<typename Container>
+		static int stride(const Container& container)
+		{
+			int stride = 0;
+			for (const VertexAttrib& attrib : attributes)
+			{
+				stride += VertexAttribDescription::of(attrib).size();
+			}
+			return stride;
+		}
 	};
 }

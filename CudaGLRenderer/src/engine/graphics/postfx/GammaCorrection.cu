@@ -37,7 +37,7 @@ namespace utad
 		pixel.a = (unsigned char)(a * 255.0f);
 	}
 
-	void executeGammaCorrectionFX(const FramebufferInfo& info)
+	void executeGammaCorrectionFX(const RenderInfo& info)
 	{
 		const int numThreads = 32;
 		const int gridSizeX = floor((float)info.width / (float)numThreads) + 1;

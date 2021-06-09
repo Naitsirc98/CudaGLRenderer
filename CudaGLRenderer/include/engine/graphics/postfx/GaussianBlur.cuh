@@ -4,5 +4,5 @@
 
 namespace utad
 {
-	extern void executeGaussianBlurFX(const utad::FramebufferInfo& framebufferInfo);
+	extern void executeGaussianBlurFX(const utad::RenderInfo& framebufferInfo);
 }

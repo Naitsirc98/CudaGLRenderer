@@ -50,7 +50,7 @@ namespace utad
         pixel.a = a;
 	}
 
-	void executeGaussianBlurFX(const FramebufferInfo& info)
+	void executeGaussianBlurFX(const RenderInfo& info)
 	{
 		const int numThreads = 32;
 		const int gridSizeX = floor(info.width / numThreads) + 1;
@@ -64,12 +64,10 @@ namespace utad
         float h_filter[FILTER_SIZE];
         for (int i = 0; i < FILTER_SIZE; ++i) h_filter[i] = 1.0f / FILTER_SIZE;
 
-        float* d_filter = Cuda::malloc<float>(FILTER_SIZE * sizeof(float));
+        float* d_filter = (float*)Cuda::malloc(FILTER_SIZE * sizeof(float));
         Cuda::copyHostToDevice(h_filter, d_filter, FILTER_SIZE * sizeof(float));
 
 		kernel_GaussianBlur<<<gridSize, blockSize>>>(pixels, d_filter, info.width, info.height, info.pixelCount);	
-        cudaDeviceSynchronize();
-        checkCudaErrors(cudaGetLastError());
 
         Cuda::free(d_filter);
     }

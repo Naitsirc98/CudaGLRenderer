@@ -4,5 +4,5 @@
 
 namespace utad
 {
-	extern void executeInversionFX(const utad::FramebufferInfo& framebufferInfo);
+	extern void executeInversionFX(const utad::RenderInfo& framebufferInfo);
 }

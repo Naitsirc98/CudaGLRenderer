@@ -19,7 +19,7 @@ namespace utad
 		pixel.b = 255 - pixel.b;
 	}
 
-	void executeInversionFX(const FramebufferInfo& info)
+	void executeInversionFX(const RenderInfo& info)
 	{
 		const int numThreads = 32;
 		const int gridSizeX = floor(info.width / numThreads) + 1;

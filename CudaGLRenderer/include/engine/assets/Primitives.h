@@ -17,11 +17,8 @@ namespace utad
 		static const ArrayList<float> cubeVertices;
 
 		static VertexArray* createCubeVAO();
-
 		static VertexArray* createQuadVAO();
-
 		static VertexArray* createSphereVAO(int xSegments, int ySegments);
-
 		static Mesh* createSphereMesh(int xSegments, int ySegments);
 	};
 

@@ -86,7 +86,12 @@ public:
 	{
 		static const float flipY = false;
 
-		Material* mat = Assets::createMaterial(name);
+		Material* mat = Assets::getMaterial(name);
+
+		if (mat != nullptr) return mat;
+
+		mat = Assets::createMaterial(name);
+
 		mat->albedoMap(Texture2D::load(TEXTURES_DIR + name + "/albedo.png", GL_RGBA, flipY));
 		mat->normalMap(Texture2D::load(TEXTURES_DIR + name + "/normal.png", GL_RGBA, flipY));
 		mat->metallicMap(Texture2D::load(TEXTURES_DIR + name + "/metallic.png", GL_RGBA, flipY));
@@ -132,16 +137,17 @@ public:
 
 		ModelLoader loader;
 		loader.debugMode(true);
-		Model* model = loader.load("TheModel", HELMET);
+		Model* model = loader.load("TheModel", BOX);
 
 		Entity* object = Entity::create();
 		object->meshView().mesh(model->meshes()[0]);
 		object->meshView().material(model->materials()[0]);
 		object->transform().rotate(45, {1, 0, 0});
+		object->transform().position() = {0, 3, -2};
 
-		//createSphere("rusted_iron", {0, 0, 0});
-		//createSphere("gold", {-2.5f, 0, 0});
-		//createSphere("wall", {2.5f, 0, 0});
+		createSphere("rusted_iron", {0, 0, 0});
+		createSphere("gold", {-2.5f, 0, 0});
+		createSphere("wall", {2.5f, 0, 0});
 		//createSphere("plastic", {-5.0f, 0, 0});
 		//createSphere("grass", {5.0f, 0, 0});
 

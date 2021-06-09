@@ -37,7 +37,7 @@ namespace utad
 		UTAD_DELETE(m_CubeVAO);
 	}
 
-	void SkyboxRenderer::render(const RenderInfo& info)
+	void SkyboxRenderer::render(const SceneSetup& info)
 	{
 		if (info.skybox == nullptr) return;
 
