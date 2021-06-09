@@ -1,43 +1,14 @@
 #pragma once
 
+#include "Vertex.h"
 #include "Buffer.h"
 
 namespace utad
 {
-	struct Vertex
-	{
-		Vector4 position;
-		Vector3 normal;
-		Vector2 texCoords;
-		Vector3 tangent;
-		Color color;
-	};
-
-	enum class VertexAttrib
-	{
-		None,
-		Position,
-		Normal,
-		TexCoords,
-		Tangent,
-		Color
-	};
-
-	struct VertexAttribDescription
-	{
-		GLuint location;
-		GLenum type;
-		GLsizei count;
-		uint size() const;
-
-		static const VertexAttribDescription& of(VertexAttrib attribute);
-		static const String& name(VertexAttrib attribute);
-	};
-
 	struct VertexBufferDescriptor
 	{
 		uint binding;
-		VertexBuffer* buffer{nullptr};
+		VertexBuffer* buffer{ nullptr };
 		ArrayList<VertexAttrib> attributes;
 		uint offset;
 		uint stride;

@@ -107,12 +107,11 @@ public:
 
 	void createSphere(const String& name, const Vector3& pos)
 	{
-		static Mesh* mesh = Primitives::createSphereMesh(64, 64);
 		Material* material = createMaterial(name);
 
 		Entity* sphere = Entity::create();
 		sphere->transform().position() = pos;
-		sphere->meshView().mesh(mesh);
+		sphere->meshView().mesh(MeshPrimitives::sphere());
 		sphere->meshView().material(material);
 		sphere->setEnabled(true);
 	}
@@ -135,19 +134,19 @@ public:
 		Entity* cameraController = Entity::create("CameraController");
 		cameraController->addScript(new CameraController());
 
-		ModelLoader loader;
-		loader.debugMode(true);
-		Model* model = loader.load("TheModel", BOX);
+		//ModelLoader loader;
+		//loader.debugMode(true);
+		//Model* model = loader.load("TheModel", BOX);
 
-		Entity* object = Entity::create();
-		object->meshView().mesh(model->meshes()[0]);
-		object->meshView().material(model->materials()[0]);
-		object->transform().rotate(45, {1, 0, 0});
-		object->transform().position() = {0, 3, -2};
+		//Entity* object = Entity::create();
+		//object->meshView().mesh(model->meshes()[0]);
+		//object->meshView().material(model->materials()[0]);
+		//object->transform().rotate(45, {1, 0, 0});
+		//object->transform().position() = {0, 3, -2};
 
 		createSphere("rusted_iron", {0, 0, 0});
-		createSphere("gold", {-2.5f, 0, 0});
-		createSphere("wall", {2.5f, 0, 0});
+		//createSphere("gold", {-2.5f, 0, 0});
+		//createSphere("wall", {2.5f, 0, 0});
 		//createSphere("plastic", {-5.0f, 0, 0});
 		//createSphere("grass", {5.0f, 0, 0});
 

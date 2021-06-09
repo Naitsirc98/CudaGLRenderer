@@ -1,7 +1,7 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/graphics/Window.h"
 #include "engine/events/EventSystem.h"
-#include "engine/assets/Primitives.h"
+#include "engine/assets/MeshPrimitives.h"
 #include "engine/io/Files.h"
 
 namespace utad
@@ -12,7 +12,6 @@ namespace utad
 	Texture2D* Graphics::s_ColorTexture;
 	Texture2D* Graphics::s_BrightnessTexture;
 	Texture2D* Graphics::s_DepthTexture;
-	VertexArray* Graphics::s_QuadVAO;
 	Shader* Graphics::s_QuadShader;
 
 
@@ -56,11 +55,7 @@ namespace utad
 		s_QuadShader->bind();
 		{
 			s_QuadShader->setTexture("u_Texture", s_ColorTexture);
-			s_QuadVAO->bind();
-			{
-				glDrawArrays(Primitives::quadDrawMode, 0, Primitives::quadVertexCount);
-			}
-			s_QuadVAO->unbind();
+			MeshPrimitives::drawQuad(true);
 		}
 		s_QuadShader->unbind();
 
@@ -70,7 +65,6 @@ namespace utad
 	void Graphics::init()
 	{
 		createFramebuffer();
-		createQuad();
 		createShader();
 
 		EventSystem::addEventCallback(EventType::WindowResize, [&](const Event& e) {			
@@ -82,7 +76,6 @@ namespace utad
 	void Graphics::destroy()
 	{
 		freeFramebuffer();
-		UTAD_DELETE(s_QuadVAO);
 		UTAD_DELETE(s_QuadShader);
 	}
 
@@ -158,11 +151,6 @@ namespace utad
 		UTAD_DELETE(s_ColorTexture);
 		UTAD_DELETE(s_BrightnessTexture);
 		UTAD_DELETE(s_DepthTexture);
-	}
-
-	void Graphics::createQuad()
-	{
-		s_QuadVAO = Primitives::createQuadVAO();
 	}
 
 	void Graphics::createShader()

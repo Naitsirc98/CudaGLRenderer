@@ -18,7 +18,7 @@
     <ClCompile Include="src\engine\assets\Mesh.cpp" />
     <ClCompile Include="src\engine\assets\Model.cpp" />
     <ClCompile Include="src\engine\assets\ModelLoader.cpp" />
-    <ClCompile Include="src\engine\assets\Primitives.cpp" />
+    <ClCompile Include="src\engine\assets\MeshPrimitives.cpp" />
     <ClCompile Include="src\engine\assets\SkyboxLoader.cpp" />
     <ClCompile Include="src\engine\collisions\Collisions.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
@@ -40,6 +40,7 @@
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\SkyboxRenderer.cpp" />
     <ClCompile Include="src\engine\graphics\Texture2D.cpp" />
+    <ClCompile Include="src\engine\graphics\Vertex.cpp" />
     <ClCompile Include="src\engine\graphics\VertexArray.cpp" />
     <ClCompile Include="src\engine\graphics\Window.cpp" />
     <ClCompile Include="src\engine\io\Files.cpp" />
@@ -54,7 +55,7 @@
     <ClInclude Include="include\engine\Application.h" />
     <ClInclude Include="include\engine\assets\AssetsManager.h" />
     <ClInclude Include="include\engine\assets\Image.h" />
-    <ClInclude Include="include\engine\assets\Primitives.h" />
+    <ClInclude Include="include\engine\assets\MeshPrimitives.h" />
     <ClInclude Include="include\engine\assets\SkyboxLoader.h" />
     <ClInclude Include="include\engine\graphics\DebugCallback.h" />
     <ClInclude Include="include\engine\graphics\postfx\GammaCorrection.cuh" />
@@ -63,6 +64,7 @@
     <ClInclude Include="include\engine\graphics\postfx\InversionPostFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\PostFXRenderer.h" />
     <ClInclude Include="include\engine\collisions\Collisions.h" />
+    <ClInclude Include="include\engine\graphics\Vertex.h" />
     <ClInclude Include="include\engine\scene\Light.h" />
     <ClInclude Include="include\engine\assets\Material.h" />
     <ClInclude Include="include\engine\assets\Mesh.h" />

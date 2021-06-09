@@ -1,6 +1,7 @@
 #include "engine/assets/AssetsManager.h"
 #include "engine/assets/ModelLoader.h"
 #include "engine/assets/Image.h"
+#include "engine/assets/MeshPrimitives.h"
 
 namespace utad
 {
@@ -37,6 +38,7 @@ namespace utad
 
 	AssetsManager* AssetsManager::init()
 	{
+		MeshPrimitives::initMeshes();
 		s_Instance = new AssetsManager();
 		s_Instance->m_WhiteTexture = createTextureFromImage(ImageFactory::createWhiteImage(GL_RGBA));
 		s_Instance->m_BlackTexture = createTextureFromImage(ImageFactory::createBlackImage(GL_RGBA));
@@ -48,6 +50,7 @@ namespace utad
 	void AssetsManager::destroy()
 	{
 		UTAD_DELETE(s_Instance);
+		MeshPrimitives::destroyMeshes();
 	}
 
 	AssetsManager& AssetsManager::get()

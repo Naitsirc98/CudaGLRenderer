@@ -28,9 +28,6 @@ namespace utad
         Shader* m_PrefilterShader;
         Shader* m_BRDFShader;
 
-        VertexArray* m_QuadVAO;
-        VertexArray* m_CubeVAO;
-
 	private:
 		SkyboxLoader();
 		~SkyboxLoader();
@@ -54,9 +51,6 @@ namespace utad
         void renderCubemap(Cubemap* cubemap, Shader* shader, int size, int mipmapLevel);
 
         void createFramebuffer();
-        void createVertexData();
-        void createQuad();
-        void createCube();
         void createShaders();
         void createEnvironmentMapShader();
         void createIrradianceMapShader();

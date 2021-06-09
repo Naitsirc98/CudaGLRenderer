@@ -20,7 +20,6 @@ namespace utad
 		m_Format = move.format();
 		m_Pixels = move.m_Pixels;
 		move.m_Pixels = nullptr;
-		// memmove(m_Pixels, copy.m_Pixels, copy.size());
 	}
 
 	Image::~Image()

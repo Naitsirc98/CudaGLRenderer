@@ -13,6 +13,7 @@
 #include <functional>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define PI 3.141592653589f
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>

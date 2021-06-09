@@ -3,56 +3,6 @@
 
 namespace utad
 {
-	static const VertexAttribDescription NoneDesc      = {-1, GL_FLOAT, 0};
-	static const VertexAttribDescription PositionDesc  = {0, GL_FLOAT, 3};
-	static const VertexAttribDescription NormalDesc    = {1, GL_FLOAT, 3};
-	static const VertexAttribDescription TexCoordsDesc = {2, GL_FLOAT, 2};
-	static const VertexAttribDescription TangentsDesc  = {3, GL_FLOAT, 3};
-	static const VertexAttribDescription ColorDesc     = {4, GL_FLOAT, 3};
-
-	static const VertexAttribDescription StandardAttribs[] {
-		PositionDesc, NormalDesc, TexCoordsDesc, TangentsDesc, ColorDesc
-	};
-
-	static const String StandardAttribsNames[] {
-		"Position", "Normal", "TexCoords", "Tangents", "Color"
-	};
-
-	const VertexAttribDescription& VertexAttribDescription::of(VertexAttrib attribute)
-	{
-		return StandardAttribs[static_cast<int>(attribute) - 1];
-	}
-
-	const String& VertexAttribDescription::name(VertexAttrib attribute)
-	{
-		return StandardAttribsNames[static_cast<int>(attribute) - 1];
-	}
-
-	uint VertexAttribDescription::size() const
-	{
-		int dataSize = 1;
-
-		switch (type)
-		{
-			case GL_FLOAT:
-				dataSize = sizeof(float);
-				break;
-			case GL_INT:
-			case GL_UNSIGNED_INT:
-				dataSize = sizeof(int);
-				break;
-			case GL_BYTE:
-			case GL_UNSIGNED_BYTE:
-				dataSize = sizeof(byte);
-				break;
-			case GL_DOUBLE:
-				dataSize = sizeof(double);
-				break;
-		}
-
-		return count * dataSize;
-	}
-
 	VertexArray::VertexArray()
 	{
 		glCreateVertexArrays(1, &m_Handle);

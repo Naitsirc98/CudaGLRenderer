@@ -1,7 +1,7 @@
 #include "engine/assets/SkyboxLoader.h"
 #include "engine/io/Files.h"
 #include "engine/assets/Image.h"
-#include "engine/assets/Primitives.h"
+#include "engine/assets/MeshPrimitives.h"
 #include "engine/graphics/Window.h"
 
 namespace utad
@@ -17,7 +17,6 @@ namespace utad
 	void SkyboxLoader::init()
 	{
 		createFramebuffer();
-		createVertexData();
 		createShaders();
 	}
 
@@ -216,11 +215,7 @@ namespace utad
 
 			m_BRDFShader->bind();
 			{
-				m_QuadVAO->bind();
-				{
-					glDrawArrays(Primitives::quadDrawMode, 0, Primitives::quadVertexCount);
-				}
-				m_QuadVAO->unbind();
+				MeshPrimitives::drawQuad(true);
 			}
 			m_BRDFShader->unbind();
 		}
@@ -251,7 +246,7 @@ namespace utad
 		Matrix4 projMatrix = getProjectionMatrix();
 		Array<Matrix4, 6> viewMatrices = getViewMatrices();
 
-		m_CubeVAO->bind();
+		MeshPrimitives::cube()->bind();
 		{
 			m_Framebuffer->bind();
 			{
@@ -270,12 +265,12 @@ namespace utad
 
 					glClear(GL_COLOR_BUFFER_BIT);
 
-					glDrawArrays(Primitives::cubeDrawMode, 0, Primitives::cubeVertexCount);
+					MeshPrimitives::drawCube();
 				}
 			}
 			m_Framebuffer->unbind();
 		}
-		m_CubeVAO->unbind();
+		MeshPrimitives::cube()->unbind();
 
 		glViewport(0, 0, Window::get().width(), Window::get().height());
 		glFinish();
@@ -284,22 +279,6 @@ namespace utad
 	void SkyboxLoader::createFramebuffer()
 	{
 		m_Framebuffer = new Framebuffer();
-	}
-
-	void SkyboxLoader::createVertexData()
-	{
-		createQuad();
-		createCube();
-	}
-
-	void SkyboxLoader::createQuad()
-	{
-		m_QuadVAO = Primitives::createQuadVAO();
-	}
-
-	void SkyboxLoader::createCube()
-	{
-		m_CubeVAO = Primitives::createCubeVAO();
 	}
 
 	void SkyboxLoader::createShaders()

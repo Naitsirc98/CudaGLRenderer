@@ -1,7 +1,7 @@
 #include "engine/graphics/SkyboxRenderer.h"
 #include "engine/scene/Scene.h"
 #include "engine/io/Files.h"
-#include "engine/assets/Primitives.h"
+#include "engine/assets/MeshPrimitives.h"
 #include "engine/graphics/Window.h"
 
 namespace utad
@@ -27,14 +27,11 @@ namespace utad
 		m_Shader->attach(&fragment);
 
 		m_Shader->compile();
-
-		m_CubeVAO = Primitives::createCubeVAO();
 	}
 
 	SkyboxRenderer::~SkyboxRenderer()
 	{
 		UTAD_DELETE(m_Shader);
-		UTAD_DELETE(m_CubeVAO);
 	}
 
 	void SkyboxRenderer::render(const SceneSetup& info)
@@ -53,11 +50,7 @@ namespace utad
 			m_Shader->setTexture("u_SkyboxTexture", info.skybox->environmentMap);
 			m_Shader->setUniform("u_EnableHDR", true);
 
-			m_CubeVAO->bind();
-			{
-				glDrawArrays(Primitives::cubeDrawMode, 0, Primitives::cubeVertexCount);
-			}
-			m_CubeVAO->unbind();
+			MeshPrimitives::drawCube();
 		}
 		m_Shader->unbind();
 	}

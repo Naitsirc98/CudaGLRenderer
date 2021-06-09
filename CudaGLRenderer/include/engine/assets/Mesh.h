@@ -10,22 +10,25 @@ namespace utad
 	{
 		friend class AssetsManager;
 		friend class ModelLoader;
-		friend class Primitives;
+		friend class MeshPrimitives;
 	private:
 		VertexArray* m_VertexArray{nullptr};
-		GLenum m_DrawMode;
-		uint m_IndexCount;
-		GLenum m_IndexType;
-		uint m_IndexBufferOffset;
+		GLenum m_DrawMode{0};
+		uint m_IndexCount{0};
+		GLenum m_IndexType{0};
+		uint m_IndexBufferOffset{0};
 		ArrayList<Vertex> m_Vertices;
 	public:
 		Mesh(VertexArray* vao);
-		~Mesh() { UTAD_DELETE(m_VertexArray);}
-		VertexArray* vertexArray() const { return m_VertexArray; }
-		GLenum drawMode() const {return m_DrawMode;};
-		uint indexCount() const { return m_IndexCount; };
-		GLenum indexType() const {return m_IndexType;};
-		uint indexBufferOffset() const { return m_IndexBufferOffset; };
-		const ArrayList<Vertex>& vertices() const { return m_Vertices; };
+		~Mesh();
+		VertexArray* vertexArray() const;
+		GLenum drawMode() const;
+		uint vertexCount() const;
+		uint indexCount() const;
+		GLenum indexType() const;
+		uint indexBufferOffset() const;
+		const ArrayList<Vertex>& vertices() const;
+		void bind();
+		void unbind();
 	};
 }

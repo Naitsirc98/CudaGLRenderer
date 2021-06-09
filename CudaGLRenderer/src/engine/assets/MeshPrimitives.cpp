@@ -1,21 +1,22 @@
-#include "engine/assets/Primitives.h"
+#include "engine/assets/MeshPrimitives.h"
 #include "engine/assets/AssetsManager.h"
 
 namespace utad
 {
-	const GLenum Primitives::quadDrawMode = GL_TRIANGLE_STRIP;
-	const int Primitives::quadVertexCount = 4;
-	const ArrayList<float> Primitives::quadVertices = {
-		// positions        // texture Coords
-		-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f
+
+	const GLenum MeshPrimitives::QuadDrawMode = GL_TRIANGLE_STRIP;
+	const int MeshPrimitives::QuadVertexCount = 4;
+	const GLenum MeshPrimitives::CubeDrawMode = GL_TRIANGLES;
+	const int MeshPrimitives::CubeVertexCount = 36;
+
+	const ArrayList<float> MeshPrimitives::s_QuadVertices = {
+		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		 1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f
 	};
 
-	const GLenum Primitives::cubeDrawMode = GL_TRIANGLES;
-	const int Primitives::cubeVertexCount = 36;
-	const ArrayList<float> Primitives::cubeVertices = {
+	const ArrayList<float> MeshPrimitives::s_CubeVertices = {
 		// back face
 		-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
 		 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
@@ -60,10 +61,11 @@ namespace utad
 		-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left  
 	};
 
+	Mesh* MeshPrimitives::s_CubeMesh = nullptr;
+	Mesh* MeshPrimitives::s_QuadMesh = nullptr;
+	Mesh* MeshPrimitives::s_SphereMesh = nullptr;
 
-#define PI 3.141592653589f
-
-	VertexArray* Primitives::createSphereVAO(int xSegments, int ySegments)
+	VertexArray* MeshPrimitives::createSphereVAO(int xSegments, int ySegments, ArrayList<Vertex>& verticesList)
 	{
 		int size = (xSegments + 1) * (ySegments + 1);
 
@@ -71,6 +73,8 @@ namespace utad
 
 		float* vertices = new float[vertexElementsCount];
 		int index = 0;
+
+		verticesList.reserve(vertexElementsCount / 8);
 
 		for (int y = 0; y <= ySegments; y++) 
 		{
@@ -94,6 +98,13 @@ namespace utad
 				// UV
 				vertices[index++] = xSeg;
 				vertices[index++] = ySeg;
+
+				Vertex vertex = {};
+				vertex.position = { xPos, yPos, zPos };
+				vertex.normal = {xPos, yPos, zPos};
+				vertex.texCoords = { xSeg, ySeg };
+
+				verticesList.push_back(std::move(vertex));
 			}
 		}
 
@@ -150,54 +161,142 @@ namespace utad
 		return vao;
 	}
 
-	Mesh* Primitives::createSphereMesh(int xSegments, int ySegments)
+	Mesh* MeshPrimitives::cube()
 	{
-		VertexArray* vao = createSphereVAO(xSegments, ySegments);
+		return s_CubeMesh;
+	}
+
+	Mesh* MeshPrimitives::quad()
+	{
+		return s_QuadMesh;
+	}
+
+	Mesh* MeshPrimitives::sphere()
+	{
+		return s_SphereMesh;
+	}
+
+	void MeshPrimitives::drawCube(bool bind)
+	{
+		if(bind) s_CubeMesh->bind();
+		glDrawArrays(CubeDrawMode, 0, CubeVertexCount);
+		if(bind) s_CubeMesh->unbind();
+	}
+
+	void MeshPrimitives::drawQuad(bool bind)
+	{
+		if(bind) s_QuadMesh->bind();
+		glDrawArrays(QuadDrawMode, 0, QuadVertexCount);
+		if(bind) s_QuadMesh->unbind();
+	}
+
+	void MeshPrimitives::drawSphere(bool bind)
+	{
+		if(bind) s_SphereMesh->bind();
+		glDrawElements(s_SphereMesh->drawMode(), s_SphereMesh->indexCount(),
+			s_SphereMesh->indexType(), (void*)s_SphereMesh->indexBufferOffset());
+		if(bind) s_SphereMesh->unbind();
+	}
+
+	VertexArray* MeshPrimitives::createCubeVAO(ArrayList<Vertex>& vertices)
+	{
+		VertexArray* vao = new VertexArray();
+		VertexBuffer* vbo = new VertexBuffer();
+
+		BufferAllocInfo vboAllocInfo = {};
+		vboAllocInfo.size = s_CubeVertices.size() * sizeof(float);
+		vboAllocInfo.data = (void*)s_CubeVertices.data();
+		vboAllocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
+
+		vbo->allocate(std::move(vboAllocInfo));
+
+		ArrayList<VertexAttrib> attributes = { VertexAttrib::Position, VertexAttrib::Normal, VertexAttrib::TexCoords };
+
+		vao->addVertexBuffer(0, vbo, Vertex::stride(attributes));
+		vao->setVertexAttributes(0, attributes);
+		vao->setDestroyBuffersOnDelete();
+
+		VertexReader reader = VertexReader(s_CubeVertices.data(), s_CubeVertices.size() * sizeof(float), attributes);
+		while (reader.hasNext()) vertices.push_back(std::move(reader.next()));
+
+		return vao;
+	}
+
+	VertexArray* MeshPrimitives::createQuadVAO(ArrayList<Vertex>& vertices)
+	{
+		VertexArray* vao = new VertexArray();
+		VertexBuffer* vbo = new VertexBuffer();
+
+		BufferAllocInfo vboAllocInfo = {};
+		vboAllocInfo.size = s_QuadVertices.size() * sizeof(float);
+		vboAllocInfo.data = (void*)s_QuadVertices.data();
+		vboAllocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
+
+		vbo->allocate(std::move(vboAllocInfo));
+
+		ArrayList<VertexAttrib> attributes = {VertexAttrib::Position, VertexAttrib::Normal, VertexAttrib::TexCoords};
+
+		vao->addVertexBuffer(0, vbo, Vertex::stride(attributes));
+		vao->setVertexAttributes(0, attributes);
+		vao->setDestroyBuffersOnDelete();
+
+		VertexReader reader(s_QuadVertices.data(), s_QuadVertices.size() * sizeof(float), attributes);
+		while (reader.hasNext()) vertices.push_back(std::move(reader.next()));
+
+		return vao;
+	}
+
+	Mesh* MeshPrimitives::createCubeMesh()
+	{
+		ArrayList<Vertex> vertices;
+		VertexArray* vao = createCubeVAO(vertices);
 
 		Mesh* mesh = new Mesh(vao);
-		mesh->m_IndexBufferOffset = 0;
-		mesh->m_IndexType = GL_UNSIGNED_INT;
-		mesh->m_IndexCount = vao->indexBuffer()->size() / sizeof(int);
-		mesh->m_DrawMode = GL_TRIANGLE_STRIP;
+		mesh->m_DrawMode = CubeDrawMode;
+		mesh->m_Vertices = std::move(vertices);
 
 		return mesh;
 	}
 
-	VertexArray* Primitives::createCubeVAO()
+	Mesh* MeshPrimitives::createQuadMesh()
 	{
-		VertexArray* vao = new VertexArray();
-		VertexBuffer* vbo = new VertexBuffer();
+		ArrayList<Vertex> vertices;
+		VertexArray* vao = createQuadVAO(vertices);
 
-		BufferAllocInfo vboAllocInfo = {};
-		vboAllocInfo.size = cubeVertices.size() * sizeof(float);
-		vboAllocInfo.data = (void*)cubeVertices.data();
-		vboAllocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
+		Mesh* mesh = new Mesh(vao);
+		mesh->m_DrawMode = QuadDrawMode;
+		mesh->m_Vertices = std::move(vertices);
 
-		vbo->allocate(std::move(vboAllocInfo));
-
-		vao->addVertexBuffer(0, vbo, 8 * sizeof(float));
-		vao->setVertexAttributes(0, {VertexAttrib::Position, VertexAttrib::Normal, VertexAttrib::TexCoords});
-		vao->setDestroyBuffersOnDelete();
-
-		return vao;
+		return mesh;
 	}
 
-	VertexArray* Primitives::createQuadVAO()
+	Mesh* MeshPrimitives::createSphereMesh(int xSegments, int ySegments)
 	{
-		VertexArray* vao = new VertexArray();
-		VertexBuffer* vbo = new VertexBuffer();
+		ArrayList<Vertex> vertices;
 
-		BufferAllocInfo vboAllocInfo = {};
-		vboAllocInfo.size = quadVertices.size() * sizeof(float);
-		vboAllocInfo.data = (void*)quadVertices.data();
-		vboAllocInfo.storageFlags = GPU_STORAGE_LOCAL_FLAGS;
+		VertexArray* vao = createSphereVAO(xSegments, ySegments, vertices);
 
-		vbo->allocate(std::move(vboAllocInfo));
+		Mesh* mesh = new Mesh(vao);
+		mesh->m_IndexBufferOffset = 0;
+		mesh->m_IndexType = GL_UNSIGNED_INT;
+		mesh->m_IndexCount = vao->indexBuffer()->size() / sizeof(unsigned int);
+		mesh->m_DrawMode = GL_TRIANGLE_STRIP;
+		mesh->m_Vertices = std::move(vertices);
 
-		vao->addVertexBuffer(0, vbo, 5 * sizeof(float));
-		vao->setVertexAttributes(0, {VertexAttrib::Position, VertexAttrib::TexCoords});
-		vao->setDestroyBuffersOnDelete();
+		return mesh;
+	}
 
-		return vao;
+	void MeshPrimitives::initMeshes()
+	{
+		s_CubeMesh = createCubeMesh();
+		s_QuadMesh = createQuadMesh();
+		s_SphereMesh = createSphereMesh(128, 128);
+	}
+
+	void MeshPrimitives::destroyMeshes()
+	{
+		UTAD_DELETE(s_CubeMesh);
+		UTAD_DELETE(s_QuadMesh);
+		UTAD_DELETE(s_SphereMesh);
 	}
 }

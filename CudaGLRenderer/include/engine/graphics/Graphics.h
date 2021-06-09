@@ -16,7 +16,6 @@ namespace utad
 		static Texture2D* s_ColorTexture;
 		static Texture2D* s_BrightnessTexture;
 		static Texture2D* s_DepthTexture;
-		static VertexArray* s_QuadVAO;
 		static Shader* s_QuadShader;
 	public:
 		static Framebuffer* getDefaultFramebuffer();
@@ -33,7 +32,6 @@ namespace utad
 		static void createDepthTexture();
 		static void createFramebuffer();
 		static void freeFramebuffer();
-		static void createQuad();
 		static void createShader();
 	};
 }
