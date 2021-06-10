@@ -1,5 +1,4 @@
-﻿#include "engine/graphics/postfx/GammaCorrection.cuh"
-#include "engine/graphics/postfx/CUDACommons.h"
+﻿#include "engine/graphics/postfx/GrayscaleFX.cuh"
 #include <math.h>
 
 namespace utad
@@ -19,7 +18,7 @@ namespace utad
 		pixel.b = color;
 	}
 
-	void executeGrayscaleFX(const RenderInfo& info)
+	void GrayscaleFX::execute(const PostFXInfo& info)
 	{
 		dim3 gridSize;
 		dim3 blockSize;

@@ -11,10 +11,29 @@
 
 #define CUDA_CHECK_ERROR(val) utad::cudaCheck( (val), #val, __FILE__, __LINE__)
 #define CUDA_CHECK CUDA_CHECK_ERROR(cudaGetLastError())
-
+#define CUDA_CALL(func) (func); CUDA_CHECK
 
 namespace utad
 {
+	struct PostFXInfo
+	{
+		void* d_pixels;
+		int width;
+		int height;
+		float exposure;
+	};
+
+	class PostFXExecutor
+	{
+	public:
+		PostFXExecutor() = default;
+		PostFXExecutor(const PostFXExecutor& other) = delete;
+		virtual ~PostFXExecutor() = default;
+		virtual void execute(const PostFXInfo& info) = 0;
+		PostFXExecutor& operator=(const PostFXExecutor& other) = delete;
+	};
+
+
 	template<typename T>
 	void cudaCheck(T err, const char* const func, const char* const file, const int line) {
 		if (err != cudaSuccess) {
@@ -40,16 +59,5 @@ namespace utad
 		static void getKernelDimensions(dim3& gridSize, dim3& blockSize, int imageWidth, int imageHeight);
 		static void createResource(cudaGraphicsResource_t& resource, int glTexture, cudaGraphicsMapFlags mapFlags);
 		static void destroyResource(cudaGraphicsResource_t& resource);
-	};
-
-	__device__ struct RenderInfo
-	{
-		CudaResource* texture;
-		void* d_pixels;
-		int width;
-		int height;
-		int pixelCount;
-		int bytes;
-		float exposure{1};
 	};
 }

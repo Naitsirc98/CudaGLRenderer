@@ -1,7 +1,4 @@
-﻿#pragma once
-
-#include "engine/graphics/postfx/InversionPostFX.cuh"
-#include "engine/graphics/postfx/CUDACommons.h"
+﻿#include "engine/graphics/postfx/InversionFX.cuh"
 #include <math.h>
 
 namespace utad
@@ -19,7 +16,7 @@ namespace utad
 		pixel.b = 255 - pixel.b;
 	}
 
-	void executeInversionFX(const RenderInfo& info)
+	void InversionFX::execute(const PostFXInfo& info)
 	{
 		dim3 gridSize;
 		dim3 blockSize;

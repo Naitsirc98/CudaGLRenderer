@@ -1,5 +1,4 @@
-﻿#include "engine/graphics/postfx/GammaCorrection.cuh"
-#include "engine/graphics/postfx/CUDACommons.h"
+﻿#include "engine/graphics/postfx/GaussianBlurFX.cuh"
 #include <math.h>
 
 namespace utad
@@ -27,11 +26,11 @@ namespace utad
             }
         }
 
-        float normalizationFactor = 1.f / sum;
+        float n = 1.0f / sum;
 
         for (int r = -w / 2; r <= w / 2; ++r) {
             for (int c = -w / 2; c <= w / 2; ++c) {
-                g_H_GaussianBlurFilter[(r + w / 2) * w + c + w / 2] *= normalizationFactor;
+                g_H_GaussianBlurFilter[(r + w / 2) * w + c + w / 2] *= n;
             }
         }
 
@@ -48,7 +47,7 @@ namespace utad
         return value;
     }
 
-	__global__ void kernel_Blur(Pixel* pixels, float* filter, int width, int height)
+	__global__ void kernel_GaussianBlur(Pixel* pixels, float* filter, int width, int height)
 	{
         const int x = CUDA_X_POS;
         const int y = CUDA_Y_POS;
@@ -85,7 +84,7 @@ namespace utad
 	}
 
 
-	void executeBlurFX(const RenderInfo& info)
+	void GaussianBlurFX::execute(const PostFXInfo& info)
 	{
         if (!g_FilterInitialized) initializeFilter();
 
@@ -95,6 +94,6 @@ namespace utad
 
 		Pixel* pixels = (Pixel*)info.d_pixels;
 
-		kernel_Blur<<<gridSize, blockSize>>>(pixels, g_D_GaussianBlurFilter, info.width, info.height);	
+		kernel_GaussianBlur<<<gridSize, blockSize>>>(pixels, g_D_GaussianBlurFilter, info.width, info.height);	
     }
 }

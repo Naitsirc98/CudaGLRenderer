@@ -1,6 +1,9 @@
 #pragma once
 
-#include "CUDACommons.h"
+#include "GrayscaleFX.cuh"
+#include "InversionFX.cuh"
+#include "GaussianBlurFX.cuh"
+#include "GammaCorrectionFX.cuh"
 
 namespace utad
 {
@@ -9,13 +12,15 @@ namespace utad
 
 	enum class PostFX
 	{
-		None,
 		Grayscale,
 		Inversion,
 		GammaCorrection,
 		Blur,
-		Bloom
+		Bloom,
+		_MaxEnumValue
 	};
+
+	const uint PostFXCount = 5;
 
 	class PostFXRenderer
 	{
@@ -25,8 +30,10 @@ namespace utad
 		unsigned char* m_d_ColorBuffer{nullptr};
 		int m_ColorBufferSize{0};
 		Buffer* m_PixelBuffer{nullptr};
-		CudaResource* m_TextureResource{ nullptr };
-		RenderInfo m_RenderInfo;
+		CudaResource* m_TextureResource{nullptr};
+		PostFXInfo m_PostFXInfo;
+		// PostFX Executors
+		ArrayList<PostFXExecutor*> m_PostFXExecutors;
 	private:
 		PostFXRenderer();
 		~PostFXRenderer();

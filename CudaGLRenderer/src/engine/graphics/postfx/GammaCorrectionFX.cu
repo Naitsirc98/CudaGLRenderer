@@ -1,5 +1,4 @@
-﻿#include "engine/graphics/postfx/GammaCorrection.cuh"
-#include "engine/graphics/postfx/CUDACommons.h"
+﻿#include "engine/graphics/postfx/GammaCorrectionFX.cuh"
 #include <math.h>
 
 namespace utad
@@ -37,7 +36,7 @@ namespace utad
 		pixel.a = (unsigned char)(a * 255.0f);
 	}
 
-	void executeGammaCorrectionFX(const RenderInfo& info)
+	void GammaCorrectionFX::execute(const PostFXInfo& info)
 	{
 		dim3 gridSize;
 		dim3 blockSize;
