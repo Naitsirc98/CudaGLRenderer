@@ -151,6 +151,8 @@ public:
 		//createSphere("grass", {5.0f, 0, 0});
 
 		scene.camera().position({0, 0.5f, 7});
+
+		scene.camera().exposure(0.8f);
 	}
 
 	float lastTime = 0;
