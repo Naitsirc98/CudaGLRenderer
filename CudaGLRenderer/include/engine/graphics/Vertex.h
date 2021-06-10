@@ -48,5 +48,6 @@ namespace utad
 		VertexReader(const void* inputData, size_t size, const ArrayList<VertexAttrib>& attributes, size_t offset = 0);
 		bool hasNext() const;
 		Vertex next();
+		static void setVertexAttribute(Vertex& vertex, const byte* data, VertexAttrib attribute);
 	};
 }

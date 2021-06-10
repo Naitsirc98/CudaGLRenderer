@@ -4,8 +4,8 @@
 
 namespace utad
 {
-	static const uint32_t DEFAULT_WIDTH = 1280;
-	static const uint32_t DEFAULT_HEIGHT = 720;
+	static const uint32_t DEFAULT_WIDTH = 1600;
+	static const uint32_t DEFAULT_HEIGHT = 900;
 
 	Window* Window::s_Instance = nullptr;
 

@@ -5,7 +5,7 @@
 #include "engine/graphics/postfx/InversionPostFX.cuh"
 #include "engine/graphics/postfx/GammaCorrection.cuh"
 #include "engine/graphics/postfx/Grayscale.cuh"
-#include "engine/graphics/postfx/GaussianBlur.cuh"
+#include "engine/graphics/postfx/FiltersFX.cuh"
 #include <cuda_gl_interop.h>
 
 namespace utad
@@ -21,13 +21,13 @@ namespace utad
 		UTAD_DELETE(m_PixelBuffer);
 	}
 
-	void PostFXRenderer::render(const SceneSetup& renderInfo)
+	void PostFXRenderer::render(const SceneSetup& scene)
 	{
-		if (renderInfo.postEffects.empty()) return;
+		if (scene.postEffects.empty()) return;
 
-		begin();
+		begin(scene);
 
-		for(const PostFX& postFX : renderInfo.postEffects)
+		for(const PostFX& postFX : scene.postEffects)
 		{
 			if (postFX == PostFX::None) continue;
 
@@ -43,17 +43,17 @@ namespace utad
 					executeGammaCorrectionFX(m_RenderInfo);
 					break;
 				case PostFX::Blur:
-					executeGaussianBlurFX(m_RenderInfo);
+					executeBlurFX(m_RenderInfo);
 					break;
 				case PostFX::Bloom:
 					break;
 			}
 		}
 
-		end();
+		end(scene);
 	}
 
-	void PostFXRenderer::begin()
+	void PostFXRenderer::begin(const SceneSetup& scene)
 	{
 		Graphics::getDefaultFramebuffer()->unbind();
 		RenderInfo& info = m_RenderInfo;
@@ -63,6 +63,7 @@ namespace utad
 		info.height = colorTexture->height();
 		info.pixelCount = info.width * info.height;
 		info.bytes = info.pixelCount * 4 * sizeof(byte);
+		info.exposure = scene.camera.exposure();
 
 		if (m_h_ColorBuffer == nullptr || info.bytes != m_ColorBufferSize)
 		{
@@ -78,7 +79,7 @@ namespace utad
 		info.d_pixels = copyTexture(info.bytes, GL_RGBA, colorTexture);
 	}
 
-	void PostFXRenderer::end()
+	void PostFXRenderer::end(const SceneSetup& scene)
 	{
 		cudaDeviceSynchronize();
 		CUDA_CHECK;

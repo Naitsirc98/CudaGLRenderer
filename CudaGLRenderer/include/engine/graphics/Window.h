@@ -39,7 +39,7 @@ namespace utad
 		int m_Height;
 		WindowState m_State{WindowState::WINDOWED};
 	private:
-		Window(const String& title, int width = 1280, int height = 720);
+		Window(const String& title, int width = 1600, int height = 900);
 	public:
 		~Window();
 		Window(const Window& other) = delete;

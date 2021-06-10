@@ -9,19 +9,20 @@
 #define CUDA_Y_POS threadIdx.y + blockIdx.y * blockDim.y
 #define CUDA_INDEX_XY(x, y, width) (y) * (width) + (x)
 
-#define CUDA_CHECK_ERROR(val) check( (val), #val, __FILE__, __LINE__)
+#define CUDA_CHECK_ERROR(val) utad::cudaCheck( (val), #val, __FILE__, __LINE__)
 #define CUDA_CHECK CUDA_CHECK_ERROR(cudaGetLastError())
 
-template<typename T>
-void check(T err, const char* const func, const char* const file, const int line) {
-	if (err != cudaSuccess) {
-		std::cerr << "CUDA error at: " << file << ":" << line << std::endl;
-		std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
-	}
-}
 
 namespace utad
 {
+	template<typename T>
+	void cudaCheck(T err, const char* const func, const char* const file, const int line) {
+		if (err != cudaSuccess) {
+			std::cerr << "CUDA error at: " << file << ":" << line << std::endl;
+			std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
+		}
+	}
+
 	using CudaResource = cudaGraphicsResource;
 
 	__device__ struct Pixel
@@ -36,6 +37,7 @@ namespace utad
 		static void free(void* d_ptr);
 		static void copyHostToDevice(const void* src, void* dst, size_t bytes);
 		static void copyDeviceToHost(const void* src, void* dst, size_t bytes);
+		static void getKernelDimensions(dim3& gridSize, dim3& blockSize, int imageWidth, int imageHeight);
 		static void createResource(cudaGraphicsResource_t& resource, int glTexture, cudaGraphicsMapFlags mapFlags);
 		static void destroyResource(cudaGraphicsResource_t& resource);
 	};
@@ -48,5 +50,6 @@ namespace utad
 		int height;
 		int pixelCount;
 		int bytes;
+		float exposure{1};
 	};
 }

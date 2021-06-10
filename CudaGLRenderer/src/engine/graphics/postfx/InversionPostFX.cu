@@ -6,7 +6,7 @@
 
 namespace utad
 {
-	__global__ void kernel_Inversion(Pixel* pixels, int width, int height, int size)
+	__global__ void kernel_Inversion(Pixel* pixels, int width, int height)
 	{
 		const int x = CUDA_X_POS;
 		const int y = CUDA_Y_POS;
@@ -21,15 +21,12 @@ namespace utad
 
 	void executeInversionFX(const RenderInfo& info)
 	{
-		const int numThreads = 32;
-		const int gridSizeX = floor(info.width / numThreads) + 1;
-		const int gridSizeY = floor(info.height / numThreads) + 1;
-
-		const dim3 blockSize(numThreads, numThreads, 1);
-		const dim3 gridSize(gridSizeX, gridSizeY, 1);
+		dim3 gridSize;
+		dim3 blockSize;
+		Cuda::getKernelDimensions(gridSize, blockSize, info.width, info.height);
 
 		Pixel* pixels = (Pixel*)info.d_pixels;
 
-		kernel_Inversion<<<gridSize, blockSize>>>(pixels, info.width, info.height, info.pixelCount);
+		kernel_Inversion<<<gridSize, blockSize>>>(pixels, info.width, info.height);
 	}
 }

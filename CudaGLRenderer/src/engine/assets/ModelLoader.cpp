@@ -140,11 +140,10 @@ namespace utad
 		gltf::Accessor& indexAccessor = model.accessors[primitive.indices];
 		
 		VertexArray* vertexArray = new VertexArray();
-		vertexArray->bind();
-
+		ArrayList<Vertex> vertices;
 		if (m_DebugMode) std::cout << "\tLoading mesh " << mesh.name << std::endl;
 
-		setupVertexBuffers(info, mesh, vertexArray);
+		setupBuffers(info, mesh, vertexArray, vertices);
 
 		const uint meshIndex = result.m_Model.m_Meshes.size();
 
@@ -153,14 +152,14 @@ namespace utad
 		outMesh->m_IndexCount = indexAccessor.count;
 		outMesh->m_IndexType = indexAccessor.componentType;
 		outMesh->m_IndexBufferOffset = indexAccessor.byteOffset;
+		outMesh->m_Vertices = std::move(vertices);
 
 		result.m_Model.m_Meshes.push_back(outMesh);
 		result.m_Mesh = meshIndex;
-
-		vertexArray->unbind();
 	}
 
-	void ModelLoader::setupVertexBuffers(ModelInfo& info, const gltf::Mesh& mesh, VertexArray* vertexArray)
+	void ModelLoader::setupBuffers(ModelInfo& info, const gltf::Mesh& mesh, VertexArray* vertexArray,
+		ArrayList<Vertex>& vertices)
 	{
 		const gltf::Model& model = *info.model;
 		const gltf::Primitive& primitive = mesh.primitives[0];
@@ -195,6 +194,16 @@ namespace utad
 			}
 
 			const VertexAttribDescription& desc = VertexAttribDescription::of(attrib);
+
+			if (vertices.empty()) vertices.resize(bufferView.byteLength / sizeof(float));
+			
+			byte* data = (byte*)model.buffers[bufferView.buffer].data.data() + bufferView.byteOffset;
+			for (Vertex& vertex : vertices)
+			{
+				VertexReader::setVertexAttribute(vertex, data, attrib);
+				data += stride; // TODO: check
+			}
+
 			vertexArray->setVertexAttribute(accessor.bufferView, attrib, accessor.byteOffset);
 		}
 	}

@@ -4,7 +4,7 @@
 
 namespace utad
 {
-	__global__ void kernel_GammaCorrection(Pixel* pixels, int width, int height, int size)
+	__global__ void kernel_GammaCorrection(Pixel* pixels, int width, int height, float exposure)
 	{
 		static const float gamma = 1.0f / 2.2f;
 
@@ -20,10 +20,10 @@ namespace utad
 		float a = pixel.a / 255.0f;
 
 		// Tone Mapping
-		r /= r + 1.0f;
-		g /= g + 1.0f;
-		b /= b + 1.0f;
-		a /= a + 1.0f;
+		r = 1.0f - exp(-r * exposure);
+		g = 1.0f - exp(-g * exposure);
+		b = 1.0f - exp(-b * exposure);
+		a = 1.0f - exp(-a * exposure);
 
 		// Gamma Correction
 		r = powf(r, gamma);
@@ -39,15 +39,12 @@ namespace utad
 
 	void executeGammaCorrectionFX(const RenderInfo& info)
 	{
-		const int numThreads = 32;
-		const int gridSizeX = floor((float)info.width / (float)numThreads) + 1;
-		const int gridSizeY = floor((float)info.height / (float)numThreads) + 1;
-
-		const dim3 blockSize(numThreads, numThreads, 1);
-		const dim3 gridSize(gridSizeX, gridSizeY, 1);
+		dim3 gridSize;
+		dim3 blockSize;
+		Cuda::getKernelDimensions(gridSize, blockSize, info.width, info.height);
 
 		Pixel* pixels = (Pixel*)info.d_pixels;
 
-		kernel_GammaCorrection<<<gridSize, blockSize>>>(pixels, info.width, info.height, info.pixelCount);
+		kernel_GammaCorrection<<<gridSize, blockSize>>>(pixels, info.width, info.height, info.exposure);
 	}
 }

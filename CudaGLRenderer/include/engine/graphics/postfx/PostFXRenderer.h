@@ -31,8 +31,8 @@ namespace utad
 		PostFXRenderer();
 		~PostFXRenderer();
 		void render(const SceneSetup& renderInfo);
-		void begin();
-		void end();
+		void begin(const SceneSetup& scene);
+		void end(const SceneSetup& scene);
 		unsigned char* copyTexture(int size, GLenum format, Texture2D* texture);
 	};
 }

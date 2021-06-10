@@ -66,7 +66,22 @@ namespace utad
 		return m_Index < m_DataSize;
 	}
 
-	static inline void setVertexAttribute(Vertex& vertex, const byte* data, VertexAttrib attribute)
+	Vertex VertexReader::next()
+	{
+		if (!hasNext()) throw UTAD_EXCEPTION("No more vertices left");
+
+		Vertex vertex = {};
+
+		for (VertexAttrib attrib : m_Attributes)
+		{
+			setVertexAttribute(vertex, m_InputData + m_Index, attrib);
+			m_Index += VertexAttribDescription::of(attrib).size();
+		}
+
+		return std::move(vertex);
+	}
+
+	void VertexReader::setVertexAttribute(Vertex& vertex, const byte* data, VertexAttrib attribute)
 	{
 		switch (attribute)
 		{
@@ -86,21 +101,6 @@ namespace utad
 				vertex.color = *(const Color*)data;
 				break;
 		}
-	}
-
-	Vertex VertexReader::next()
-	{
-		if (!hasNext()) throw UTAD_EXCEPTION("No more vertices left");
-
-		Vertex vertex = {};
-
-		for (VertexAttrib attrib : m_Attributes)
-		{
-			setVertexAttribute(vertex, m_InputData + m_Index, attrib);
-			m_Index += VertexAttribDescription::of(attrib).size();
-		}
-
-		return std::move(vertex);
 	}
 
 	uint Vertex::stride(const ArrayList<VertexAttrib>& attributes)
