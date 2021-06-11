@@ -16,12 +16,6 @@ namespace utad
              0,1,2
         };
 
-        float sum = 0;
-
-        for (int i = 0; i < 9; ++i) sum += h_filter[i];
-
-        for (int i = 0; i < 9; ++i) h_filter[i] /= sum;
-
         return h_filter;
     }
 }

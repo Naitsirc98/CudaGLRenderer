@@ -8,12 +8,18 @@ bool g_WindowActive = true;
 
 void drawUI(ArrayList<PostFX>& activeEffects)
 {
+
     ImGui::Begin("Active Post Effects", &g_WindowActive);
     {
+        ImGui::SetWindowPos({10, 10});
+        ImGui::SetWindowSize({500, 300});
+        
         ImGui::Text("Select the effects you want to apply to the scene.");
         ImGui::Text("Effects will be executed in the order you select them.");
         ImGui::Text("Post Effects are accumulative, so order is important!");
 
+        ImGui::Spacing();
+        ImGui::Separator();
         ImGui::Spacing();
 
         for (size_t i = 0; i < PostFXCount; ++i)
