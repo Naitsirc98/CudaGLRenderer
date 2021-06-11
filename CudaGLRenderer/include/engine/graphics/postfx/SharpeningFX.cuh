@@ -4,10 +4,10 @@
 
 namespace utad
 {
-	class GaussianBlurFX : public ConvolutionFilterFX
+	class SharpeningFX : public ConvolutionFilterFX
 	{
 	public:
-		GaussianBlurFX();
+		SharpeningFX();
 	private:
 		static const float* createFilter();
 	};

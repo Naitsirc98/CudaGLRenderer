@@ -38,6 +38,7 @@ namespace utad
 		int m_Width;
 		int m_Height;
 		WindowState m_State{WindowState::WINDOWED};
+		bool m_Vsync{ true };
 	private:
 		Window(const String& title, int width = 1600, int height = 900);
 	public:
@@ -50,6 +51,7 @@ namespace utad
 		void resize(int width, int height);
 		void setTitle(String&& title);
 		bool shouldClose() const;
+		bool vsync() const;
 		void setVsync(bool vsync);
 		void show();
 		void focus();

@@ -180,11 +180,13 @@ public:
 	{
 		if (Time::time() - lastTime < 0.3f) return;
 
+		if (Input::isKeyActive(Key::Key_V)) Window::get().setVsync(!Window::get().vsync());
+
 		if (Input::isKeyActive(Key::Key_F6)) triggerEffect(PostFX::Grayscale);
 		if (Input::isKeyActive(Key::Key_F7)) triggerEffect(PostFX::Inversion);
 		if (Input::isKeyActive(Key::Key_F8)) triggerEffect(PostFX::GammaCorrection);
 		if (Input::isKeyActive(Key::Key_F9)) triggerEffect(PostFX::Blur);
-		if (Input::isKeyActive(Key::Key_F10)) triggerEffect(PostFX::Bloom);
+		if (Input::isKeyActive(Key::Key_F10)) triggerEffect(PostFX::Sharpening);
 	}
 };
 

@@ -16,7 +16,7 @@ namespace utad
 		Inversion,
 		GammaCorrection,
 		Blur,
-		Bloom,
+		Sharpening,
 		_MaxEnumValue
 	};
 

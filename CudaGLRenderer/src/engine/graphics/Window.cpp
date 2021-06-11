@@ -83,9 +83,14 @@ namespace utad
 		return glfwWindowShouldClose(m_Handle);
 	}
 
+	bool Window::vsync() const
+	{
+		return m_Vsync;
+	}
+
 	void Window::setVsync(bool vsync)
 	{
-		glfwSwapInterval(vsync ? 1 : 0);
+		glfwSwapInterval(this->m_Vsync = vsync ? 1 : 0);
 	}
 
 	void Window::show()

@@ -21,6 +21,8 @@
 #define CUDA_CALL(func)
 #endif
 
+#define NUM_CHANNELS 4
+
 namespace utad
 {
 	using CudaArray = cudaArray;

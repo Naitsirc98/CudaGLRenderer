@@ -58,12 +58,14 @@
     <ClInclude Include="include\engine\assets\MeshPrimitives.h" />
     <ClInclude Include="include\engine\assets\SkyboxLoader.h" />
     <ClInclude Include="include\engine\graphics\DebugCallback.h" />
+    <ClInclude Include="include\engine\graphics\postfx\ConvolutionFilterFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\GammaCorrectionFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\GaussianBlurFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\GrayscaleFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\InversionFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\PostFXRenderer.h" />
     <ClInclude Include="include\engine\collisions\Collisions.h" />
+    <ClInclude Include="include\engine\graphics\postfx\SharpeningFX.cuh" />
     <ClInclude Include="include\engine\graphics\Vertex.h" />
     <ClInclude Include="include\engine\scene\Light.h" />
     <ClInclude Include="include\engine\assets\Material.h" />
@@ -120,10 +122,12 @@
     <None Include="res\shaders\skybox\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="src\engine\graphics\postfx\ConvolutionFilterFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\GammaCorrectionFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\GaussianBlurFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\GrayscaleFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\InversionFX.cu" />
+    <CudaCompile Include="src\engine\graphics\postfx\SharpeningFX.cu" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FD85E8D7-CBFB-464D-B5BF-A7916FAC64E8}</ProjectGuid>

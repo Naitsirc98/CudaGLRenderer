@@ -5,8 +5,7 @@
 #include "engine/graphics/postfx/GammaCorrectionFX.cuh"
 #include "engine/graphics/postfx/GrayscaleFX.cuh"
 #include "engine/graphics/postfx/GaussianBlurFX.cuh"
-
-#define NUM_CHANNELS 4
+#include "engine/graphics/postfx/SharpeningFX.cuh"
 
 namespace utad
 {
@@ -20,6 +19,7 @@ namespace utad
 		m_PostFXExecutors[static_cast<size_t>(PostFX::GammaCorrection)] = new GammaCorrectionFX();
 		m_PostFXExecutors[static_cast<size_t>(PostFX::Inversion)] = new InversionFX();
 		m_PostFXExecutors[static_cast<size_t>(PostFX::Blur)] = new GaussianBlurFX();
+		m_PostFXExecutors[static_cast<size_t>(PostFX::Sharpening)] = new SharpeningFX();
 	}
 
 	PostFXRenderer::~PostFXRenderer()

@@ -46,7 +46,7 @@ namespace utad
 
 	void Graphics::end()
 	{
-		glFinish();
+		//glFinish();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
