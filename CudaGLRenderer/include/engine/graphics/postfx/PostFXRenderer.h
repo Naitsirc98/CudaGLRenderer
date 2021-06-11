@@ -26,11 +26,9 @@ namespace utad
 	{
 		friend class Scene;
 	private:
-		unsigned char* m_h_ColorBuffer{nullptr};
-		unsigned char* m_d_ColorBuffer{nullptr};
 		int m_ColorBufferSize{0};
-		Buffer* m_PixelBuffer{nullptr};
-		CudaResource* m_TextureResource{nullptr};
+		CudaResource m_ColorTexture{nullptr};
+		CudaSurface m_ColorBuffer{NULL};
 		PostFXInfo m_PostFXInfo;
 		// PostFX Executors
 		ArrayList<PostFXExecutor*> m_PostFXExecutors;
@@ -40,6 +38,7 @@ namespace utad
 		void render(const SceneSetup& renderInfo);
 		void begin(const SceneSetup& scene);
 		void end(const SceneSetup& scene);
-		unsigned char* copyTexture(int size, GLenum format, Texture2D* texture);
+		void bindTextureToSurface(Texture2D* texture, size_t size);
+		void recreateCudaResources(Texture2D* texture, size_t size);
 	};
 }

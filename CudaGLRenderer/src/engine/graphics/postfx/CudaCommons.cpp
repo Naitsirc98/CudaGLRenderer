@@ -1,27 +1,28 @@
-#include "engine/graphics/postfx/CUDACommons.h"
+#include "engine/graphics/postfx/PostFXCommons.h"
+#include "engine/graphics/GraphicsAPI.h"
 
 namespace utad
 {
 	void* Cuda::malloc(int bytes)
 	{
 		void* d_ptr;
-		cudaMalloc(&d_ptr, bytes);
+		CUDA_CALL(cudaMalloc(&d_ptr, bytes));
 		return d_ptr;
 	}
 
 	void Cuda::free(void* d_ptr)
 	{
-		cudaFree(d_ptr);
+		CUDA_CALL(cudaFree(d_ptr));
 	}
 
 	void Cuda::copyHostToDevice(const void* src, void* dst, size_t bytes)
 	{
-		cudaMemcpy(dst, src, bytes, cudaMemcpyHostToDevice);
+		CUDA_CALL(cudaMemcpy(dst, src, bytes, cudaMemcpyHostToDevice));
 	}
 
 	void Cuda::copyDeviceToHost(const void* src, void* dst, size_t bytes)
 	{
-		cudaMemcpy(dst, src, bytes, cudaMemcpyDeviceToHost);
+		CUDA_CALL(cudaMemcpy(dst, src, bytes, cudaMemcpyDeviceToHost));
 	}
 
 	void Cuda::getKernelDimensions(dim3& gridSize, dim3& blockSize, int imageWidth, int imageHeight)
@@ -34,13 +35,15 @@ namespace utad
 		gridSize = { (unsigned)gridSizeX, (unsigned)gridSizeY, 1 };
 	}
 
-	void Cuda::createResource(cudaGraphicsResource_t& resource, int glTexture, cudaGraphicsMapFlags mapFlags)
+	void Cuda::createResource(CudaResource& resource, int glTexture, cudaGraphicsMapFlags mapFlags)
 	{
-		// TODO
+		CUDA_CALL(cudaGraphicsGLRegisterImage(&resource, glTexture, GL_TEXTURE_2D, mapFlags));
 	}
 
-	void Cuda::destroyResource(cudaGraphicsResource_t& resource)
+	void Cuda::destroyResource(CudaResource& resource)
 	{
-		// TODO
+		if (resource == nullptr) return;
+		CUDA_CALL(cudaGraphicsUnregisterResource(resource));
+		resource = nullptr;
 	}
 }

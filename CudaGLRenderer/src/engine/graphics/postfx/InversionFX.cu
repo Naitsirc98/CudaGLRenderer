@@ -3,17 +3,20 @@
 
 namespace utad
 {
-	__global__ void kernel_Inversion(Pixel* pixels, int width, int height)
+	__global__ void kernel_Inversion(CudaSurface colorBuffer, int width, int height)
 	{
 		const int x = CUDA_X_POS;
 		const int y = CUDA_Y_POS;
 		if (x >= width || y >= height) return;
 
-		Pixel& pixel = pixels[CUDA_INDEX_XY(x, y, width)];
+		Pixel pixel;
+		surf2Dread(&pixel, colorBuffer, x * 4, y);
 
-		pixel.r = 255 - pixel.r;
-		pixel.g = 255 - pixel.g;
-		pixel.b = 255 - pixel.b;
+		pixel.x = 255 - pixel.x;
+		pixel.y = 255 - pixel.y;
+		pixel.z = 255 - pixel.z;
+
+		surf2Dwrite(pixel, colorBuffer, x * 4, y);
 	}
 
 	void InversionFX::execute(const PostFXInfo& info)
@@ -22,8 +25,6 @@ namespace utad
 		dim3 blockSize;
 		Cuda::getKernelDimensions(gridSize, blockSize, info.width, info.height);
 
-		Pixel* pixels = (Pixel*)info.d_pixels;
-
-		kernel_Inversion<<<gridSize, blockSize>>>(pixels, info.width, info.height);
+		kernel_Inversion<<<gridSize, blockSize>>>(info.colorBuffer, info.width, info.height);
 	}
 }

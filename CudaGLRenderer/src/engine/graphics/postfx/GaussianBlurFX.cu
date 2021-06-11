@@ -10,14 +10,15 @@ namespace utad
         return value;
     }
 
-	__global__ void kernel_GaussianBlur(Pixel* pixels, int width, int height,
+	__global__ void kernel_GaussianBlur(CudaSurface colorBuffer, int width, int height,
         float* filter, int filterWidth, int filterHalfWidth)
 	{
         const int x = CUDA_X_POS;
         const int y = CUDA_Y_POS;
         if (x >= width || y >= height) return;
 
-        Pixel& pixel = pixels[CUDA_INDEX_XY(x, y, width)];
+        Pixel pixel;
+        surf2Dread(&pixel, colorBuffer, x * 4, y);
 
         float r = 0.0f;
         float g = 0.0f;
@@ -31,20 +32,23 @@ namespace utad
                 int row = clamp(y + i, 0, height - 1);
                 int column = clamp(x + j, 0, width - 1);
 
-                Pixel& p = pixels[CUDA_INDEX_XY(column, row, width)];
+                Pixel p;// = pixels[CUDA_INDEX_XY(column, row, width)];
+                surf2Dread(&p, colorBuffer, column * 4, row);
                 float f = filter[CUDA_INDEX_XY((j + filterHalfWidth), (i + filterHalfWidth), filterWidth)];
 
-                r += p.r * f;
-                g += p.g * f;
-                b += p.b * f;
-                a += p.a * f;
+                r += p.x * f;
+                g += p.y * f;
+                b += p.z * f;
+                a += p.w * f;
             }
         }
 
-        pixel.r = r;
-        pixel.g = g;
-        pixel.b = b;
-        pixel.a = a;
+        pixel.x = r;
+        pixel.y = g;
+        pixel.z = b;
+        pixel.w = a;
+
+        surf2Dwrite(pixel, colorBuffer, x * 4, y);
 	}
 
 
@@ -66,10 +70,8 @@ namespace utad
         dim3 blockSize;
         Cuda::getKernelDimensions(gridSize, blockSize, info.width, info.height);
 
-		Pixel* pixels = (Pixel*)info.d_pixels;
-
 		kernel_GaussianBlur<<<gridSize, blockSize>>>(
-            pixels, 
+            info.colorBuffer, 
             info.width, 
             info.height,
             m_D_GaussianBlurFilter,
