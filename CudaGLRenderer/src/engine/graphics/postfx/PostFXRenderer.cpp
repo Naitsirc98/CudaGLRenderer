@@ -6,6 +6,8 @@
 #include "engine/graphics/postfx/GrayscaleFX.cuh"
 #include "engine/graphics/postfx/GaussianBlurFX.cuh"
 #include "engine/graphics/postfx/SharpeningFX.cuh"
+#include "engine/graphics/postfx/EdgeDetectionFX.cuh"
+#include "engine/graphics/postfx/EmbossFX.cuh"
 
 namespace utad
 {
@@ -20,6 +22,8 @@ namespace utad
 		m_PostFXExecutors[static_cast<size_t>(PostFX::Inversion)] = new InversionFX();
 		m_PostFXExecutors[static_cast<size_t>(PostFX::Blur)] = new GaussianBlurFX();
 		m_PostFXExecutors[static_cast<size_t>(PostFX::Sharpening)] = new SharpeningFX();
+		m_PostFXExecutors[static_cast<size_t>(PostFX::EdgeDetection)] = new EdgeDetectionFX();
+		m_PostFXExecutors[static_cast<size_t>(PostFX::Emboss)] = new EmbossFX();
 	}
 
 	PostFXRenderer::~PostFXRenderer()
@@ -39,8 +43,9 @@ namespace utad
 
 		for(PostFX postFX : scene.postEffects)
 		{
-			if (postFX == PostFX::_MaxEnumValue) continue;
-			PostFXExecutor* executor = m_PostFXExecutors[static_cast<size_t>(postFX)];
+			const uint postFXIndex = static_cast<size_t>(postFX);
+			if (postFXIndex >= m_PostFXExecutors.size()) continue;
+			PostFXExecutor* executor = m_PostFXExecutors[postFXIndex];
 			if (executor == nullptr) continue;
 			executor->execute(m_PostFXInfo);
 		}

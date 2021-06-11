@@ -67,6 +67,7 @@ namespace utad
 		m_Scene = Scene::init();
 		m_Window->show();
 		Graphics::init();
+		UIRenderer::init();
 		m_App.onStart();
 	}
 
@@ -126,6 +127,8 @@ namespace utad
 			m_App.onRender();
 		}
 		Graphics::end();
+		UIRenderer::get().render();
+		Window::get().swapBuffers();
 	}
 
 	void Engine::shutdown()
@@ -139,10 +142,14 @@ namespace utad
 		Scene::destroy();
 		m_Scene = nullptr;
 
+		UIRenderer::destroy();
+
 		AssetsManager::destroy();
 
 		Input::destroy();
 		m_Input = nullptr;
+
+		Graphics::destroy();
 
 		Window::destroy();
 		m_Window = nullptr;

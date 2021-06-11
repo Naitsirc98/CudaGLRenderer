@@ -37,17 +37,18 @@ namespace utad
 
 	void Graphics::begin()
 	{
+		const Window& window = Window::get();
+		
+		glfwMakeContextCurrent(window.handle());
+
 		s_DefaultFramebuffer->bind();
 
-		const Window& window = Window::get();
 		glViewport(0, 0, window.width(), window.height());
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	void Graphics::end()
 	{
-		//glFinish();
-
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -58,8 +59,6 @@ namespace utad
 			MeshPrimitives::drawQuad(true);
 		}
 		s_QuadShader->unbind();
-
-		Window::get().swapBuffers();
 	}
 
 	void Graphics::init()

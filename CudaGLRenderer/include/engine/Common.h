@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include <array>
 #include <exception>
 #include <stdexcept>
@@ -32,6 +33,9 @@ namespace utad
 	
 	template<typename T>
 	using ArrayList = std::vector<T>;
+
+	template<typename T>
+	using LinkedList = std::list<T>;
 
 	template<typename T, size_t Size>
 	using Array = std::array<T, Size>;

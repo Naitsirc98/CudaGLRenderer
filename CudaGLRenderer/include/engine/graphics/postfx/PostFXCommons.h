@@ -11,15 +11,9 @@
 #define CUDA_Y_POS threadIdx.y + blockIdx.y * blockDim.y
 #define CUDA_INDEX_XY(x, y, width) (y) * (width) + (x)
 
-#ifdef _DEBUG
 #define CUDA_CHECK_ERROR(val) utad::cudaCheck( (val), #val, __FILE__, __LINE__)
 #define CUDA_CHECK CUDA_CHECK_ERROR(cudaGetLastError())
 #define CUDA_CALL(func) (func); CUDA_CHECK
-#else
-#define CUDA_CHECK_ERROR(val)
-#define CUDA_CHECK
-#define CUDA_CALL(func)
-#endif
 
 #define NUM_CHANNELS 4
 

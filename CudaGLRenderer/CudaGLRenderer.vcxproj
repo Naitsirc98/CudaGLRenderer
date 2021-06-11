@@ -12,6 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glad\src\glad.c" />
+    <ClCompile Include="dependencies\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\engine\assets\AssetsManager.cpp" />
     <ClCompile Include="src\engine\assets\Image.cpp" />
     <ClCompile Include="src\engine\assets\Material.cpp" />
@@ -47,11 +52,23 @@
     <ClCompile Include="src\engine\scene\Camera.cpp" />
     <ClCompile Include="src\engine\scene\Scene.cpp" />
     <ClCompile Include="src\engine\Time.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\engine\ui\UIRenderer.cpp" />
+    <ClCompile Include="example\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\imgui\imgui\imconfig.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imgui.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imgui_internal.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imstb_textedit.h" />
+    <ClInclude Include="dependencies\imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="dependencies\stb\stb\stb_image.h" />
     <ClInclude Include="dependencies\stb\stb\stb_image_write.h" />
+    <ClInclude Include="example\CameraController.h" />
+    <ClInclude Include="example\UI.h" />
+    <ClInclude Include="example\Utils.h" />
     <ClInclude Include="include\engine\Application.h" />
     <ClInclude Include="include\engine\assets\AssetsManager.h" />
     <ClInclude Include="include\engine\assets\Image.h" />
@@ -59,6 +76,7 @@
     <ClInclude Include="include\engine\assets\SkyboxLoader.h" />
     <ClInclude Include="include\engine\graphics\DebugCallback.h" />
     <ClInclude Include="include\engine\graphics\postfx\ConvolutionFilterFX.cuh" />
+    <ClInclude Include="include\engine\graphics\postfx\EmbossFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\GammaCorrectionFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\GaussianBlurFX.cuh" />
     <ClInclude Include="include\engine\graphics\postfx\GrayscaleFX.cuh" />
@@ -103,6 +121,8 @@
     <ClInclude Include="include\engine\events\Keyboard.h" />
     <ClInclude Include="include\engine\events\Mouse.h" />
     <ClInclude Include="include\engine\graphics\postfx\PostFXCommons.h" />
+    <ClInclude Include="include\engine\graphics\postfx\EdgeDetectionFX.cuh" />
+    <ClInclude Include="include\engine\ui\UIRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\JavaDevelopment\Beryl\src\main\resources\textures\skybox\hdr\indoor.hdr" />
@@ -123,6 +143,8 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\engine\graphics\postfx\ConvolutionFilterFX.cu" />
+    <CudaCompile Include="src\engine\graphics\postfx\EdgeDetectionFX.cu" />
+    <CudaCompile Include="src\engine\graphics\postfx\EmbossFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\GammaCorrectionFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\GaussianBlurFX.cu" />
     <CudaCompile Include="src\engine\graphics\postfx\GrayscaleFX.cu" />
@@ -168,7 +190,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>G:\Visual Studio Cpp\CudaGLRenderer\CudaGLRenderer\dependencies\json\json;$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)example;$(ProjectDir)\dependencies\imgui;G:\Visual Studio Cpp\CudaGLRenderer\CudaGLRenderer\dependencies\json\json;$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -188,7 +210,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>G:\Visual Studio Cpp\CudaGLRenderer\CudaGLRenderer\dependencies\json\json;$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)example;$(ProjectDir)\dependencies\imgui;$(ProjectDir)\dependencies\imgui;$(ProjectDir)\dependencies\json\json;$(ProjectDir)\dependencies\tiny_gltf;$(ProjectDir)\dependencies\stb;$(ProjectDir)\dependencies\glad\include;$(ProjectDir)\include;$(ProjectDir)\dependencies\pugixml\include;$(ProjectDir)\dependencies\glm\include;$(ProjectDir)\dependencies\glfw-3.3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

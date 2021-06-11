@@ -9,6 +9,7 @@
 #include "assets/AssetsManager.h"
 #include "scene/Scene.h"
 #include "engine/assets/MeshPrimitives.h"
+#include "engine/ui/UIRenderer.h"
 
 #define UTAD_EXIT_SUCCESS 0
 #define UTAD_EXIT_FAILURE 1

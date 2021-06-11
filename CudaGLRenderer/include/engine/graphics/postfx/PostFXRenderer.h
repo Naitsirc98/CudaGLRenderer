@@ -17,10 +17,21 @@ namespace utad
 		GammaCorrection,
 		Blur,
 		Sharpening,
+		EdgeDetection,
+		Emboss,
 		_MaxEnumValue
 	};
 
-	const uint PostFXCount = 5;
+	const uint PostFXCount = static_cast<uint>(PostFX::_MaxEnumValue);
+	const Array<String, 7> PostFXNames = {
+		"Grayscale",
+		"Inversion",
+		"GammaCorrection",
+		"Blur",
+		"Sharpening",
+		"EdgeDetection",
+		"Emboss"
+	};
 
 	class PostFXRenderer
 	{
