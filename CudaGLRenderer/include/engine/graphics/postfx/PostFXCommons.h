@@ -11,9 +11,8 @@
 #define CUDA_Y_POS threadIdx.y + blockIdx.y * blockDim.y
 #define CUDA_INDEX_XY(x, y, width) (y) * (width) + (x)
 
-#define CUDA_CHECK_ERROR(val) utad::cudaCheck( (val), #val, __FILE__, __LINE__)
-#define CUDA_CHECK CUDA_CHECK_ERROR(cudaGetLastError())
-#define CUDA_CALL(func) (func); CUDA_CHECK
+#define CUDA_CHECK_ERROR(funcStr) utad::cudaCheck(funcStr, __FILE__, __LINE__)
+#define CUDA_CALL(func) (func); CUDA_CHECK_ERROR(#func)
 
 #define NUM_CHANNELS 4
 
@@ -25,6 +24,7 @@ namespace utad
 	using CudaResourceDescription = cudaResourceDesc;
 	
 	using Pixel = uchar4;
+	using Pixelf = float4;
 
 	struct PostFXInfo
 	{
@@ -44,14 +44,7 @@ namespace utad
 		PostFXExecutor& operator=(const PostFXExecutor& other) = delete;
 	};
 
-
-	template<typename T>
-	void cudaCheck(T err, const char* const func, const char* const file, const int line) {
-		if (err != cudaSuccess) {
-			std::cerr << "CUDA error at: " << file << ":" << line << std::endl;
-			std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
-		}
-	}
+	void cudaCheck(const char* func, const char* const file, const int line);
 
 	class Cuda
 	{

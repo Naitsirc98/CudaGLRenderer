@@ -62,9 +62,7 @@ namespace utad
 		
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
-		
 		glDisable(GL_CULL_FACE);
-
 		glEnable(GL_BLEND);
 		
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);

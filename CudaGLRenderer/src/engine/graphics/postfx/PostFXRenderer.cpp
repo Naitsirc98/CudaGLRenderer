@@ -64,7 +64,7 @@ namespace utad
 		info.height = colorTexture->height();
 		info.exposure = scene.camera.exposure();
 
-		const size_t size = info.width * info.height * NUM_CHANNELS;
+		const size_t size = info.width * info.height * NUM_CHANNELS * sizeof(float);
 		bindTextureToSurface(colorTexture, size);
 		info.colorBuffer = m_ColorBuffer;
 	}

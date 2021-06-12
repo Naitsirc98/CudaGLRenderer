@@ -49,16 +49,24 @@ namespace utad
 
 	void Graphics::end()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDisable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT);
+		const Window& window = Window::get();
 
-		s_QuadShader->bind();
-		{
-			s_QuadShader->setTexture("u_Texture", s_ColorTexture);
-			MeshPrimitives::drawQuad(true);
-		}
-		s_QuadShader->unbind();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glBlitNamedFramebuffer(
+			s_DefaultFramebuffer->handle(),
+			0,
+			0,
+			0,
+			window.width(),
+			window.height(),
+			0,
+			0,
+			window.width(),
+			window.height(),
+			GL_COLOR_BUFFER_BIT,
+			GL_LINEAR
+		);
 	}
 
 	void Graphics::init()
@@ -66,7 +74,9 @@ namespace utad
 		createFramebuffer();
 		createShader();
 
-		EventSystem::addEventCallback(EventType::WindowResize, [&](const Event& e) {			
+		EventSystem::addEventCallback(EventType::WindowResize, [&](const Event& e) {	
+			const WindowResizeEvent& event = static_cast<const WindowResizeEvent&>(e);
+			if (event.size() == Vector2i(0, 0)) return;
 			freeFramebuffer();
 			createFramebuffer();
 		});
@@ -83,7 +93,7 @@ namespace utad
 		s_ColorTexture = new Texture2D();
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_RGBA8;
+		allocInfo.format = GL_RGBA32F;
 		allocInfo.width = Window::get().width();
 		allocInfo.height = Window::get().height();
 		allocInfo.levels = 1;
@@ -100,7 +110,7 @@ namespace utad
 		s_BrightnessTexture = new Texture2D();
 
 		TextureAllocInfo allocInfo = {};
-		allocInfo.format = GL_RGBA8;
+		allocInfo.format = GL_RGBA32F;
 		allocInfo.width = Window::get().width();
 		allocInfo.height = Window::get().height();
 		allocInfo.levels = 1;

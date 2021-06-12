@@ -9,8 +9,8 @@ namespace utad
 		const int y = CUDA_Y_POS;
 		if (x >= width || y >= height) return;
 
-		Pixel pixel;
-		surf2Dread(&pixel, colorBuffer, x * 4, y);
+		Pixelf pixel;
+		surf2Dread(&pixel, colorBuffer, x * sizeof(pixel), y);
 
 		const float color = pixel.x * 0.299f + pixel.y * 0.587f + pixel.z * 0.114f;
 
@@ -18,7 +18,7 @@ namespace utad
 		pixel.y = color;
 		pixel.z = color;
 
-		surf2Dwrite(pixel, colorBuffer, x * 4, y);
+		surf2Dwrite(pixel, colorBuffer, x * sizeof(pixel), y);
 	}
 
 	void GrayscaleFX::execute(const PostFXInfo& info)

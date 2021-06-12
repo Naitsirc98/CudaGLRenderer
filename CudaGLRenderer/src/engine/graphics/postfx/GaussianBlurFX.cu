@@ -18,7 +18,11 @@ namespace utad
                 1, 1, 1, 1, 1
         };
 
-        for (int i = 0; i < 25; ++i) h_filter[i] /= 35.0f;
+        float sum = 0;
+
+        for (int i = 0; i < 25; ++i) sum += h_filter[i];
+
+        for (int i = 0; i < 25; ++i) h_filter[i] /= sum;
 
         return h_filter;
     }

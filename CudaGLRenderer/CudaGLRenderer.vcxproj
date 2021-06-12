@@ -40,7 +40,7 @@
     <ClCompile Include="src\engine\graphics\glad.c" />
     <ClCompile Include="src\engine\graphics\Graphics.cpp" />
     <ClCompile Include="src\engine\graphics\MeshRenderer.cpp" />
-    <ClCompile Include="src\engine\graphics\postfx\CudaCommons.cpp" />
+    <ClCompile Include="src\engine\graphics\postfx\PostFXCommons.cpp" />
     <ClCompile Include="src\engine\graphics\postfx\PostFXRenderer.cpp" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\SkyboxRenderer.cpp" />

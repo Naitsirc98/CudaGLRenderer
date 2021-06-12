@@ -4,16 +4,18 @@
 namespace utad
 {
     EdgeDetectionFX::EdgeDetectionFX()
-        : ConvolutionFilterFX(createFilter(), 3)
+        : ConvolutionFilterFX(createFilter(), 5)
     {
     }
 
     const float* EdgeDetectionFX::createFilter()
     {
-        float* h_filter = new float[9]{
-            -1, -1, -1,
-            -1,  8, -1,
-            -1, -1, -1
+        float* h_filter = new float[25]{
+            0, 0, -1, 0, 0,
+            0, -1, -2, -1, 0,
+           -1, -2, 16, -2, -1,
+            0, -1, -2, -1, 0,
+            0, 0, -1, 0, 0
         };
 
         return h_filter;

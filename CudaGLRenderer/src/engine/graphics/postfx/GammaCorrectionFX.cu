@@ -11,13 +11,13 @@ namespace utad
 		const int y = CUDA_Y_POS;
 		if (x >= width || y >= height) return;
 
-		Pixel pixel;
-		surf2Dread(&pixel, colorBuffer, x * 4, y);
+		Pixelf pixel;
+		surf2Dread(&pixel, colorBuffer, x * sizeof(pixel), y, cudaBoundaryModeClamp);
 
-		float r = pixel.x / 255.0f;
-		float g = pixel.y / 255.0f;
-		float b = pixel.z / 255.0f;
-		float a = pixel.w / 255.0f;
+		float r = pixel.x;
+		float g = pixel.y;
+		float b = pixel.z;
+		float a = pixel.w;
 
 		// Tone Mapping
 		r = 1.0f - exp(-r * exposure);
@@ -31,12 +31,12 @@ namespace utad
 		b = powf(b, gamma);
 		a = powf(a, gamma);
 
-		pixel.x = (unsigned char)(r * 255.0f);
-		pixel.y = (unsigned char)(g * 255.0f);
-		pixel.z = (unsigned char)(b * 255.0f);
-		pixel.w = (unsigned char)(a * 255.0f);
+		pixel.x = r;
+		pixel.y = g;
+		pixel.z = b;
+		pixel.w = a;
 	
-		surf2Dwrite(pixel, colorBuffer, x * 4, y);
+		surf2Dwrite(pixel, colorBuffer, x * sizeof(pixel), y, cudaBoundaryModeClamp);
 	}
 
 	void GammaCorrectionFX::execute(const PostFXInfo& info)

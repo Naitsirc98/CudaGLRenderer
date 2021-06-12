@@ -9,14 +9,14 @@ namespace utad
 		const int y = CUDA_Y_POS;
 		if (x >= width || y >= height) return;
 
-		Pixel pixel;
-		surf2Dread(&pixel, colorBuffer, x * 4, y);
+		Pixelf pixel;
+		surf2Dread(&pixel, colorBuffer, x * sizeof(pixel), y);
 
-		pixel.x = 255 - pixel.x;
-		pixel.y = 255 - pixel.y;
-		pixel.z = 255 - pixel.z;
+		pixel.x = 1.0f - pixel.x;
+		pixel.y = 1.0f - pixel.y;
+		pixel.z = 1.0f - pixel.z;
 
-		surf2Dwrite(pixel, colorBuffer, x * 4, y);
+		surf2Dwrite(pixel, colorBuffer, x * sizeof(pixel), y);
 	}
 
 	void InversionFX::execute(const PostFXInfo& info)

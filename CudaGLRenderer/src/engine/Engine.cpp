@@ -98,12 +98,12 @@ namespace utad
 	void Engine::update(float deltaTime)
 	{
 		m_UpdateDelay += deltaTime;
-
 		bool wasUpdated = false;
 
 		while (m_UpdateDelay >= TARGET_DELAY)
 		{
 			m_EventSystem->update();
+
 			m_Input->update();
 
 			m_Scene->update();

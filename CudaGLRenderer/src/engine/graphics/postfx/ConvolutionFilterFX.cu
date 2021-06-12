@@ -5,23 +5,23 @@
 
 namespace utad
 {
-    template<typename T, typename R>
-    __device__ R clamp(T value, T min, T max)
+    template<typename T>
+    __device__ T clamp(T value, T min, T max)
     {
-        if (value < min) return (R)min;
-        if (value > max) return (R)max;
-        return (R)value;
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
     }
 
     __global__ void kernel_ConvolutionFilter(CudaSurface colorBuffer, int width, int height,
-        float* filter, int filterWidth, int filterHalfWidth)
+        const float* filter, int filterWidth, int filterHalfWidth)
     {
         const int x = CUDA_X_POS;
         const int y = CUDA_Y_POS;
         if (x >= width || y >= height) return;
 
-        Pixel pixel;
-        surf2Dread(&pixel, colorBuffer, x * 4, y);
+        Pixelf pixel;
+        surf2Dread(&pixel, colorBuffer, x * sizeof(pixel), y, cudaBoundaryModeClamp);
 
         float r = 0.0f;
         float g = 0.0f;
@@ -32,29 +32,31 @@ namespace utad
         {
             for (int j = -filterHalfWidth; j <= filterHalfWidth; ++j)
             {
-                int row = clamp<int, int>(y + i, 0, height - 1);
-                int column = clamp<int, int>(x + j, 0, width - 1);
+                int row = clamp(y + i, 0, height - 1);
+                int column = clamp(x + j, 0, width - 1);
 
-                Pixel p;
-                surf2Dread(&p, colorBuffer, column * 4, row);
+                Pixelf p;
+                surf2Dread(&p, colorBuffer, column * sizeof(pixel), row, cudaBoundaryModeClamp);
                 float f = filter[CUDA_INDEX_XY((j + filterHalfWidth), (i + filterHalfWidth), filterWidth)];
 
                 r += p.x * f;
                 g += p.y * f;
                 b += p.z * f;
+                a += p.w * f;
             }
         }
 
-        pixel.x = clamp<float, unsigned char>(r, 0, 255);
-        pixel.y = clamp<float, unsigned char>(g, 0, 255);
-        pixel.z = clamp<float, unsigned char>(b, 0, 255);
+        pixel.x = r;
+        pixel.y = g;
+        pixel.z = b;
+        pixel.w = a;
 
-        surf2Dwrite(pixel, colorBuffer, x * 4, y);
+        surf2Dwrite(pixel, colorBuffer, x * sizeof(pixel), y, cudaBoundaryModeClamp);
     }
 
 
     ConvolutionFilterFX::ConvolutionFilterFX(const float* h_filter, size_t filterWidth)
-        : m_FilterWidth(filterWidth), m_FilterHalfWidth(filterWidth / 2)
+        : m_FilterWidth(filterWidth), m_FilterHalfWidth(filterWidth/2)
     {
         size_t size = filterWidth * filterWidth * sizeof(float);
         m_D_Filter = (float*)Cuda::malloc(size);

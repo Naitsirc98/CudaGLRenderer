@@ -49,6 +49,10 @@ namespace utad
 
 	AABB::AABB(Mesh* mesh)
 	{
+		m_IsRoot = true;
+
+		m_Vertices = const_cast<ArrayList<Vertex>*>(&mesh->vertices());
+		m_TransformedVertices = new ArrayList<Vertex>();
 	}
 
 	AABB::~AABB()

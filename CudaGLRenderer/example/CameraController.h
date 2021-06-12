@@ -38,11 +38,40 @@ namespace utad
 			checkWindowSize();
 		}
 
+		bool isCaptured()
+		{
+			return Window::get().cursorMode() == CursorMode::CAPTURED;
+		}
+
+		float speed()
+		{
+			return this->normalSpeed * Time::deltaTime();
+		}
+
 		void onUpdate() override
 		{
 			checkGameSettings();
 
-			float speed = this->normalSpeed * Time::deltaTime();
+			if (isCaptured() || Input::isMouseButtonPressed(MouseButton::Mouse_Button_2))
+			{
+				checkMouseFPSControls();
+			}
+			else
+			{
+				checkEditorControls();
+			}
+		}
+
+		void checkEditorControls()
+		{
+			const Vector2& scroll = Input::getMouseScroll();
+			camera->move(CameraDirection::Forward, scroll.y * speed());
+		}
+
+		void checkMouseFPSControls()
+		{
+			float speed = this->speed();
+
 			if (Input::isKeyActive(Key::Key_Left_Shift)) speed *= 2;
 			if (Input::isKeyActive(Key::Key_Left_Alt)) speed /= 2;
 

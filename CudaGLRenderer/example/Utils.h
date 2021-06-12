@@ -4,12 +4,17 @@
 
 namespace utad
 {
-	static const char* CUBE = "G:/glTF-Sample-Models-master/2.0/Cube/glTF/Cube.gltf";
-	static const char* BOX = "G:/glTF-Sample-Models-master/2.0/Box/glTF/Box.gltf";
-	static const char* SPHERE = "G:/glTF-Sample-Models-master/2.0/Sphere/Sphere.gltf";
-	static const char* HELMET = "G:/glTF-Sample-Models-master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf";
+	const char* CUBE = "G:/glTF-Sample-Models-master/2.0/Cube/glTF/Cube.gltf";
+	const char* BOX = "G:/glTF-Sample-Models-master/2.0/Box/glTF/Box.gltf";
+	const char* SPHERE = "G:/glTF-Sample-Models-master/2.0/Sphere/Sphere.gltf";
+	const char* HELMET = "G:/glTF-Sample-Models-master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf";
 
-	static const String TEXTURES_DIR = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/textures/";
+	const String TEXTURES_DIR = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/textures/";
+	const String SKYBOX_DIR = "G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/skybox/";
+
+	const String SKYBOX_INDOOR = SKYBOX_DIR + "indoor.hdr";
+	const String SKYBOX_SUNRISE_BEACH = SKYBOX_DIR + "sunrise_beach_2k.hdr";
+	const String SKYBOX_NIGHT = SKYBOX_DIR + "night_2k.hdr";
 
 	Material* createMaterial(const String& name)
 	{

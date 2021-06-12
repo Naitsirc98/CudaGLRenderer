@@ -14,7 +14,7 @@ public:
 	{
 		Scene& scene = Scene::get();
 
-		scene.setSkybox(Assets::get().loadSkybox("G:/Visual Studio Cpp/CudaGLRenderer/CudaGLRenderer/res/skybox/indoor.hdr"));
+		scene.setSkybox(Assets::get().loadSkybox(SKYBOX_SUNRISE_BEACH));
 
 		scene.dirLight().direction = {0, 0, 1};
 		scene.dirLight().color = {1, 1, 1};
@@ -28,17 +28,17 @@ public:
 		Entity* cameraController = Entity::create("CameraController");
 		cameraController->addScript(new CameraController());
 
-		//ModelLoader loader;
-		//loader.debugMode(true);
-		//Model* model = loader.load("TheModel", HELMET);
+		ModelLoader loader;
+		loader.debugMode(true);
+		Model* model = loader.load("TheModel", HELMET);
 
-		//Entity* object = Entity::create();
-		//object->meshView().mesh(model->meshes()[0]);
-		//object->meshView().material(model->materials()[0]);
-		//object->transform().rotate(45, {1, 0, 0});
-		//object->transform().position() = {0, 3, -2};
+		Entity* object = Entity::create();
+		object->meshView().mesh(model->meshes()[0]);
+		object->meshView().material(model->materials()[0]);
+		object->transform().rotate(45, {1, 0, 0});
+		object->transform().position() = {0, 3, -2};
 
-		createSphere("rusted_iron", {0, 0, 0});
+		//createSphere("rusted_iron", {0, 0, 0});
 		//createSphere("gold", {-2.5f, 0, 0});
 		//createSphere("wall", {2.5f, 0, 0});
 		//createSphere("plastic", {-5.0f, 0, 0});
@@ -46,11 +46,13 @@ public:
 
 		scene.camera().position({0, 0.5f, 7});
 
-		scene.camera().exposure(0.8f);
+		UIInfo uiInfo = {};
+		uiInfo.activeEffects = &scene.postEffects();
+		uiInfo.camera = &scene.camera();
 
 		UIDrawer uiDrawer;
 		uiDrawer.name = "ui";
-		uiDrawer.callback = [&] {drawUI(scene.postEffects()); };
+		uiDrawer.callback = [=] {drawUI(uiInfo); };
 
 		UIRenderer::get().addUIDrawer(uiDrawer);
 	}

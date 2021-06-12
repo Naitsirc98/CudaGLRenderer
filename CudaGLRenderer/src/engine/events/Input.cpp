@@ -1,5 +1,6 @@
 #include "engine/events/Input.h"
 #include "engine/events/EventSystem.h"
+#include "engine/Time.h"
 
 namespace utad
 {
@@ -166,7 +167,10 @@ namespace utad
 
 	void Input::update()
 	{
-		s_Instance->m_Mouse.scrollOffset = { 0, 0 };
+		Vector2& scroll = s_Instance->m_Mouse.scrollOffset;
+
+		scroll.x = math::max(scroll.x - Time::deltaTime() * 1.2f, 0.0f);
+		scroll.y = math::max(scroll.y - Time::deltaTime() * 1.2f, 0.0f);
 	}
 
 
