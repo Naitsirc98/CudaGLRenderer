@@ -25,39 +25,16 @@ namespace utad
 		m_Shader->attach(&vertexStage);
 		m_Shader->attach(&fragmentStage);
 		m_Shader->compile();
-
-		RenderQueue* defaultRenderQueue = new RenderQueue();
-		defaultRenderQueue->name = DEFAULT_RENDER_QUEUE;
-		defaultRenderQueue->enabled = true;
-		m_RenderQueues[DEFAULT_RENDER_QUEUE] = defaultRenderQueue;
 	}
 
 	MeshRenderer::~MeshRenderer()
 	{
 		UTAD_DELETE(m_Shader);
-
-		for (auto [name, queue] : m_RenderQueues)
-		{
-			UTAD_DELETE(queue);
-		}
-		m_RenderQueues.clear();
 	}
 
-	RenderQueue& MeshRenderer::getRenderQueue(const String& name)
+	void MeshRenderer::render(const SceneSetup& scene)
 	{
-		if (m_RenderQueues.find(name) == m_RenderQueues.end())
-		{
-			RenderQueue* queue = new RenderQueue();
-			queue->name = name;
-			m_RenderQueues[name] = queue;
-		}
-
-		return *m_RenderQueues[name];
-	}
-
-	void MeshRenderer::render(const SceneSetup& renderInfo)
-	{
-		const Camera& camera = renderInfo.camera;
+		const Camera& camera = scene.camera;
 		const Color& clearColor = camera.clearColor();
 		
 		glEnable(GL_DEPTH_TEST);
@@ -68,15 +45,15 @@ namespace utad
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (m_RenderQueues.empty()) return;
+		if (scene.renderQueues.empty()) return;
 
 		m_Shader->bind();
 		{
 			setCameraUniforms(camera);
-			setLightUniforms(renderInfo.enableDirLight, renderInfo.dirLight, renderInfo.pointLights);
-			setSkyboxUniforms(renderInfo.skybox);
+			setLightUniforms(scene.enableDirLight, scene.dirLight, scene.pointLights);
+			setSkyboxUniforms(scene.skybox);
 
-			for (auto [name, queue] : m_RenderQueues)
+			for (auto [name, queue] : scene.renderQueues)
 			{
 				if (!queue->enabled) continue;
 
@@ -178,13 +155,5 @@ namespace utad
 
 		m_Shader->setUniform("u_Material.useNormalMap", material.useNormalMap());
 		m_Shader->setUniform("u_Material.useCombinedMetallicRoughnessMap", material.useCombinedMetallicRoughnessMap());
-	}
-
-	void MeshRenderer::clearRenderQueues()
-	{
-		for (auto [name, queue] : m_RenderQueues)
-		{
-			queue->commands.clear();
-		}
 	}
 }

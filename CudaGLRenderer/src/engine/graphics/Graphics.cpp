@@ -13,6 +13,7 @@ namespace utad
 	Texture2D* Graphics::s_BrightnessTexture;
 	Texture2D* Graphics::s_DepthTexture;
 	Shader* Graphics::s_QuadShader;
+	RenderMethod Graphics::s_RenderMethod = RenderMethod::Rasterization;
 
 
 	Framebuffer* Graphics::getDefaultFramebuffer()
@@ -33,6 +34,16 @@ namespace utad
 	Texture2D* Graphics::getDepthTexture()
 	{
 		return s_DepthTexture;
+	}
+
+	RenderMethod Graphics::getRenderMethod()
+	{
+		return s_RenderMethod;
+	}
+
+	void Graphics::setRenderMethod(RenderMethod renderMethod)
+	{
+		s_RenderMethod = renderMethod;
 	}
 
 	void Graphics::begin()
@@ -71,6 +82,8 @@ namespace utad
 
 	void Graphics::init()
 	{
+		s_RenderMethod = RenderMethod::Rasterization;
+
 		createFramebuffer();
 		createShader();
 

@@ -169,8 +169,8 @@ namespace utad
 	{
 		Vector2& scroll = s_Instance->m_Mouse.scrollOffset;
 
-		scroll.x = math::max(scroll.x - Time::deltaTime() * 1.2f, 0.0f);
-		scroll.y = math::max(scroll.y - Time::deltaTime() * 1.2f, 0.0f);
+		scroll.x = math::sign(scroll.x) * (math::abs(scroll.x) - Time::deltaTime() * 4.0f);
+		scroll.y = math::sign(scroll.y) * (math::abs(scroll.y) - Time::deltaTime() * 4.0f);
 	}
 
 

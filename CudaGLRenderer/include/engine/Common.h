@@ -69,6 +69,7 @@ namespace utad
 	}
 
 	using Vector2i = glm::ivec2;
+	using Vector3i = glm::ivec3;
 	using Vector2 = glm::vec2;
 	using Vector3 = glm::vec3;
 	using Vector4 = glm::vec4;

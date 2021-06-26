@@ -1,5 +1,6 @@
 #include "engine/entities/MeshView.h"
 #include "engine/entities/Transform.h"
+#include "engine/scene/Scene.h"
 
 namespace utad
 {
@@ -33,6 +34,8 @@ namespace utad
 	MeshView& MeshView::mesh(Mesh* mesh)
 	{
 		m_Mesh = mesh;
+		if (m_AABB == nullptr) delete m_AABB;
+		m_AABB = new AABB(mesh);
 		return *this;
 	}
 
@@ -47,7 +50,12 @@ namespace utad
 		return *this;
 	}
 
-	void MeshView::update(MeshRenderer& renderer)
+	AABB& MeshView::aabb() const
+	{
+		return *m_AABB;
+	}
+
+	void MeshView::prepareForRender(Scene& scene)
 	{
 		if (m_RenderQueueName == NO_RENDER_QUEUE) return;
 		if (m_Mesh == nullptr || m_Material == nullptr) return;
@@ -57,8 +65,9 @@ namespace utad
 		command.transformation = &m_Transform->modelMatrix();
 		command.mesh = m_Mesh;
 		command.material = m_Material;
+		command.aabb = m_AABB;
 
-		RenderQueue& renderQueue = renderer.getRenderQueue(m_RenderQueueName);
+		RenderQueue& renderQueue = scene.getRenderQueue(m_RenderQueueName);
 		renderQueue.commands.push_back(std::move(command));
 	}
 

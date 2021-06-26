@@ -10,10 +10,10 @@ namespace utad
 
     const float* EmbossFX::createFilter()
     {
-        float* h_filter = new float[9]{
-            -2, -1, 0,
-            -1, 1, -1,
-             0, 1, 2
+        float* h_filter = new float[9] {
+            -2, -1,  0,
+            -1,  1,  1,
+             0,  1,  2
         };
 
         return h_filter;

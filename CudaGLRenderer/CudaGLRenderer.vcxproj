@@ -42,6 +42,7 @@
     <ClCompile Include="src\engine\graphics\MeshRenderer.cpp" />
     <ClCompile Include="src\engine\graphics\postfx\PostFXCommons.cpp" />
     <ClCompile Include="src\engine\graphics\postfx\PostFXRenderer.cpp" />
+    <ClCompile Include="src\engine\graphics\raytracing\RayTracer.cpp" />
     <ClCompile Include="src\engine\graphics\Shader.cpp" />
     <ClCompile Include="src\engine\graphics\SkyboxRenderer.cpp" />
     <ClCompile Include="src\engine\graphics\Texture2D.cpp" />
@@ -84,6 +85,8 @@
     <ClInclude Include="include\engine\graphics\postfx\PostFXRenderer.h" />
     <ClInclude Include="include\engine\collisions\Collisions.h" />
     <ClInclude Include="include\engine\graphics\postfx\SharpeningFX.cuh" />
+    <ClInclude Include="include\engine\graphics\raytracing\RayTracer.h" />
+    <ClInclude Include="include\engine\graphics\RenderQueue.h" />
     <ClInclude Include="include\engine\graphics\Vertex.h" />
     <ClInclude Include="include\engine\scene\Light.h" />
     <ClInclude Include="include\engine\assets\Material.h" />

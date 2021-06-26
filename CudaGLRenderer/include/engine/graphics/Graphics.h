@@ -8,6 +8,12 @@
 
 namespace utad
 {
+	enum class RenderMethod
+	{
+		Rasterization,
+		RayTracing
+	};
+
 	class Graphics
 	{
 		friend class Engine;
@@ -17,11 +23,14 @@ namespace utad
 		static Texture2D* s_BrightnessTexture;
 		static Texture2D* s_DepthTexture;
 		static Shader* s_QuadShader;
+		static RenderMethod s_RenderMethod;
 	public:
 		static Framebuffer* getDefaultFramebuffer();
 		static Texture2D* getColorTexture();
 		static Texture2D* getBrightnessTexture();
 		static Texture2D* getDepthTexture();
+		static RenderMethod getRenderMethod();
+		static void setRenderMethod(RenderMethod renderMethod);
 	private:
 		static void begin();
 		static void end();

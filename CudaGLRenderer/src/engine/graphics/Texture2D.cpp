@@ -10,6 +10,7 @@ namespace utad
 
 	Texture2D::~Texture2D()
 	{
+		unmapPixels();
 		glDeleteTextures(1, &m_Handle);
 		m_Handle = NULL;
 	}
@@ -90,11 +91,25 @@ namespace utad
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void* Texture2D::pixels(int level, GLenum format, GLenum type, size_t size, void* buffer) const
+	byte* Texture2D::pixels() const
 	{
-		if (buffer == nullptr) buffer = new byte[size];
-		glGetTextureImage(m_Handle, level, format, type, size, buffer);
-		return buffer;
+		return m_Pixels;
+	}
+
+	byte* Texture2D::mapPixels(GLenum format, GLenum type, size_t size)
+	{
+		if (m_Pixels != nullptr) unmapPixels();
+
+		m_Pixels = new byte[size];
+
+		glGetTextureImage(m_Handle, 0, format, type, size, m_Pixels);
+
+		return m_Pixels;
+	}
+
+	void Texture2D::unmapPixels(bool updateTexture)
+	{
+		UTAD_DELETE(m_Pixels);
 	}
 
 	Texture2D* Texture2D::load(const String& imagePath, GLenum format, bool flipY)

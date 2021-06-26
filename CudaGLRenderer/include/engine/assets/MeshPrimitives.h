@@ -33,9 +33,9 @@ namespace utad
 		static void drawSphere(bool bind = true);
 	
 	private:
-		static VertexArray* createCubeVAO(ArrayList<Vertex>& vertices);
-		static VertexArray* createQuadVAO(ArrayList<Vertex>& vertices);
-		static VertexArray* createSphereVAO(int xSegments, int ySegments, ArrayList<Vertex>& vertices);
+		static VertexArray* createCubeVAO(ArrayList<Vertex>& vertices, ArrayList<uint>& triangles);
+		static VertexArray* createQuadVAO(ArrayList<Vertex>& vertices, ArrayList<uint>& triangles);
+		static VertexArray* createSphereVAO(int xSegments, int ySegments, ArrayList<Vertex>& vertices, ArrayList<uint>& triangles);
 
 		static Mesh* createCubeMesh();
 		static Mesh* createQuadMesh();

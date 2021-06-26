@@ -27,6 +27,7 @@ namespace utad
 		m_MeshRenderer = new MeshRenderer();
 		m_SkyboxRenderer = new SkyboxRenderer();
 		m_PostFXRenderer = new PostFXRenderer();
+		m_RayTracer = new RayTracer();
 	}
 
 	Scene::~Scene()
@@ -35,6 +36,7 @@ namespace utad
 		UTAD_DELETE(m_MeshRenderer);
 		UTAD_DELETE(m_SkyboxRenderer);
 		UTAD_DELETE(m_PostFXRenderer);
+		UTAD_DELETE(m_RayTracer);
 	}
 
 	Entity* Scene::createEntity(const String& name)
@@ -96,6 +98,18 @@ namespace utad
 		return m_RenderInfo.postEffects;
 	}
 
+	RenderQueue& Scene::getRenderQueue(const String& name)
+	{
+		if (m_RenderInfo.renderQueues.find(name) == m_RenderInfo.renderQueues.end())
+		{
+			RenderQueue* queue = new RenderQueue();
+			queue->name = name;
+			m_RenderInfo.renderQueues[name] = queue;
+		}
+
+		return *m_RenderInfo.renderQueues[name];
+	}
+
 	void Scene::update()
 	{
 		for (Entity* entity : m_EntityPool->entities())
@@ -110,21 +124,48 @@ namespace utad
 	{
 		m_RenderInfo.camera.update();
 
-		m_MeshRenderer->clearRenderQueues();
+		for (auto [name, queue] : m_RenderInfo.renderQueues)
+		{
+			queue->commands.clear();
+		}
 
 		for (Entity* entity : m_EntityPool->entities())
 		{
 			if (entity->id() == NULL) continue;
 			if (!entity->enabled()) continue;
-			entity->meshView().update(*m_MeshRenderer);
+			entity->meshView().prepareForRender(*this);
+		}
+
+		if (Graphics::getRenderMethod() == RenderMethod::RayTracing)
+		{
+			m_RayTracer->prepareColorBuffer();
+			//updateOctree();
 		}
 	}
 
 	void Scene::render()
 	{
-		m_MeshRenderer->render(m_RenderInfo);
-		m_SkyboxRenderer->render(m_RenderInfo);
-		m_PostFXRenderer->render(m_RenderInfo);
+		if (Graphics::getRenderMethod() == RenderMethod::Rasterization)
+		{
+			m_MeshRenderer->render(m_RenderInfo);
+			m_SkyboxRenderer->render(m_RenderInfo);
+			m_PostFXRenderer->render(m_RenderInfo);
+		}
+		else
+		{
+			m_RayTracer->render(m_RenderInfo);
+		}
+	}
+
+	void Scene::updateOctree()
+	{
+		RenderQueue* queue = m_RenderInfo.renderQueues[DEFAULT_RENDER_QUEUE];
+		const Matrix4& view = m_RenderInfo.camera.viewMatrix();
+
+		for (RenderCommand& command : queue->commands)
+		{
+			command.aabb->update(view * *command.transformation);
+		}
 	}
 
 }

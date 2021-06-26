@@ -7,6 +7,7 @@
 #include "engine/graphics/MeshRenderer.h"
 #include "engine/graphics/SkyboxRenderer.h"
 #include "engine/graphics/postfx/PostFXRenderer.h"
+#include "engine/graphics/raytracing/RayTracer.h"
 
 namespace utad
 {
@@ -20,9 +21,25 @@ namespace utad
 		ArrayList<Light> pointLights;
 		Skybox* skybox{nullptr};
 		ArrayList<PostFX> postEffects;
+		SortedMap<String, RenderQueue*> renderQueues;
 
 	private:
-		SceneSetup() {}
+		SceneSetup() 
+		{
+			RenderQueue* defaultRenderQueue = new RenderQueue();
+			defaultRenderQueue->name = DEFAULT_RENDER_QUEUE;
+			defaultRenderQueue->enabled = true;
+			renderQueues[DEFAULT_RENDER_QUEUE] = defaultRenderQueue;
+		}
+
+		~SceneSetup()
+		{
+			for (auto [name, queue] : renderQueues)
+			{
+				UTAD_DELETE(queue);
+			}
+			renderQueues.clear();
+		}
 	};
 
 	class Scene
@@ -40,6 +57,7 @@ namespace utad
 		MeshRenderer* m_MeshRenderer;
 		SkyboxRenderer* m_SkyboxRenderer;
 		PostFXRenderer* m_PostFXRenderer;
+		RayTracer* m_RayTracer;
 		SceneSetup m_RenderInfo;
 	private:
 		Scene();
@@ -56,9 +74,11 @@ namespace utad
 		Skybox* skybox() const;
 		void setSkybox(Skybox* skybox, bool deleteExisting = true);
 		ArrayList<PostFX>& postEffects();
+		RenderQueue& getRenderQueue(const String& name);
 	private:
 		void update();
 		void lastUpdate();
 		void render();
+		void updateOctree();
 	};
 }

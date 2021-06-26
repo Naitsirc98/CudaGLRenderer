@@ -127,8 +127,12 @@ namespace utad
 			m_App.onRender();
 		}
 		Graphics::end();
-		UIRenderer::get().render();
-		Window::get().swapBuffers();
+
+		if (Graphics::getRenderMethod() == RenderMethod::Rasterization)
+		{
+			UIRenderer::get().render();
+			Window::get().swapBuffers();
+		}
 	}
 
 	void Engine::shutdown()

@@ -18,6 +18,7 @@ namespace utad
 		GLenum m_IndexType{0};
 		uint m_IndexBufferOffset{0};
 		ArrayList<Vertex> m_Vertices;
+		ArrayList<uint> m_Indices;
 	public:
 		Mesh(VertexArray* vao);
 		~Mesh();
@@ -28,6 +29,7 @@ namespace utad
 		GLenum indexType() const;
 		uint indexBufferOffset() const;
 		const ArrayList<Vertex>& vertices() const;
+		const ArrayList<uint>& indices() const; // TODO: check when draw mode != GL_TRIANGLES
 		void bind();
 		void unbind();
 	};

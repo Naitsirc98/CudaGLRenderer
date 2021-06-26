@@ -34,7 +34,7 @@ namespace utad
 		void loadTransformation(const ArrayList<double>& matrix, ModelNode& result);
 		void loadMesh(ModelInfo& info, gltf::Node& node, ModelNode& result);
 		void setupBuffers(ModelInfo& info, const gltf::Mesh& mesh, VertexArray* vertexArray,
-			ArrayList<Vertex>& vertices);
+			ArrayList<Vertex>& vertices, ArrayList<uint>& indices);
 		bool getVertexAttrib(const String& attribName, VertexAttrib& attribute) const;
 		void loadMaterial(ModelInfo& info, gltf::Node& node, ModelNode& result);
 		Buffer* createGLBuffer(const gltf::BufferView& bufferView, const gltf::Buffer& buffer);

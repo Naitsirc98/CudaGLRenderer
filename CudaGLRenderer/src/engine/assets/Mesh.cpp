@@ -46,6 +46,11 @@ namespace utad
 		return m_Vertices;
 	}
 
+	const ArrayList<uint>& Mesh::indices() const
+	{
+		return m_Indices;
+	}
+
 	void Mesh::bind()
 	{
 		m_VertexArray->bind();

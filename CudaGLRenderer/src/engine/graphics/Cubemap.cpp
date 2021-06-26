@@ -10,6 +10,7 @@ namespace utad
 
 	Cubemap::~Cubemap()
 	{
+		unmapPixelsAllFaces();
 		glDeleteTextures(1, &m_Handle);
 	}
 
@@ -77,6 +78,35 @@ namespace utad
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
+	byte* Cubemap::pixels(GLenum face) const
+	{
+		return m_Pixels[face];
+	}
+
+	byte* Cubemap::mapPixels(GLenum face, GLenum format, GLenum type, size_t size)
+	{
+		if (m_Pixels[face] != nullptr) unmapPixels(face);
+
+		m_Pixels[face] = new byte[size];
+
+		glBindTexture(face, m_Handle);
+		glGetTexImage(face, 0, format, type, m_Pixels[face]);
+		glBindTexture(face, m_Handle);
+
+		return m_Pixels[face];
+	}
+
+	void Cubemap::unmapPixels(GLenum face)
+	{
+		UTAD_DELETE(m_Pixels[face]);
+	}
+
+	void Cubemap::unmapPixelsAllFaces()
+	{
+		for (size_t i = 0; i < 6; ++i)
+			unmapPixels(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i);
 	}
 
 }

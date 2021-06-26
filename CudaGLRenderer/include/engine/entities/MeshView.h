@@ -3,6 +3,7 @@
 #include <engine/graphics/MeshRenderer.h>
 #include <engine/assets/Mesh.h>
 #include <engine/assets/Material.h>
+#include "engine/collisions/Collisions.h"
 
 namespace utad
 {
@@ -15,6 +16,7 @@ namespace utad
 		Transform* m_Transform{nullptr};
 		Mesh* m_Mesh{nullptr};
 		Material* m_Material{nullptr};
+		AABB* m_AABB{nullptr};
 		String m_RenderQueueName;
 	private:
 		MeshView();
@@ -26,6 +28,7 @@ namespace utad
 		MeshView& mesh(Mesh* mesh);
 		Material* material() const;
 		MeshView& material(Material* material);
-		void update(MeshRenderer& renderer);
+		AABB& aabb() const;
+		void prepareForRender(Scene& scene);
 	};
 }

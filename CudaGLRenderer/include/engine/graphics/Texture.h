@@ -48,6 +48,7 @@ namespace utad
 		Handle m_Handle;
 		int m_Width;
 		int m_Height;
+		byte* m_Pixels{nullptr};
 	public:
 		Texture2D();
 		Texture2D(const Texture2D& other) = delete;
@@ -65,7 +66,9 @@ namespace utad
 		int height() const;
 		void bind(int unit = 0) override;
 		void unbind(int unit = 0) override;
-		void* pixels(int level, GLenum format, GLenum type, size_t size, void* buffer = nullptr) const;
+		byte* pixels() const;
+		byte* mapPixels(GLenum format, GLenum type, size_t size);
+		void unmapPixels(bool updateTexture = true);
 	public:
 		static Texture2D* load(const String& imagePath, GLenum format = GL_RGBA, bool flipY = true);
 	};
@@ -76,6 +79,7 @@ namespace utad
 		Handle m_Handle;
 		int m_Width;
 		int m_Height;
+		byte* m_Pixels[6]{nullptr};
 	public:
 		Cubemap();
 		Cubemap(const Cubemap& other) = delete;
@@ -92,5 +96,9 @@ namespace utad
 		int height() const;
 		void bind(int unit = 0) override;
 		void unbind(int unit = 0) override;
+		byte* pixels(GLenum face) const;
+		byte* mapPixels(GLenum face, GLenum format, GLenum type, size_t size);
+		void unmapPixels(GLenum face);
+		void unmapPixelsAllFaces();
 	};
 }

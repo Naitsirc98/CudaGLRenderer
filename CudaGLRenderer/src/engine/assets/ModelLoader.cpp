@@ -141,9 +141,11 @@ namespace utad
 		
 		VertexArray* vertexArray = new VertexArray();
 		ArrayList<Vertex> vertices;
+		ArrayList<uint> indices;
+
 		if (m_DebugMode) std::cout << "\tLoading mesh " << mesh.name << std::endl;
 
-		setupBuffers(info, mesh, vertexArray, vertices);
+		setupBuffers(info, mesh, vertexArray, vertices, indices);
 
 		const uint meshIndex = result.m_Model.m_Meshes.size();
 
@@ -153,13 +155,23 @@ namespace utad
 		outMesh->m_IndexType = indexAccessor.componentType;
 		outMesh->m_IndexBufferOffset = indexAccessor.byteOffset;
 		outMesh->m_Vertices = std::move(vertices);
+		outMesh->m_Indices = std::move(indices);
 
 		result.m_Model.m_Meshes.push_back(outMesh);
 		result.m_Mesh = meshIndex;
 	}
 
+	template<typename T>
+	static void setIndices(ArrayList<uint>& indices, const unsigned char* rawData, size_t byteLength)
+	{
+		const T* indicesData = (const T*)(rawData);
+		uint indexCount = byteLength / sizeof(T);
+		for (size_t i = 0; i < indexCount; ++i)
+			indices.push_back((uint)indicesData[i]);
+	}
+
 	void ModelLoader::setupBuffers(ModelInfo& info, const gltf::Mesh& mesh, VertexArray* vertexArray,
-		ArrayList<Vertex>& vertices)
+		ArrayList<Vertex>& vertices, ArrayList<uint>& indices)
 	{
 		const gltf::Model& model = *info.model;
 		const gltf::Primitive& primitive = mesh.primitives[0];
@@ -171,6 +183,30 @@ namespace utad
 			{
 				bufferView.buffer->bind(GL_ELEMENT_ARRAY_BUFFER);
 				vertexArray->setIndexBuffer(bufferView.buffer);
+
+				const gltf::Accessor& indexAccessor = model.accessors[primitive.indices];
+				const gltf::BufferView& view = model.bufferViews[indexAccessor.bufferView];
+				const gltf::Buffer& buffer = model.buffers[view.buffer];
+
+				const unsigned char* rawData = buffer.data.data() + view.byteOffset;
+
+				switch (indexAccessor.componentType)
+				{
+					case GL_SHORT:
+						setIndices<short>(indices, rawData, view.byteLength);
+						break;
+					case GL_UNSIGNED_SHORT:
+						setIndices<unsigned short>(indices, rawData, view.byteLength);
+						break;
+					case GL_INT:
+						setIndices<int>(indices, rawData, view.byteLength);
+						break;
+					case GL_UNSIGNED_INT:
+						setIndices<unsigned int>(indices, rawData, view.byteLength);
+						break;
+					default:
+						throw UTAD_EXCEPTION("Unsupported index type");
+				}
 			}
 		}
 
@@ -205,6 +241,14 @@ namespace utad
 			}
 
 			vertexArray->setVertexAttribute(accessor.bufferView, attrib, accessor.byteOffset);
+		}
+
+		if (indices.empty())
+		{
+			// No indices, so put them manually
+			indices.reserve(vertices.size());
+			for (int i = 0; i < vertices.size(); ++i)
+				indices.push_back(vertices.size());
 		}
 	}
 
